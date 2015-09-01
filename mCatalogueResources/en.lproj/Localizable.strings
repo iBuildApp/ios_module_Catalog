@@ -1,0 +1,107 @@
+/****************************************************************************
+ *                                                                           *
+ *  Copyright (C) 2014-2015 iBuildApp, Inc. ( http://ibuildapp.com )         *
+ *                                                                           *
+ *  This file is part of iBuildApp.                                          *
+ *                                                                           *
+ *  This Source Code Form is subject to the terms of the iBuildApp License.  *
+ *  You can obtain one at http://ibuildapp.com/license/                      *
+ *                                                                           *
+ ****************************************************************************/
+
+/* --- module Catalogue strings --- */
+
+/* Back */
+"mCatalogue_backButton" = "Back";
+
+/* Post */
+"mCatalogue_postPostButtonTitle" = "Post";
+
+///* <b>%@</b><br><br>%@<br><br><b>%@</b><br><br>I just found this in the %@: %@<br><br>\
+// Download the %@ iPhone/Android app: %@ */
+//"mCatalogue_shareEMailMessageTemplate" = "<b>%@</b><br><pre style='font-family:sans-serif;'>%@</pre><br><b>%@</b><br><br>I just found this in the %@: %@<br><br>"; // symbols \n, <b>, %@, </b> and <br> are needed for correct string generation, please don't remove!
+//
+///* <b>%@</b><br><br>%@<br><br><b>%@</b><br><br>I just found this in the %@: %@<br><br>\
+// Download the %@ iPhone/Android app: %@ */
+//"mCatalogue_shareEMailMessageTemplate_showLink" = "<b>%@</b><br><pre style='font-family:sans-serif;'>%@</pre><br><b>%@</b><br><br>I just found this in the %@: %@<br><br>\nDownload the %@ iPhone/Android app: %@"; // symbols \n, <b>, %@, </b> and <br> are needed for correct string generation, please don't remove!
+
+/* <b>%@</b><br><br>%@<br><br><b>%@</b><br><br> */
+"mCatalogue_shareEMailMessageTemplate" = "<b>%@</b><br><pre style='font-family:sans-serif;'>%@</pre><br><b>%@</b><br><br>"; // symbols \n, <b>, %@, </b> and <br> are needed for correct string generation, please don't remove!
+
+/* <b>%@</b><br><br>%@<br><br><b>%@</b><br><br> */
+"mCatalogue_shareEMailMessageTemplate_showLink" = "<b>%@</b><br><pre style='font-family:sans-serif;'>%@</pre><br><b>%@</b><br><br>"; // symbols \n, <b>, %@, </b> and <br> are needed for correct string generation, please don't remove!
+
+
+/* The message has been posted to your Facebook wall. */
+"mCatalogue_shareFB&TSuccessAlertMessage" = "The message has been posted to your Facebook wall.";
+
+/* OK */
+"mCatalogue_shareFB&TSuccessAlertTitle" = "OK";
+
+/* \r\nPosted via iBuildApp http://ibuildapp.com. */
+"mCatalogue_shareMessageShowLinkAddition" = "\r\nPosted via iBuildApp http://ibuildapp.com."; // symbols \n and \r are needed for correct string generation, please don't remove!
+
+
+/* %@\nI just found this in the %@: %@ */
+"mCatalogue_shareMessageTemplate" = "%@\nI just found this in the %@"; // symbols \n and %@ are needed for correct string generation, please don't remove!
+
+/* %@\nI just found this in the %@: %@\n Download the %@ iPhone/Android app:  http://%@/projects.php?action=info&projectid=%@ */
+"mCatalogue_shareMessageTemplate_showLink" = "%@\nI just found this in the %@.\nDownload the %@ iPhone/Android app: http://%@/projects.php?action=info&projectid=%@"; // symbols \n and %@ are needed for correct string generation, please don't remove!
+
+
+/* Share on Facebook */
+"mCatalogue_sharingMessageFacebookTitle" = "Share on Facebook";
+
+/* Share on Twitter */
+"mCatalogue_sharingMessageTwitterTitle" = "Share on Twitter";
+
+/* Connection with Twitter failed! */
+"mCatalogue_twitterFailed" = "Connection with Twitter failed!";
+
+/* The message has been posted to your Twitter account. */
+"mCatalogue_twitterPosted" = "The message has been posted to your Twitter account.";
+
+
+"mCatalogue_SearchPlaceholder" = "Search";
+//"mCatalogue_SearchTitle" = "Search on \"%@\"";
+"mCatalogue_SearchTitle" = "Search results";
+"mCatalogue_Back" = "Back";
+"mCatalogue_CancelSearch" = "Cancel";
+"mCatalogue_NoImageForLike" = "Nothing to like";
+"mCatalogue_NoResultsFound" = "There is no result for your query";
+"mCatalogue_ImageAlreadyLiked" = "You have already liked this item";
+"mCatalogue_LikeError" = "Could not like this item";
+
+"mCatalogue_BuyNowButtonTitle" = "Buy Now";
+"mCatalogue_AddToCart" = "Add To Cart";
+
+"mCatalogue_ORDER_CONFIRMATION" = "Order Confirmation";
+"mCatalogue_THANK_YOU_FOR_ORDER" = "Thank you for your order!";
+"mCatalogue_WE_WILL_CONTACT_YOU" = "We will contact you shortly!";
+
+"mCatalogue_PaymentIsNotProcessable" = "Payment is not processable!";
+
+"mCatalogue_TITLE" = "Shopping cart";
+"mCatalogue_EMPTY_CART" = "Your shopping cart is empty";
+"mCatalogue_TOTAL" = "Total";
+"mCatalogue_ORDER_BUTTON" = "Order";
+"mCatalogue_DELETE_BUTTON" = "Delete";
+"mCatalogue_SUBMIT_ORDER" = "Submit Order";
+"mCatalogue_CHECK_OUT" = "Check Out";
+"mCatalogue_ITEM_ADDED_TO_CART" = "Item added to cart";
+"mCatalogue_CONTINUE" = "Continue";
+"mCatalogue_VIEW_CART" = "View Cart";
+"mCatalogue_FILL_OUT_FIELDS_MESSAGE" = "Please fill out all required fields";
+"mCatalogue_ERROR_SEND_MESSAGE"  = "Oops! Something goes wrong!";
+"mCatalogue_ORDER_CONFIRMATION"  = "Order Confirmation";
+"mCatalogue_CONTACT_INFO"        = "Contact Info";
+"mCatalogue_ENTER_CONTACT_INFO"  = "Enter your contact info";
+"mCatalogue_SUBMIT_ORDER"        = "Submit Order";
+"mCatalogue_ENTER_PLACEHOLDER"   = "Enter";
+"mCatalogue_INCORRECT_EMAIL"     = "Email address is incorrect";
+"mCatalogue_YOUR_ORDER_NUMBER"   = "Your Order Number";
+//"mCatalogue_THANK_YOU_FOR_ORDER" = "Thank you for your order!\r\nWe will contact you shortly!";
+"mCatalogue_ORDER_FAILED_TO_SEND"    = "Order failed to send!";
+
+"mCatalogue_ITEMS_IN_YOUR_CART%@##{one}" = "There is one item in your cart";
+"mCatalogue_ITEMS_IN_YOUR_CART%@##{other}" = "There are %@ items in your cart";

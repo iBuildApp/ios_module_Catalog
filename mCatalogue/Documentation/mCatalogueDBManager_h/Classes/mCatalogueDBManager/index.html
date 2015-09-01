@@ -1,0 +1,778 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<html>
+<head>
+<title>mCatalogueDBManager</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="generator" content="HeaderDoc">
+<meta name="xcode-display" content="render">
+<style type="text/css"><!--.char {background: #ffffff; color:#0000ff;}.comment {background:#ffffff; color:#236e25}.function {background:#ffffff; color:#000000;}.keyword {background:#ffffff; color:#761550;}.number {background: #ffffff; color:#0000ff;}.param {background:#ffffff; color:#000000;}.preprocessor {background:#ffffff; color:#236e25}.string {background: #ffffff; color:#891315;}.template {background:#ffffff; color:#761550;}.type {background:#ffffff; color:#761550;}.var {background:#ffffff; color:#000000;}body {border: 0px; margin: 0px;}div {font-size: 10pt; text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; color: #000000;}td {font-size: 10pt; text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; color: #000000;}span.hd_tocAccessSpace { display: block; font-size: 1px; height: 3px; min-height: 3px; }span.hd_tocGroupSpace { display: block; font-size: 1px; height: 3px; min-height: 3px; }span.hd_tocGroup { display: block; font-weight: bold; font-size: 10pt; text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; color: #000000; margin-left: 0px; padding-left: 40px; }span.hd_tocGroup + span.hd_tocAccess { padding-top: 5px; }td.toc_contents_text {font-size: 11pt; text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; color: #000000; }li.tocSubEntry {font-size: 11pt; text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; color: #000000;}p {font-size: 10pt; text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; color: #000000;}a:link {text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; color: #36c;}a:visited {text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; color: #36c;}a:visited:hover {text-decoration: underline; font-family: lucida grande, geneva, helvetica, arial, sans-serif; color: #36c;}a:active {text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; color: #36c;}a:hover {text-decoration: underline; font-family: lucida grande, geneva, helvetica, arial, sans-serif; color: #36c;}h2.h2tight { margin-top: 0px; padding-top: 0px; }h1 { margin-top: 13px; padding-top: 0px; }h4 {text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; font-size: tiny; font-weight: bold;}h5 {text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; font-size: 10.1pt; font-weight: bold;}pre {text-decoration: none; font-family: Courier, Consolas, monospace; color: #666; font-size: 10pt;}pre a { font-family: Courier, Consolas, monospace; color: #666;font-size: 10pt;}pre a:link { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}pre a:visited { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}pre a:visited:hover { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}pre a:active { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}pre a:hover { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}code {text-decoration: none; font-family: Courier, Consolas, monospace; color: #666;font-size: 10pt;}code a { font-family: Courier, Consolas, monospace; color: #666;font-size: 10pt;}code a:link { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}code a:visited { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}code a:visited:hover { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}code a:active { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}code a:hover { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}tt {text-decoration: none; font-family: Courier, Consolas, monospace; color: #666;font-size: 10pt;}tt a { font-family: Courier, Consolas, monospace; color: #666;font-size: 10pt;}tt a:link { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}tt a:visited { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}tt a:visited:hover { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}tt a:active { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}tt a:hover { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}body  {text-decoration: none; font-family: Courier, Consolas, monospace; color: #666;font-size: 10pt; padding-left: 0px; padding-top: 0px; margin-left: 0px; margin-top: 0px; border: none; }#hd_outermost_table { margin-left: 0px; border-spacing: 0px; margin-top: 0px; padding-left: 0px; padding-top: 0px; border: none; }#hd_outermost_table > tr { border-spacing: 0px; margin-left: 0px; margin-top: 0px; padding-left: 0px; padding-top: 0px; border: none; }#hd_outermost_table > tr > td { border-spacing: 0px; margin-left: 0px; margin-top: 0px; }#hd_outermost_table > tbody > tr { border-spacing: 0px; margin-left: 0px; margin-top: 0px; padding-left: 0px; padding-top: 0px; border: none; }#hd_outermost_table > tbody > tr > td { border-spacing: 0px; margin-left: 0px; margin-top: 0px; padding-top: 3px; }.afterName { display: none; }.list_indent { margin-left: 40px; }.declaration_indent { margin-left: 40px; margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; min-height: 12px; vertical-align: middle; }.declaration_indent pre { margin-top: 20px; padding-top: 0px; margin-bottom: 20px; padding-bottom: 0px; }.gapBeforeFooter { display: none; }hr { height: 0px; min-height: 0px; border-top: none; border-left: none; border-right: none; border-bottom: 1px solid #909090;}hr.afterHeader { display: none }.param_group_indent { margin-left: 25px; }.param_indent { margin-left: 40px; margin-top: 0px; padding-top: 0px; }.param_indent dl { margin-top: 4px; padding-top: 0px; }dl dd > p:first-child { margin-top: 2px; padding-top: 0px; }.param_indent dl dd > p:first-child { margin-top: 2px; padding-top: 0px; }.group_indent { margin-left: 40px; }.group_desc_indent { margin-left: 20px; }.warning_indent { margin-left: 40px; }.important_indent { margin-left: 40px; }.note_indent { margin-left: 40px; }h3 {       color: #3C4C6C;}.tight {       margin-top: 2px; margin-bottom: 0px;       padding-top: 0px; padding-bottom: 0px;}h3 a {       color: #3C4C6C;	font-size: 16px;	font-style: normal;	font-variant: normal;	font-weight: bold;	height: 0px;	line-height: normal;}.hd_tocAccess { display: block; margin-left: 40px; font-style: italic; font-size: 10px; font-weight: normal; color: #303030; }.tocSubheading { margin-bottom: 4px; }--></style>
+<style><!--
+body {
+    padding: 0px;
+    margin: 0px;
+    border: 0px;
+}
+.toc_contents_text {
+    padding-left: 1em;
+    text-indent: -1em;
+}
+
+ul.tocSubEntryList li.tocSubEntry {
+    list-style: none;
+}
+
+#colorbox {
+		display: none;
+}
+.spec_sheet_line {
+		margin-bottom: 1px;
+}
+.collapsible {
+		display: none;
+}
+.toc_leadspace {
+		width: 10; min-width: 10;
+}
+.disclosure_triangle_td {
+		width: 14; min-width: 14;
+		font-size: 10px;
+		vertical-align: middle;
+}
+.specbox td {
+		font-size: 13px;
+}
+.specbox td a {
+		font-size: 13px;
+}
+.specbox td code {
+		font-size: 13px;
+}
+.specbox td tt {
+		font-size: 13px;
+}
+.specbox td pre {
+		font-size: 13px;
+}
+.specbox a {
+		font-size: 12px;
+}
+.disclosure_triangle_td a {
+		text-decoration: none;
+}
+.disclosure_triangle_td a:link {
+		text-decoration: none;
+}
+.disclosure_triangle_td a:active {
+		text-decoration: none;
+}
+.disclosure_triangle_td a:visited:hover {
+		text-decoration: none;
+}
+.disclosure_triangle_td a:hover {
+		text-decoration: none;
+}
+.hd_toc_box {
+		padding-top: 10px;
+		padding-right: 15px;
+}.tocSeparator {
+		margin-top: 15px;
+		padding-bottom: 0px;
+		margin-bottom: 0px;
+}
+.tocSubEntryList {
+		margin-left: 0px;
+		padding-left: 40px;
+		padding-top: 0px;
+		margin-top: 2px;
+		padding-bottom: 0px;
+		margin-bottom: 8px;
+}
+.hd_toc_heading_table {
+		margin-top: 2px;
+		margin-bottom: 2px;
+}
+.hd_toc_entry_table {
+		margin-top: 2px;
+		margin-bottom: 2px;
+}
+.tocSubEntry {
+		margin-left: 0px;
+		padding-left: 0px;
+		margin-top: 0px;
+		margin-bottom: 1px;
+}
+.tocSubEntry a {
+		font-size: 10pt;
+}
+.tocSubheading {
+		padding-left: 14px;
+		margin-left: 0px;
+		margin-top: 5px;
+		padding-top: 0px;
+		font-size: 16px;
+		color: #808080;
+}
+
+#hd_outermost_table { margin-left: 0px; border-spacing: 0px; margin-top: 0px; padding-left: 0px; padding-top: 0px; border: none; }
+#hd_outermost_table > tr { border-spacing: 0px; margin-left: 0px; margin-top: 0px; padding-left: 0px; padding-top: 0px; border: none; }
+#hd_outermost_table > tr > td { border-spacing: 0px; margin-left: 0px; margin-top: 0px; }
+#hd_outermost_table > tbody > tr { border-spacing: 0px; margin-left: 0px; margin-top: 0px; padding-left: 0px; padding-top: 0px; border: none; }
+#hd_outermost_table > tbody > tr > td { border-spacing: 0px; margin-left: 0px; margin-top: 0px; padding-top: 3px; }
+
+#tocMenu {
+		border-right: 1px solid #c0c0c0;
+		background-color: #f4f4ff;
+		top:0px;
+		left:0px;
+		width:230px;
+		height:100%;
+}
+#bodyContents {
+		width: auto;
+		padding-left: 15px;
+}
+--></style>
+<style id="disable_before_iOS_5"><!--
+#tocMenu {
+		position: fixed;
+		height: 100%;
+		overflow: auto;
+}
+#bodyContents {
+		width: auto;
+		left: 235px;
+		right: 0;
+		padding-left: 15px;
+		position: fixed;
+		height: 100%;
+		overflow-y: scroll;
+}
+--></style>
+<script language="JavaScript" type="text/javascript"><!--
+    if (navigator.platform && (navigator.platform.match(/iPad/) || navigator.platform.match(/iPhone/) || navigator.platform.match(/iPod/))) {
+        if (navigator.userAgent.match(/OS 1(_\d)+/) ||
+            navigator.userAgent.match(/OS 2(_\d)+/) ||
+            navigator.userAgent.match(/OS 3(_\d)+/) ||
+            navigator.userAgent.match(/OS 4(_\d)+/)) {
+                /* Earlier iOS versions require different scrolling gestures with position: fixed. */
+                var del_style_elt = document.getElementById("disable_before_iOS_5");
+                if (del_style_elt) del_style_elt.parentNode.removeChild(del_style_elt);
+        }
+    }
+// --></script><script language="JavaScript" type="text/javascript"><!--
+function getNewHTTPObject()
+{
+        var xmlhttp;
+
+        /** Special IE only code ... */
+        /*@cc_on
+          @if (@_jscript_version >= 5)
+              try
+              {
+                  xmlhttp = new ActiveXObject('Msxml2.XMLHTTP');
+              }
+              catch (e)
+              {
+                  try
+                  {
+                      xmlhttp = new ActiveXObject('Microsoft.XMLHTTP');
+                  }
+                  catch (E)
+                  {
+                      xmlhttp = false;
+                  }
+             }
+          @else
+             xmlhttp = false;
+        @end @*/
+
+        /** Every other browser on the planet */
+        if (!xmlhttp && typeof XMLHttpRequest != 'undefined')
+        {
+            try
+            {
+                xmlhttp = new XMLHttpRequest();
+            }
+            catch (e)
+            {
+                xmlhttp = false;
+            }
+        }
+
+        return xmlhttp;
+}
+
+function hidetoc() {
+	var toc = document.getElementById('tocMenu');
+	var src = toc.getAttribute('src');
+	var xhr = getNewHTTPObject();
+	xhr.open('GET', src, true);
+	xhr.onreadystatechange = function() {
+		if(xhr.readyState == 4) {
+			var toc = document.getElementById('tocMenu');
+			toc.innerHTML = xhr.responseText;
+		}
+	}
+	xhr.send(null);
+	var origURL = parent.document.URL;
+	var contentURL = origURL.substring(origURL.indexOf('?')+1, origURL.length);
+	if (contentURL.length == origURL.length) {
+		jumpPos = origURL.substring(origURL.indexOf('#')+1, origURL.length);
+	}
+	if (contentURL == "hidetoc") {
+		var body = document.getElementById('bodyContents');
+		if (toc && body) {
+			toc.style.display = 'none';
+			body.style.marginLeft = '0px';
+		}
+	}
+}
+
+function disclosure_triangle(elt) {
+   var linkelt = elt;
+   while (elt && elt.tagName != 'TABLE') { elt = elt.parentNode;}
+   if (!elt) { return; }
+   while (elt && elt.tagName != 'DIV') { elt = elt.nextSibling;}
+   if (!elt) { return; }
+   if (parseInt(linkelt.getAttribute('state'))) {
+      // It's open.  Close it
+      linkelt.innerHTML = '&#x25B7;';
+      linkelt.setAttribute('state', 0);
+      linkelt.setAttribute('class', 'closed_disclosure_triangle');
+      elt.style.display = 'none';
+   } else {
+      // It's closed.  Open it
+      linkelt.innerHTML = '&#x25BC;';
+      linkelt.setAttribute('state', 1);
+      linkelt.setAttribute('class', 'open_disclosure_triangle');
+      elt.style.display = 'block';
+   }
+}
+--></script><style type="text/css"><!--.char {background: #ffffff; color:#0000ff;}.comment {background:#ffffff; color:#236e25}.function {background:#ffffff; color:#000000;}.keyword {background:#ffffff; color:#761550;}.number {background: #ffffff; color:#0000ff;}.param {background:#ffffff; color:#000000;}.preprocessor {background:#ffffff; color:#236e25}.string {background: #ffffff; color:#891315;}.template {background:#ffffff; color:#761550;}.type {background:#ffffff; color:#761550;}.var {background:#ffffff; color:#000000;}body {border: 0px; margin: 0px;}div {font-size: 10pt; text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; color: #000000;}td {font-size: 10pt; text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; color: #000000;}span.hd_tocAccessSpace { display: block; font-size: 1px; height: 3px; min-height: 3px; }span.hd_tocGroupSpace { display: block; font-size: 1px; height: 3px; min-height: 3px; }span.hd_tocGroup { display: block; font-weight: bold; font-size: 10pt; text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; color: #000000; margin-left: 0px; padding-left: 40px; }span.hd_tocGroup + span.hd_tocAccess { padding-top: 5px; }td.toc_contents_text {font-size: 11pt; text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; color: #000000; }li.tocSubEntry {font-size: 11pt; text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; color: #000000;}p {font-size: 10pt; text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; color: #000000;}a:link {text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; color: #36c;}a:visited {text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; color: #36c;}a:visited:hover {text-decoration: underline; font-family: lucida grande, geneva, helvetica, arial, sans-serif; color: #36c;}a:active {text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; color: #36c;}a:hover {text-decoration: underline; font-family: lucida grande, geneva, helvetica, arial, sans-serif; color: #36c;}h2.h2tight { margin-top: 0px; padding-top: 0px; }h1 { margin-top: 13px; padding-top: 0px; }h4 {text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; font-size: tiny; font-weight: bold;}h5 {text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; font-size: 10.1pt; font-weight: bold;}pre {text-decoration: none; font-family: Courier, Consolas, monospace; color: #666; font-size: 10pt;}pre a { font-family: Courier, Consolas, monospace; color: #666;font-size: 10pt;}pre a:link { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}pre a:visited { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}pre a:visited:hover { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}pre a:active { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}pre a:hover { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}code {text-decoration: none; font-family: Courier, Consolas, monospace; color: #666;font-size: 10pt;}code a { font-family: Courier, Consolas, monospace; color: #666;font-size: 10pt;}code a:link { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}code a:visited { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}code a:visited:hover { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}code a:active { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}code a:hover { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}tt {text-decoration: none; font-family: Courier, Consolas, monospace; color: #666;font-size: 10pt;}tt a { font-family: Courier, Consolas, monospace; color: #666;font-size: 10pt;}tt a:link { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}tt a:visited { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}tt a:visited:hover { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}tt a:active { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}tt a:hover { font-family: Courier, Consolas, monospace; color: #36c;font-size: 10pt;}body  {text-decoration: none; font-family: Courier, Consolas, monospace; color: #666;font-size: 10pt; padding-left: 0px; padding-top: 0px; margin-left: 0px; margin-top: 0px; border: none; }#hd_outermost_table { margin-left: 0px; border-spacing: 0px; margin-top: 0px; padding-left: 0px; padding-top: 0px; border: none; }#hd_outermost_table > tr { border-spacing: 0px; margin-left: 0px; margin-top: 0px; padding-left: 0px; padding-top: 0px; border: none; }#hd_outermost_table > tr > td { border-spacing: 0px; margin-left: 0px; margin-top: 0px; }#hd_outermost_table > tbody > tr { border-spacing: 0px; margin-left: 0px; margin-top: 0px; padding-left: 0px; padding-top: 0px; border: none; }#hd_outermost_table > tbody > tr > td { border-spacing: 0px; margin-left: 0px; margin-top: 0px; padding-top: 3px; }.afterName { display: none; }.list_indent { margin-left: 40px; }.declaration_indent { margin-left: 40px; margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px; min-height: 12px; vertical-align: middle; }.declaration_indent pre { margin-top: 20px; padding-top: 0px; margin-bottom: 20px; padding-bottom: 0px; }.gapBeforeFooter { display: none; }hr { height: 0px; min-height: 0px; border-top: none; border-left: none; border-right: none; border-bottom: 1px solid #909090;}hr.afterHeader { display: none }.param_group_indent { margin-left: 25px; }.param_indent { margin-left: 40px; margin-top: 0px; padding-top: 0px; }.param_indent dl { margin-top: 4px; padding-top: 0px; }dl dd > p:first-child { margin-top: 2px; padding-top: 0px; }.param_indent dl dd > p:first-child { margin-top: 2px; padding-top: 0px; }.group_indent { margin-left: 40px; }.group_desc_indent { margin-left: 20px; }.warning_indent { margin-left: 40px; }.important_indent { margin-left: 40px; }.note_indent { margin-left: 40px; }h3 {       color: #3C4C6C;}.tight {       margin-top: 2px; margin-bottom: 0px;       padding-top: 0px; padding-bottom: 0px;}h3 a {       color: #3C4C6C;	font-size: 16px;	font-style: normal;	font-variant: normal;	font-weight: bold;	height: 0px;	line-height: normal;}.hd_tocAccess { display: block; margin-left: 40px; font-style: italic; font-size: 10px; font-weight: normal; color: #303030; }.tocSubheading { margin-bottom: 4px; }--></style>
+</head>
+<body bgcolor="#ffffff" onload="hidetoc();">
+<!-- headerDoc=cl; uid=//apple_ref/occ/cl/mCatalogueDBManager;  name=mCatalogueDBManager-->
+<a name="//apple_ref/occ/cl/mCatalogueDBManager"></a><table id="hd_outermost_table" height="100%" width="100%"><tr>
+<td valign="top" id="tocMenu" src="toc.html"></td>
+<td id="bodyContents" valign="top">
+<a name="top"></a>
+<h1><a name="mCatalogueDBManager">mCatalogueDBManager</a></h1>
+<div class="spec_sheet_info_box"><table cellspacing="0" class="specbox">
+<tr>
+<td scope="row"><b>Superclass:</b></td>
+<td><div style="margin-bottom:1px"><div class="content_text">
+<!-- a logicalPath="//apple_ref/occ/cl/SQLiteManager" machineGenerated="true" -->SQLiteManager<!-- /a -->
+</div></div></td>
+</tr>
+<tr>
+<td scope="row"><b>Declared In:</b></td>
+<td><div style="margin-bottom:1px"><div class="content_text"><a logicalpath="//apple_ref/doc/header/mCatalogueDBManager.h" target="_top" machinegenerated="true" href="../../index.html#//apple_ref/doc/header/mCatalogueDBManager.h">mCatalogueDBManager.h</a></div></div></td>
+</tr>
+</table></div>
+<h2>Introduction</h2>
+<!-- begin discussion --><!-- headerDoc=discussion;uid=//apple_ref/occ/cl/mCatalogueDBManager;name=start --><p>Extention for SQLiteManager for widget Catalogue/Directory
+<!-- headerDoc=discussion;uid=//apple_ref/occ/cl/mCatalogueDBManager;name=end --><!-- end discussion -->
+</p>
+<hr class="afterClassOrHeaderInfo">
+<br><a name="HeaderDoc_methods"></a>
+<h2 class="h2tight">Methods</h2>
+<dl>
+<dt><tt><a href="index.html#//apple_ref/occ/instm/mCatalogueDBManager/beginTransaction" target="_top">-beginTransaction</a></tt></dt>
+<dd></dd>
+<dt><tt><a href="index.html#//apple_ref/occ/instm/mCatalogueDBManager/clearCart" target="_top">-clearCart</a></tt></dt>
+<dd></dd>
+<dt><tt><a href="index.html#//apple_ref/occ/instm/mCatalogueDBManager/commitTransaction" target="_top">-commitTransaction</a></tt></dt>
+<dd></dd>
+<dt><tt><a href="index.html#//apple_ref/occ/instm/mCatalogueDBManager/createTables" target="_top">-createTables</a></tt></dt>
+<dd></dd>
+<dt><tt><a href="index.html#//apple_ref/occ/instm/mCatalogueDBManager/deleteCartItems:" target="_top">-deleteCartItems:</a></tt></dt>
+<dd></dd>
+<dt><tt><a href="index.html#//apple_ref/occ/instm/mCatalogueDBManager/deleteCategories" target="_top">-deleteCategories</a></tt></dt>
+<dd></dd>
+<dt><tt><a href="index.html#//apple_ref/occ/instm/mCatalogueDBManager/deleteCategories:" target="_top">-deleteCategories:</a></tt></dt>
+<dd></dd>
+<dt><tt><a href="index.html#//apple_ref/occ/instm/mCatalogueDBManager/deleteCategoriesWithParentID:" target="_top">-deleteCategoriesWithParentID:</a></tt></dt>
+<dd></dd>
+<dt><tt><a href="index.html#//apple_ref/occ/instm/mCatalogueDBManager/deleteProducts" target="_top">-deleteProducts</a></tt></dt>
+<dd></dd>
+<dt><tt><a href="index.html#//apple_ref/occ/instm/mCatalogueDBManager/deleteProducts:" target="_top">-deleteProducts:</a></tt></dt>
+<dd></dd>
+<dt><tt><a href="index.html#//apple_ref/occ/instm/mCatalogueDBManager/deleteProductsWithParentID:" target="_top">-deleteProductsWithParentID:</a></tt></dt>
+<dd></dd>
+<dt><tt><a href="index.html#//apple_ref/occ/instm/mCatalogueDBManager/insertCartItems:" target="_top">-insertCartItems:</a></tt></dt>
+<dd></dd>
+<dt><tt><a href="index.html#//apple_ref/occ/instm/mCatalogueDBManager/insertCategories:" target="_top">-insertCategories:</a></tt></dt>
+<dd></dd>
+<dt><tt><a href="index.html#//apple_ref/occ/instm/mCatalogueDBManager/insertProducts:" target="_top">-insertProducts:</a></tt></dt>
+<dd></dd>
+<dt><tt><a href="index.html#//apple_ref/occ/instm/mCatalogueDBManager/rewriteCart:" target="_top">-rewriteCart:</a></tt></dt>
+<dd></dd>
+<dt><tt><a href="index.html#//apple_ref/occ/instm/mCatalogueDBManager/searchForToken:" target="_top">-searchForToken:</a></tt></dt>
+<dd></dd>
+<dt><tt><a href="index.html#//apple_ref/occ/instm/mCatalogueDBManager/selectAllCategories" target="_top">-selectAllCategories</a></tt></dt>
+<dd></dd>
+<dt><tt><a href="index.html#//apple_ref/occ/instm/mCatalogueDBManager/selectAllProducts" target="_top">-selectAllProducts</a></tt></dt>
+<dd></dd>
+<dt><tt><a href="index.html#//apple_ref/occ/instm/mCatalogueDBManager/selectCartContents" target="_top">-selectCartContents</a></tt></dt>
+<dd></dd>
+<dt><tt><a href="index.html#//apple_ref/occ/instm/mCatalogueDBManager/selectCategoriesWithParentId:" target="_top">-selectCategoriesWithParentId:</a></tt></dt>
+<dd></dd>
+<dt><tt><a href="index.html#//apple_ref/occ/instm/mCatalogueDBManager/selectProductsForCategoryId:" target="_top">-selectProductsForCategoryId:</a></tt></dt>
+<dd></dd>
+<dt><tt><a href="index.html#//apple_ref/occ/instm/mCatalogueDBManager/selectProductWithUID:" target="_top">-selectProductWithUID:</a></tt></dt>
+<dd></dd>
+</dl>
+<hr class="betweenAPIEntries">
+<!-- headerDoc=instm;  uid=//apple_ref/occ/instm/mCatalogueDBManager/beginTransaction;   name=mCatalogueDBManager::beginTransaction --><a name="//apple_ref/occ/instm/mCatalogueDBManager/beginTransaction"></a>
+<h3><a name="beginTransaction">beginTransaction</a></h3>
+<hr class="afterName">
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/occ/instm/mCatalogueDBManager/beginTransaction;name=start -->- (<!-- a logicalPath="//apple_ref/occ/cl/void //apple_ref/occ/tdef/void //apple_ref/occ/tag/void //apple_ref/occ/struct/void //apple_ref/occ/intf/void //apple_ref/doc/anysymbol/void" machineGenerated="true" --><span class="type">void</span><!-- /a -->)<!-- a logicalPath="//apple_ref/occ/econst/beginTransaction //apple_ref/occ/data/mCatalogueDBManager/beginTransaction //apple_ref/occ/data/beginTransaction //apple_ref/occ/clconst/mCatalogueDBManager/beginTransaction " machineGenerated="true" --><span class="var">beginTransaction</span><!-- /a -->; <!-- headerDoc=declaration;uid=//apple_ref/occ/instm/mCatalogueDBManager/beginTransaction;name=end --></pre>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Discussion</font></h5>
+<!-- begin discussion --><!-- headerDoc=discussion;uid=//apple_ref/occ/instm/mCatalogueDBManager/beginTransaction;name=start --><p>Begin database transaction
+<!-- headerDoc=discussion;uid=//apple_ref/occ/instm/mCatalogueDBManager/beginTransaction;name=end --><!-- end discussion -->
+</p>
+<hr class="betweenAPIEntries">
+<!-- headerDoc=instm;  uid=//apple_ref/occ/instm/mCatalogueDBManager/clearCart;   name=mCatalogueDBManager::clearCart --><a name="//apple_ref/occ/instm/mCatalogueDBManager/clearCart"></a>
+<h3><a name="clearCart">clearCart</a></h3>
+<hr class="afterName">
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/occ/instm/mCatalogueDBManager/clearCart;name=start -->-(<!-- a logicalPath="//apple_ref/occ/cl/void //apple_ref/occ/tdef/void //apple_ref/occ/tag/void //apple_ref/occ/struct/void //apple_ref/occ/intf/void //apple_ref/doc/anysymbol/void" machineGenerated="true" --><span class="type">void</span><!-- /a -->)<!-- a logicalPath="//apple_ref/occ/econst/clearCart //apple_ref/occ/data/mCatalogueDBManager/clearCart //apple_ref/occ/data/clearCart //apple_ref/occ/clconst/mCatalogueDBManager/clearCart " machineGenerated="true" --><span class="var">clearCart</span><!-- /a -->; <!-- headerDoc=declaration;uid=//apple_ref/occ/instm/mCatalogueDBManager/clearCart;name=end --></pre>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Discussion</font></h5>
+<!-- begin discussion --><!-- headerDoc=discussion;uid=//apple_ref/occ/instm/mCatalogueDBManager/clearCart;name=start --><p>Deletes all CartItems that are currently in the Cart
+<!-- headerDoc=discussion;uid=//apple_ref/occ/instm/mCatalogueDBManager/clearCart;name=end --><!-- end discussion -->
+</p>
+<hr class="betweenAPIEntries">
+<!-- headerDoc=instm;  uid=//apple_ref/occ/instm/mCatalogueDBManager/commitTransaction;   name=mCatalogueDBManager::commitTransaction --><a name="//apple_ref/occ/instm/mCatalogueDBManager/commitTransaction"></a>
+<h3><a name="commitTransaction">commitTransaction</a></h3>
+<hr class="afterName">
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/occ/instm/mCatalogueDBManager/commitTransaction;name=start -->- (<!-- a logicalPath="//apple_ref/occ/cl/void //apple_ref/occ/tdef/void //apple_ref/occ/tag/void //apple_ref/occ/struct/void //apple_ref/occ/intf/void //apple_ref/doc/anysymbol/void" machineGenerated="true" --><span class="type">void</span><!-- /a -->)<!-- a logicalPath="//apple_ref/occ/econst/commitTransaction //apple_ref/occ/data/mCatalogueDBManager/commitTransaction //apple_ref/occ/data/commitTransaction //apple_ref/occ/clconst/mCatalogueDBManager/commitTransaction " machineGenerated="true" --><span class="var">commitTransaction</span><!-- /a -->; <!-- headerDoc=declaration;uid=//apple_ref/occ/instm/mCatalogueDBManager/commitTransaction;name=end --></pre>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Discussion</font></h5>
+<!-- begin discussion --><!-- headerDoc=discussion;uid=//apple_ref/occ/instm/mCatalogueDBManager/commitTransaction;name=start --><p>Commit database transaction
+<!-- headerDoc=discussion;uid=//apple_ref/occ/instm/mCatalogueDBManager/commitTransaction;name=end --><!-- end discussion -->
+</p>
+<hr class="betweenAPIEntries">
+<!-- headerDoc=instm;  uid=//apple_ref/occ/instm/mCatalogueDBManager/createTables;   name=mCatalogueDBManager::createTables --><a name="//apple_ref/occ/instm/mCatalogueDBManager/createTables"></a>
+<h3><a name="createTables">createTables</a></h3>
+<hr class="afterName">
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/occ/instm/mCatalogueDBManager/createTables;name=start -->- (<a machinegenerated="true" href="../../../mCatalogueEntryView_h/Classes/mCatalogueEntryView/index.html#//apple_ref/doc/methodparam/mCatalogueEntryView/sizeForStyle:withPlaceholder:/BOOL" logicalPath="//apple_ref/occ/cl/BOOL //apple_ref/occ/tdef/BOOL //apple_ref/occ/tag/BOOL //apple_ref/occ/struct/BOOL //apple_ref/occ/intf/BOOL //apple_ref/doc/anysymbol/BOOL" target="_top"><span class="type">BOOL</span></a>)<!-- a logicalPath="//apple_ref/occ/econst/createTables //apple_ref/occ/data/mCatalogueDBManager/createTables //apple_ref/occ/data/createTables //apple_ref/occ/clconst/mCatalogueDBManager/createTables " machineGenerated="true" --><span class="var">createTables</span><!-- /a -->; <!-- headerDoc=declaration;uid=//apple_ref/occ/instm/mCatalogueDBManager/createTables;name=end --></pre>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Discussion</font></h5>
+<!-- begin discussion --><!-- headerDoc=discussion;uid=//apple_ref/occ/instm/mCatalogueDBManager/createTables;name=start --><p>create all tables in database: categories, products, cart, user profile and relations between them
+<!-- headerDoc=discussion;uid=//apple_ref/occ/instm/mCatalogueDBManager/createTables;name=end --><!-- end discussion -->
+</p>
+<hr class="betweenAPIEntries">
+<!-- headerDoc=instm;  uid=//apple_ref/occ/instm/mCatalogueDBManager/deleteCartItems:;   name=mCatalogueDBManager::deleteCartItems: --><a name="//apple_ref/occ/instm/mCatalogueDBManager/deleteCartItems:"></a>
+<h3><a name="deleteCartItems:">deleteCartItems:</a></h3>
+<hr class="afterName">
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/occ/instm/mCatalogueDBManager/deleteCartItems:;name=start -->-(<a machinegenerated="true" href="../../../mCatalogueEntryView_h/Classes/mCatalogueEntryView/index.html#//apple_ref/doc/methodparam/mCatalogueEntryView/sizeForStyle:withPlaceholder:/BOOL" logicalPath="//apple_ref/occ/cl/BOOL //apple_ref/occ/tdef/BOOL //apple_ref/occ/tag/BOOL //apple_ref/occ/struct/BOOL //apple_ref/occ/intf/BOOL //apple_ref/doc/anysymbol/BOOL" target="_top"><span class="type">BOOL</span></a>)<a machinegenerated="true" href="index.html#//apple_ref/occ/instm/mCatalogueDBManager/deleteCartItems:" logicalPath="//apple_ref/occ/instm/mCatalogueDBManager/deleteCartItems" target="_top"><span class="function">deleteCartItems</span></a>:(<!-- a logicalPath="//apple_ref/occ/cl/NSArray //apple_ref/occ/tdef/NSArray //apple_ref/occ/tag/NSArray //apple_ref/occ/struct/NSArray //apple_ref/occ/intf/NSArray //apple_ref/doc/anysymbol/NSArray" machineGenerated="true" --><span class="type">NSArray</span><!-- /a --> <span class="type">*</span>)<!-- a logicalPath="//apple_ref/occ/econst/productList //apple_ref/occ/data/mCatalogueDBManager/productList //apple_ref/occ/data/productList //apple_ref/occ/clconst/mCatalogueDBManager/productList " machineGenerated="true" --><span class="var">productList</span><!-- /a -->; <!-- headerDoc=declaration;uid=//apple_ref/occ/instm/mCatalogueDBManager/deleteCartItems:;name=end --></pre>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Parameters</font></h5>
+<div class="param_indent">
+<dl>
+<dt>
+<!-- headerDoc=methodparam;  uid=//apple_ref/doc/methodparam/mCatalogueDBManager/deleteCartItems:/productList;   name=deleteCartItems:::productList -->
+<a name="//apple_ref/doc/methodparam/mCatalogueDBManager/deleteCartItems:/productList"></a>
+<code>productList</code>
+</dt>
+<dd><p>- an array of mCatalogueCartItems</p></dd>
+</dl>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Discussion</font></h5>
+<!-- begin discussion --><!-- headerDoc=discussion;uid=//apple_ref/occ/instm/mCatalogueDBManager/deleteCartItems:;name=start --><p>Deletes CartItems from productList from DB
+</p>
+<!-- headerDoc=discussion;uid=//apple_ref/occ/instm/mCatalogueDBManager/deleteCartItems:;name=end --><!-- end discussion -->
+<hr class="betweenAPIEntries">
+<!-- headerDoc=instm;  uid=//apple_ref/occ/instm/mCatalogueDBManager/deleteCategories;   name=mCatalogueDBManager::deleteCategories --><a name="//apple_ref/occ/instm/mCatalogueDBManager/deleteCategories"></a>
+<h3><a name="deleteCategories">deleteCategories</a></h3>
+<hr class="afterName">
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/occ/instm/mCatalogueDBManager/deleteCategories;name=start -->- (<a machinegenerated="true" href="../../../mCatalogueEntryView_h/Classes/mCatalogueEntryView/index.html#//apple_ref/doc/methodparam/mCatalogueEntryView/sizeForStyle:withPlaceholder:/BOOL" logicalPath="//apple_ref/occ/cl/BOOL //apple_ref/occ/tdef/BOOL //apple_ref/occ/tag/BOOL //apple_ref/occ/struct/BOOL //apple_ref/occ/intf/BOOL //apple_ref/doc/anysymbol/BOOL" target="_top"><span class="type">BOOL</span></a>)<!-- a logicalPath="//apple_ref/occ/econst/deleteCategories //apple_ref/occ/data/mCatalogueDBManager/deleteCategories //apple_ref/occ/data/deleteCategories //apple_ref/occ/clconst/mCatalogueDBManager/deleteCategories " machineGenerated="true" --><span class="var">deleteCategories</span><!-- /a -->; <!-- headerDoc=declaration;uid=//apple_ref/occ/instm/mCatalogueDBManager/deleteCategories;name=end --></pre>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Return Value</font></h5>
+<p><!-- begin return value --></p>
+<p>YES - when success, NO - failure occured
+
+<!-- end return value --></p>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Discussion</font></h5>
+<!-- begin discussion --><!-- headerDoc=discussion;uid=//apple_ref/occ/instm/mCatalogueDBManager/deleteCategories;name=start --><p>delete all categories
+</p>
+<!-- headerDoc=discussion;uid=//apple_ref/occ/instm/mCatalogueDBManager/deleteCategories;name=end --><!-- end discussion -->
+<hr class="betweenAPIEntries">
+<!-- headerDoc=instm;  uid=//apple_ref/occ/instm/mCatalogueDBManager/deleteCategories:;   name=mCatalogueDBManager::deleteCategories: --><a name="//apple_ref/occ/instm/mCatalogueDBManager/deleteCategories:"></a>
+<h3><a name="deleteCategories:">deleteCategories:</a></h3>
+<hr class="afterName">
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/occ/instm/mCatalogueDBManager/deleteCategories:;name=start -->- (<a machinegenerated="true" href="../../../mCatalogueEntryView_h/Classes/mCatalogueEntryView/index.html#//apple_ref/doc/methodparam/mCatalogueEntryView/sizeForStyle:withPlaceholder:/BOOL" logicalPath="//apple_ref/occ/cl/BOOL //apple_ref/occ/tdef/BOOL //apple_ref/occ/tag/BOOL //apple_ref/occ/struct/BOOL //apple_ref/occ/intf/BOOL //apple_ref/doc/anysymbol/BOOL" target="_top"><span class="type">BOOL</span></a>)<a machinegenerated="true" href="index.html#//apple_ref/occ/instm/mCatalogueDBManager/deleteCategories:" logicalPath="//apple_ref/occ/instm/mCatalogueDBManager/deleteCategories" target="_top"><span class="function">deleteCategories</span></a>:(<!-- a logicalPath="//apple_ref/occ/cl/NSArray //apple_ref/occ/tdef/NSArray //apple_ref/occ/tag/NSArray //apple_ref/occ/struct/NSArray //apple_ref/occ/intf/NSArray //apple_ref/doc/anysymbol/NSArray" machineGenerated="true" --><span class="type">NSArray</span><!-- /a --> <span class="type">*</span>)<!-- a logicalPath="//apple_ref/occ/econst/categoriesList //apple_ref/occ/data/mCatalogueDBManager/categoriesList //apple_ref/occ/data/categoriesList //apple_ref/occ/clconst/mCatalogueDBManager/categoriesList " machineGenerated="true" --><span class="var">categoriesList</span><!-- /a -->; <!-- headerDoc=declaration;uid=//apple_ref/occ/instm/mCatalogueDBManager/deleteCategories:;name=end --></pre>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Parameters</font></h5>
+<div class="param_indent">
+<dl>
+<dt>
+<!-- headerDoc=methodparam;  uid=//apple_ref/doc/methodparam/mCatalogueDBManager/deleteCategories:/categoriesList;   name=deleteCategories:::categoriesList -->
+<a name="//apple_ref/doc/methodparam/mCatalogueDBManager/deleteCategories:/categoriesList"></a>
+<code>categoriesList</code>
+</dt>
+<dd><p>- list of objects of type &lt;mCatalogueCategory&gt; to remove</p></dd>
+</dl>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Return Value</font></h5>
+<p><!-- begin return value --></p>
+<p>YES - when success, NO - failure occured
+
+<!-- end return value --></p>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Discussion</font></h5>
+<!-- begin discussion --><!-- headerDoc=discussion;uid=//apple_ref/occ/instm/mCatalogueDBManager/deleteCategories:;name=start --><p>delete categories
+</p>
+<!-- headerDoc=discussion;uid=//apple_ref/occ/instm/mCatalogueDBManager/deleteCategories:;name=end --><!-- end discussion -->
+<hr class="betweenAPIEntries">
+<!-- headerDoc=instm;  uid=//apple_ref/occ/instm/mCatalogueDBManager/deleteCategoriesWithParentID:;   name=mCatalogueDBManager::deleteCategoriesWithParentID: --><a name="//apple_ref/occ/instm/mCatalogueDBManager/deleteCategoriesWithParentID:"></a>
+<h3><a name="deleteCategoriesWithParentID:">deleteCategoriesWithParentID:</a></h3>
+<hr class="afterName">
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/occ/instm/mCatalogueDBManager/deleteCategoriesWithParentID:;name=start -->- (<a machinegenerated="true" href="../../../mCatalogueEntryView_h/Classes/mCatalogueEntryView/index.html#//apple_ref/doc/methodparam/mCatalogueEntryView/sizeForStyle:withPlaceholder:/BOOL" logicalPath="//apple_ref/occ/cl/BOOL //apple_ref/occ/tdef/BOOL //apple_ref/occ/tag/BOOL //apple_ref/occ/struct/BOOL //apple_ref/occ/intf/BOOL //apple_ref/doc/anysymbol/BOOL" target="_top"><span class="type">BOOL</span></a>)<a machinegenerated="true" href="index.html#//apple_ref/occ/instm/mCatalogueDBManager/deleteCategoriesWithParentID:" logicalPath="//apple_ref/occ/instm/mCatalogueDBManager/deleteCategoriesWithParentID" target="_top"><span class="function">deleteCategoriesWithParentID</span></a>:(<!-- a logicalPath="//apple_ref/occ/cl/NSInteger //apple_ref/occ/tdef/NSInteger //apple_ref/occ/tag/NSInteger //apple_ref/occ/struct/NSInteger //apple_ref/occ/intf/NSInteger //apple_ref/doc/anysymbol/NSInteger" machineGenerated="true" --><span class="type">NSInteger</span><!-- /a -->)<!-- a logicalPath="//apple_ref/occ/econst/uidParent //apple_ref/occ/data/mCatalogueDBManager/uidParent //apple_ref/occ/data/uidParent //apple_ref/occ/clconst/mCatalogueDBManager/uidParent " machineGenerated="true" --><span class="var">uidParent</span><!-- /a -->; <!-- headerDoc=declaration;uid=//apple_ref/occ/instm/mCatalogueDBManager/deleteCategoriesWithParentID:;name=end --></pre>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Parameters</font></h5>
+<div class="param_indent">
+<dl>
+<dt>
+<!-- headerDoc=methodparam;  uid=//apple_ref/doc/methodparam/mCatalogueDBManager/deleteCategoriesWithParentID:/uidParent;   name=deleteCategoriesWithParentID:::uidParent -->
+<a name="//apple_ref/doc/methodparam/mCatalogueDBManager/deleteCategoriesWithParentID:/uidParent"></a>
+<code>uidParent</code>
+</dt>
+<dd><p>- parent category uid</p></dd>
+</dl>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Return Value</font></h5>
+<p><!-- begin return value --></p>
+<p>YES - when success, NO - failure occured
+
+<!-- end return value --></p>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Discussion</font></h5>
+<!-- begin discussion --><!-- headerDoc=discussion;uid=//apple_ref/occ/instm/mCatalogueDBManager/deleteCategoriesWithParentID:;name=start --><p>deleteCategoriesWithParentID - remove categories with specified parentID
+</p>
+<!-- headerDoc=discussion;uid=//apple_ref/occ/instm/mCatalogueDBManager/deleteCategoriesWithParentID:;name=end --><!-- end discussion -->
+<hr class="betweenAPIEntries">
+<!-- headerDoc=instm;  uid=//apple_ref/occ/instm/mCatalogueDBManager/deleteProducts;   name=mCatalogueDBManager::deleteProducts --><a name="//apple_ref/occ/instm/mCatalogueDBManager/deleteProducts"></a>
+<h3><a name="deleteProducts">deleteProducts</a></h3>
+<hr class="afterName">
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/occ/instm/mCatalogueDBManager/deleteProducts;name=start -->- (<a machinegenerated="true" href="../../../mCatalogueEntryView_h/Classes/mCatalogueEntryView/index.html#//apple_ref/doc/methodparam/mCatalogueEntryView/sizeForStyle:withPlaceholder:/BOOL" logicalPath="//apple_ref/occ/cl/BOOL //apple_ref/occ/tdef/BOOL //apple_ref/occ/tag/BOOL //apple_ref/occ/struct/BOOL //apple_ref/occ/intf/BOOL //apple_ref/doc/anysymbol/BOOL" target="_top"><span class="type">BOOL</span></a>)<!-- a logicalPath="//apple_ref/occ/econst/deleteProducts //apple_ref/occ/data/mCatalogueDBManager/deleteProducts //apple_ref/occ/data/deleteProducts //apple_ref/occ/clconst/mCatalogueDBManager/deleteProducts " machineGenerated="true" --><span class="var">deleteProducts</span><!-- /a -->; <!-- headerDoc=declaration;uid=//apple_ref/occ/instm/mCatalogueDBManager/deleteProducts;name=end --></pre>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Return Value</font></h5>
+<p><!-- begin return value --></p>
+<p>YES - when success, NO - failure occured
+
+<!-- end return value --></p>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Discussion</font></h5>
+<!-- begin discussion --><!-- headerDoc=discussion;uid=//apple_ref/occ/instm/mCatalogueDBManager/deleteProducts;name=start --><p>delete all products
+</p>
+<!-- headerDoc=discussion;uid=//apple_ref/occ/instm/mCatalogueDBManager/deleteProducts;name=end --><!-- end discussion -->
+<hr class="betweenAPIEntries">
+<!-- headerDoc=instm;  uid=//apple_ref/occ/instm/mCatalogueDBManager/deleteProducts:;   name=mCatalogueDBManager::deleteProducts: --><a name="//apple_ref/occ/instm/mCatalogueDBManager/deleteProducts:"></a>
+<h3><a name="deleteProducts:">deleteProducts:</a></h3>
+<hr class="afterName">
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/occ/instm/mCatalogueDBManager/deleteProducts:;name=start -->- (<a machinegenerated="true" href="../../../mCatalogueEntryView_h/Classes/mCatalogueEntryView/index.html#//apple_ref/doc/methodparam/mCatalogueEntryView/sizeForStyle:withPlaceholder:/BOOL" logicalPath="//apple_ref/occ/cl/BOOL //apple_ref/occ/tdef/BOOL //apple_ref/occ/tag/BOOL //apple_ref/occ/struct/BOOL //apple_ref/occ/intf/BOOL //apple_ref/doc/anysymbol/BOOL" target="_top"><span class="type">BOOL</span></a>)<a machinegenerated="true" href="index.html#//apple_ref/occ/instm/mCatalogueDBManager/deleteProductsWithParentID:" logicalPath="//apple_ref/occ/instm/mCatalogueDBManager/deleteProducts" target="_top"><span class="function">deleteProducts</span></a>:(<!-- a logicalPath="//apple_ref/occ/cl/NSArray //apple_ref/occ/tdef/NSArray //apple_ref/occ/tag/NSArray //apple_ref/occ/struct/NSArray //apple_ref/occ/intf/NSArray //apple_ref/doc/anysymbol/NSArray" machineGenerated="true" --><span class="type">NSArray</span><!-- /a --> <span class="type">*</span>)<!-- a logicalPath="//apple_ref/occ/econst/productList //apple_ref/occ/data/mCatalogueDBManager/productList //apple_ref/occ/data/productList //apple_ref/occ/clconst/mCatalogueDBManager/productList " machineGenerated="true" --><span class="var">productList</span><!-- /a -->; <!-- headerDoc=declaration;uid=//apple_ref/occ/instm/mCatalogueDBManager/deleteProducts:;name=end --></pre>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Parameters</font></h5>
+<div class="param_indent">
+<dl>
+<dt>
+<!-- headerDoc=methodparam;  uid=//apple_ref/doc/methodparam/mCatalogueDBManager/deleteProducts:/productList;   name=deleteProducts:::productList -->
+<a name="//apple_ref/doc/methodparam/mCatalogueDBManager/deleteProducts:/productList"></a>
+<code>productList</code>
+</dt>
+<dd><p>- list of objects of type &lt;mCatalogueItem&gt; to remove</p></dd>
+</dl>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Return Value</font></h5>
+<p><!-- begin return value --></p>
+<p>YES - when success, NO - failure occured
+
+<!-- end return value --></p>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Discussion</font></h5>
+<!-- begin discussion --><!-- headerDoc=discussion;uid=//apple_ref/occ/instm/mCatalogueDBManager/deleteProducts:;name=start --><p>delete products
+</p>
+<!-- headerDoc=discussion;uid=//apple_ref/occ/instm/mCatalogueDBManager/deleteProducts:;name=end --><!-- end discussion -->
+<hr class="betweenAPIEntries">
+<!-- headerDoc=instm;  uid=//apple_ref/occ/instm/mCatalogueDBManager/deleteProductsWithParentID:;   name=mCatalogueDBManager::deleteProductsWithParentID: --><a name="//apple_ref/occ/instm/mCatalogueDBManager/deleteProductsWithParentID:"></a>
+<h3><a name="deleteProductsWithParentID:">deleteProductsWithParentID:</a></h3>
+<hr class="afterName">
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/occ/instm/mCatalogueDBManager/deleteProductsWithParentID:;name=start -->- (<a machinegenerated="true" href="../../../mCatalogueEntryView_h/Classes/mCatalogueEntryView/index.html#//apple_ref/doc/methodparam/mCatalogueEntryView/sizeForStyle:withPlaceholder:/BOOL" logicalPath="//apple_ref/occ/cl/BOOL //apple_ref/occ/tdef/BOOL //apple_ref/occ/tag/BOOL //apple_ref/occ/struct/BOOL //apple_ref/occ/intf/BOOL //apple_ref/doc/anysymbol/BOOL" target="_top"><span class="type">BOOL</span></a>)<a machinegenerated="true" href="index.html#//apple_ref/occ/instm/mCatalogueDBManager/deleteProductsWithParentID:" logicalPath="//apple_ref/occ/instm/mCatalogueDBManager/deleteProductsWithParentID" target="_top"><span class="function">deleteProductsWithParentID</span></a>:(<!-- a logicalPath="//apple_ref/occ/cl/NSInteger //apple_ref/occ/tdef/NSInteger //apple_ref/occ/tag/NSInteger //apple_ref/occ/struct/NSInteger //apple_ref/occ/intf/NSInteger //apple_ref/doc/anysymbol/NSInteger" machineGenerated="true" --><span class="type">NSInteger</span><!-- /a -->)<!-- a logicalPath="//apple_ref/occ/econst/uidParent //apple_ref/occ/data/mCatalogueDBManager/uidParent //apple_ref/occ/data/uidParent //apple_ref/occ/clconst/mCatalogueDBManager/uidParent " machineGenerated="true" --><span class="var">uidParent</span><!-- /a -->; <!-- headerDoc=declaration;uid=//apple_ref/occ/instm/mCatalogueDBManager/deleteProductsWithParentID:;name=end --></pre>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Parameters</font></h5>
+<div class="param_indent">
+<dl>
+<dt>
+<!-- headerDoc=methodparam;  uid=//apple_ref/doc/methodparam/mCatalogueDBManager/deleteProductsWithParentID:/uidParent;   name=deleteProductsWithParentID:::uidParent -->
+<a name="//apple_ref/doc/methodparam/mCatalogueDBManager/deleteProductsWithParentID:/uidParent"></a>
+<code>uidParent</code>
+</dt>
+<dd><p>- parent category uid</p></dd>
+</dl>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Return Value</font></h5>
+<p><!-- begin return value --></p>
+<p>YES - when success, NO - failure occured
+
+<!-- end return value --></p>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Discussion</font></h5>
+<!-- begin discussion --><!-- headerDoc=discussion;uid=//apple_ref/occ/instm/mCatalogueDBManager/deleteProductsWithParentID:;name=start --><p>deleteProductsWithParentID - remove products with specified parentID
+</p>
+<!-- headerDoc=discussion;uid=//apple_ref/occ/instm/mCatalogueDBManager/deleteProductsWithParentID:;name=end --><!-- end discussion -->
+<hr class="betweenAPIEntries">
+<!-- headerDoc=instm;  uid=//apple_ref/occ/instm/mCatalogueDBManager/insertCartItems:;   name=mCatalogueDBManager::insertCartItems: --><a name="//apple_ref/occ/instm/mCatalogueDBManager/insertCartItems:"></a>
+<h3><a name="insertCartItems:">insertCartItems:</a></h3>
+<hr class="afterName">
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/occ/instm/mCatalogueDBManager/insertCartItems:;name=start -->-(<a machinegenerated="true" href="../../../mCatalogueEntryView_h/Classes/mCatalogueEntryView/index.html#//apple_ref/doc/methodparam/mCatalogueEntryView/sizeForStyle:withPlaceholder:/BOOL" logicalPath="//apple_ref/occ/cl/BOOL //apple_ref/occ/tdef/BOOL //apple_ref/occ/tag/BOOL //apple_ref/occ/struct/BOOL //apple_ref/occ/intf/BOOL //apple_ref/doc/anysymbol/BOOL" target="_top"><span class="type">BOOL</span></a>)<a machinegenerated="true" href="index.html#//apple_ref/occ/instm/mCatalogueDBManager/insertCartItems:" logicalPath="//apple_ref/occ/instm/mCatalogueDBManager/insertCartItems" target="_top"><span class="function">insertCartItems</span></a>:(<!-- a logicalPath="//apple_ref/occ/cl/NSArray //apple_ref/occ/tdef/NSArray //apple_ref/occ/tag/NSArray //apple_ref/occ/struct/NSArray //apple_ref/occ/intf/NSArray //apple_ref/doc/anysymbol/NSArray" machineGenerated="true" --><span class="type">NSArray</span><!-- /a --> <span class="type">*</span>)<!-- a logicalPath="//apple_ref/occ/econst/products_ //apple_ref/occ/data/mCatalogueDBManager/products_ //apple_ref/occ/data/products_ //apple_ref/occ/clconst/mCatalogueDBManager/products_ " machineGenerated="true" --><span class="var">products_</span><!-- /a -->; <!-- headerDoc=declaration;uid=//apple_ref/occ/instm/mCatalogueDBManager/insertCartItems:;name=end --></pre>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Parameters</font></h5>
+<div class="param_indent">
+<dl>
+<dt>
+<!-- headerDoc=methodparam;  uid=//apple_ref/doc/methodparam/mCatalogueDBManager/insertCartItems:/products_;   name=insertCartItems:::products_ -->
+<a name="//apple_ref/doc/methodparam/mCatalogueDBManager/insertCartItems:/products_"></a>
+<code>products_</code>
+</dt>
+<dd><p>- an array of mCatalogueCartItems</p></dd>
+</dl>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Discussion</font></h5>
+<!-- begin discussion --><!-- headerDoc=discussion;uid=//apple_ref/occ/instm/mCatalogueDBManager/insertCartItems:;name=start --><p>Inserts CartItems from products_ to DB
+</p>
+<!-- headerDoc=discussion;uid=//apple_ref/occ/instm/mCatalogueDBManager/insertCartItems:;name=end --><!-- end discussion -->
+<hr class="betweenAPIEntries">
+<!-- headerDoc=instm;  uid=//apple_ref/occ/instm/mCatalogueDBManager/insertCategories:;   name=mCatalogueDBManager::insertCategories: --><a name="//apple_ref/occ/instm/mCatalogueDBManager/insertCategories:"></a>
+<h3><a name="insertCategories:">insertCategories:</a></h3>
+<hr class="afterName">
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/occ/instm/mCatalogueDBManager/insertCategories:;name=start -->- (<a machinegenerated="true" href="../../../mCatalogueEntryView_h/Classes/mCatalogueEntryView/index.html#//apple_ref/doc/methodparam/mCatalogueEntryView/sizeForStyle:withPlaceholder:/BOOL" logicalPath="//apple_ref/occ/cl/BOOL //apple_ref/occ/tdef/BOOL //apple_ref/occ/tag/BOOL //apple_ref/occ/struct/BOOL //apple_ref/occ/intf/BOOL //apple_ref/doc/anysymbol/BOOL" target="_top"><span class="type">BOOL</span></a>)<a machinegenerated="true" href="index.html#//apple_ref/occ/instm/mCatalogueDBManager/insertCategories:" logicalPath="//apple_ref/occ/instm/mCatalogueDBManager/insertCategories" target="_top"><span class="function">insertCategories</span></a>:(<!-- a logicalPath="//apple_ref/occ/cl/NSArray //apple_ref/occ/tdef/NSArray //apple_ref/occ/tag/NSArray //apple_ref/occ/struct/NSArray //apple_ref/occ/intf/NSArray //apple_ref/doc/anysymbol/NSArray" machineGenerated="true" --><span class="type">NSArray</span><!-- /a --> <span class="type">*</span>)<!-- a logicalPath="//apple_ref/occ/econst/categoryList //apple_ref/occ/data/mCatalogueDBManager/categoryList //apple_ref/occ/data/categoryList //apple_ref/occ/clconst/mCatalogueDBManager/categoryList " machineGenerated="true" --><span class="var">categoryList</span><!-- /a -->; <!-- headerDoc=declaration;uid=//apple_ref/occ/instm/mCatalogueDBManager/insertCategories:;name=end --></pre>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Parameters</font></h5>
+<div class="param_indent">
+<dl>
+<dt>
+<!-- headerDoc=methodparam;  uid=//apple_ref/doc/methodparam/mCatalogueDBManager/insertCategories:/categoryList;   name=insertCategories:::categoryList -->
+<a name="//apple_ref/doc/methodparam/mCatalogueDBManager/insertCategories:/categoryList"></a>
+<code>categoryList</code>
+</dt>
+<dd><p>- category list of elements of type &lt;mCatalogueCategory&gt;</p></dd>
+</dl>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Discussion</font></h5>
+<!-- begin discussion --><!-- headerDoc=discussion;uid=//apple_ref/occ/instm/mCatalogueDBManager/insertCategories:;name=start --><p>insert list of categories into the database
+<!-- headerDoc=discussion;uid=//apple_ref/occ/instm/mCatalogueDBManager/insertCategories:;name=end --><!-- end discussion -->
+</p>
+<hr class="betweenAPIEntries">
+<!-- headerDoc=instm;  uid=//apple_ref/occ/instm/mCatalogueDBManager/insertProducts:;   name=mCatalogueDBManager::insertProducts: --><a name="//apple_ref/occ/instm/mCatalogueDBManager/insertProducts:"></a>
+<h3><a name="insertProducts:">insertProducts:</a></h3>
+<hr class="afterName">
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/occ/instm/mCatalogueDBManager/insertProducts:;name=start -->- (<a machinegenerated="true" href="../../../mCatalogueEntryView_h/Classes/mCatalogueEntryView/index.html#//apple_ref/doc/methodparam/mCatalogueEntryView/sizeForStyle:withPlaceholder:/BOOL" logicalPath="//apple_ref/occ/cl/BOOL //apple_ref/occ/tdef/BOOL //apple_ref/occ/tag/BOOL //apple_ref/occ/struct/BOOL //apple_ref/occ/intf/BOOL //apple_ref/doc/anysymbol/BOOL" target="_top"><span class="type">BOOL</span></a>)<a machinegenerated="true" href="index.html#//apple_ref/occ/instm/mCatalogueDBManager/insertProducts:" logicalPath="//apple_ref/occ/instm/mCatalogueDBManager/insertProducts" target="_top"><span class="function">insertProducts</span></a>:(<!-- a logicalPath="//apple_ref/occ/cl/NSArray //apple_ref/occ/tdef/NSArray //apple_ref/occ/tag/NSArray //apple_ref/occ/struct/NSArray //apple_ref/occ/intf/NSArray //apple_ref/doc/anysymbol/NSArray" machineGenerated="true" --><span class="type">NSArray</span><!-- /a --> <span class="type">*</span>)<!-- a logicalPath="//apple_ref/occ/econst/products_ //apple_ref/occ/data/mCatalogueDBManager/products_ //apple_ref/occ/data/products_ //apple_ref/occ/clconst/mCatalogueDBManager/products_ " machineGenerated="true" --><span class="var">products_</span><!-- /a -->; <!-- headerDoc=declaration;uid=//apple_ref/occ/instm/mCatalogueDBManager/insertProducts:;name=end --></pre>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Parameters</font></h5>
+<div class="param_indent">
+<dl>
+<dt>
+<!-- headerDoc=methodparam;  uid=//apple_ref/doc/methodparam/mCatalogueDBManager/insertProducts:/products_;   name=insertProducts:::products_ -->
+<a name="//apple_ref/doc/methodparam/mCatalogueDBManager/insertProducts:/products_"></a>
+<code>products_</code>
+</dt>
+<dd><p>- product list of type &lt;mCatalogueItem&gt; (add or update)</p></dd>
+</dl>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Return Value</font></h5>
+<p><!-- begin return value --></p>
+<p>YES - success, NO - failure
+
+<!-- end return value --></p>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Discussion</font></h5>
+<!-- begin discussion --><!-- headerDoc=discussion;uid=//apple_ref/occ/instm/mCatalogueDBManager/insertProducts:;name=start --><p>insert products into database
+</p>
+<!-- headerDoc=discussion;uid=//apple_ref/occ/instm/mCatalogueDBManager/insertProducts:;name=end --><!-- end discussion -->
+<hr class="betweenAPIEntries">
+<!-- headerDoc=instm;  uid=//apple_ref/occ/instm/mCatalogueDBManager/rewriteCart:;   name=mCatalogueDBManager::rewriteCart: --><a name="//apple_ref/occ/instm/mCatalogueDBManager/rewriteCart:"></a>
+<h3><a name="rewriteCart:">rewriteCart:</a></h3>
+<hr class="afterName">
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/occ/instm/mCatalogueDBManager/rewriteCart:;name=start -->-(<!-- a logicalPath="//apple_ref/occ/cl/void //apple_ref/occ/tdef/void //apple_ref/occ/tag/void //apple_ref/occ/struct/void //apple_ref/occ/intf/void //apple_ref/doc/anysymbol/void" machineGenerated="true" --><span class="type">void</span><!-- /a -->)<a machinegenerated="true" href="index.html#//apple_ref/occ/instm/mCatalogueDBManager/rewriteCart:" logicalPath="//apple_ref/occ/instm/mCatalogueDBManager/rewriteCart" target="_top"><span class="function">rewriteCart</span></a>:(<a machinegenerated="true" href="../../../mCatalogueCart_h/Classes/mCatalogueCart/index.html#//apple_ref/occ/cl/mCatalogueCart" logicalPath="//apple_ref/occ/cl/mCatalogueCart" target="_top"><span class="type">mCatalogueCart</span></a> <span class="type">*</span>)<!-- a logicalPath="//apple_ref/occ/econst/cart //apple_ref/occ/data/mCatalogueDBManager/cart //apple_ref/occ/data/cart //apple_ref/occ/clconst/mCatalogueDBManager/cart " machineGenerated="true" --><span class="var">cart</span><!-- /a -->; <!-- headerDoc=declaration;uid=//apple_ref/occ/instm/mCatalogueDBManager/rewriteCart:;name=end --></pre>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Discussion</font></h5>
+<!-- begin discussion --><!-- headerDoc=discussion;uid=//apple_ref/occ/instm/mCatalogueDBManager/rewriteCart:;name=start --><p>Clears the current Cart and writes items of the provided one
+<!-- headerDoc=discussion;uid=//apple_ref/occ/instm/mCatalogueDBManager/rewriteCart:;name=end --><!-- end discussion -->
+</p>
+<p><b>See</b></p>
+<div class="list_indent"><dl>
+<dt><p><a href="index.html#//apple_ref/occ/instm/mCatalogueDBManager/clearCart" logicalPath="//apple_ref/occ/instm/mCatalogueDBManager/clearCart" target="_top">clearCart</a></p></dt>
+<dd></dd>
+</dl></div>
+<hr class="betweenAPIEntries">
+<!-- headerDoc=instm;  uid=//apple_ref/occ/instm/mCatalogueDBManager/searchForToken:;   name=mCatalogueDBManager::searchForToken: --><a name="//apple_ref/occ/instm/mCatalogueDBManager/searchForToken:"></a>
+<h3><a name="searchForToken:">searchForToken:</a></h3>
+<hr class="afterName">
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/occ/instm/mCatalogueDBManager/searchForToken:;name=start -->- (<!-- a logicalPath="//apple_ref/occ/cl/mCatalogueDBSearchResult //apple_ref/occ/tdef/mCatalogueDBSearchResult //apple_ref/occ/tag/mCatalogueDBSearchResult //apple_ref/occ/struct/mCatalogueDBSearchResult //apple_ref/occ/intf/mCatalogueDBSearchResult //apple_ref/doc/anysymbol/mCatalogueDBSearchResult" machineGenerated="true" --><span class="type">mCatalogueDBSearchResult</span><!-- /a -->)<a machinegenerated="true" href="index.html#//apple_ref/occ/instm/mCatalogueDBManager/searchForToken:" logicalPath="//apple_ref/occ/instm/mCatalogueDBManager/searchForToken" target="_top"><span class="function">searchForToken</span></a>:(<!-- a logicalPath="//apple_ref/occ/cl/NSString //apple_ref/occ/tdef/NSString //apple_ref/occ/tag/NSString //apple_ref/occ/struct/NSString //apple_ref/occ/intf/NSString //apple_ref/doc/anysymbol/NSString" machineGenerated="true" --><span class="type">NSString</span><!-- /a --> <span class="type">*</span>)<!-- a logicalPath="//apple_ref/occ/econst/token //apple_ref/occ/data/mCatalogueDBManager/token //apple_ref/occ/data/token //apple_ref/occ/clconst/mCatalogueDBManager/token " machineGenerated="true" --><span class="var">token</span><!-- /a -->; <!-- headerDoc=declaration;uid=//apple_ref/occ/instm/mCatalogueDBManager/searchForToken:;name=end --></pre>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Parameters</font></h5>
+<div class="param_indent">
+<dl>
+<dt>
+<!-- headerDoc=methodparam;  uid=//apple_ref/doc/methodparam/mCatalogueDBManager/searchForToken:/token;   name=searchForToken:::token -->
+<a name="//apple_ref/doc/methodparam/mCatalogueDBManager/searchForToken:/token"></a>
+<code>token</code>
+</dt>
+<dd><p>- some string to search for</p></dd>
+</dl>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Return Value</font></h5>
+<p><!-- begin return value --></p>
+<p>struct mCatalogueDBSearchResult, with NSArray of mCatalogueCategory and NSArray of mCatalogueItem -- the found elements
+
+<!-- end return value --></p>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Discussion</font></h5>
+<!-- begin discussion --><!-- headerDoc=discussion;uid=//apple_ref/occ/instm/mCatalogueDBManager/searchForToken:;name=start --><p>Performs LIKE search on categories and products
+</p>
+<!-- headerDoc=discussion;uid=//apple_ref/occ/instm/mCatalogueDBManager/searchForToken:;name=end --><!-- end discussion -->
+<hr class="betweenAPIEntries">
+<!-- headerDoc=instm;  uid=//apple_ref/occ/instm/mCatalogueDBManager/selectAllCategories;   name=mCatalogueDBManager::selectAllCategories --><a name="//apple_ref/occ/instm/mCatalogueDBManager/selectAllCategories"></a>
+<h3><a name="selectAllCategories">selectAllCategories</a></h3>
+<hr class="afterName">
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/occ/instm/mCatalogueDBManager/selectAllCategories;name=start -->- (<!-- a logicalPath="//apple_ref/occ/cl/NSArray //apple_ref/occ/tdef/NSArray //apple_ref/occ/tag/NSArray //apple_ref/occ/struct/NSArray //apple_ref/occ/intf/NSArray //apple_ref/doc/anysymbol/NSArray" machineGenerated="true" --><span class="type">NSArray</span><!-- /a --> <span class="type">*</span>)<!-- a logicalPath="//apple_ref/occ/econst/selectAllCategories //apple_ref/occ/data/mCatalogueDBManager/selectAllCategories //apple_ref/occ/data/selectAllCategories //apple_ref/occ/clconst/mCatalogueDBManager/selectAllCategories " machineGenerated="true" --><span class="var">selectAllCategories</span><!-- /a -->; <!-- headerDoc=declaration;uid=//apple_ref/occ/instm/mCatalogueDBManager/selectAllCategories;name=end --></pre>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Return Value</font></h5>
+<p><!-- begin return value --></p>
+<p>list of objects of type &lt;mCatalogueCategory&gt;
+
+<!-- end return value --></p>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Discussion</font></h5>
+<!-- begin discussion --><!-- headerDoc=discussion;uid=//apple_ref/occ/instm/mCatalogueDBManager/selectAllCategories;name=start --><p>selects all categories
+</p>
+<!-- headerDoc=discussion;uid=//apple_ref/occ/instm/mCatalogueDBManager/selectAllCategories;name=end --><!-- end discussion -->
+<hr class="betweenAPIEntries">
+<!-- headerDoc=instm;  uid=//apple_ref/occ/instm/mCatalogueDBManager/selectAllProducts;   name=mCatalogueDBManager::selectAllProducts --><a name="//apple_ref/occ/instm/mCatalogueDBManager/selectAllProducts"></a>
+<h3><a name="selectAllProducts">selectAllProducts</a></h3>
+<hr class="afterName">
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/occ/instm/mCatalogueDBManager/selectAllProducts;name=start -->- (<!-- a logicalPath="//apple_ref/occ/cl/NSArray //apple_ref/occ/tdef/NSArray //apple_ref/occ/tag/NSArray //apple_ref/occ/struct/NSArray //apple_ref/occ/intf/NSArray //apple_ref/doc/anysymbol/NSArray" machineGenerated="true" --><span class="type">NSArray</span><!-- /a --> <span class="type">*</span>)<!-- a logicalPath="//apple_ref/occ/econst/selectAllProducts //apple_ref/occ/data/mCatalogueDBManager/selectAllProducts //apple_ref/occ/data/selectAllProducts //apple_ref/occ/clconst/mCatalogueDBManager/selectAllProducts " machineGenerated="true" --><span class="var">selectAllProducts</span><!-- /a -->; <!-- headerDoc=declaration;uid=//apple_ref/occ/instm/mCatalogueDBManager/selectAllProducts;name=end --></pre>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Return Value</font></h5>
+<p><!-- begin return value --></p>
+<p>list of objects of type &lt;mCatalogueItem&gt;
+
+<!-- end return value --></p>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Discussion</font></h5>
+<!-- begin discussion --><!-- headerDoc=discussion;uid=//apple_ref/occ/instm/mCatalogueDBManager/selectAllProducts;name=start --><p>selects all products
+</p>
+<!-- headerDoc=discussion;uid=//apple_ref/occ/instm/mCatalogueDBManager/selectAllProducts;name=end --><!-- end discussion -->
+<hr class="betweenAPIEntries">
+<!-- headerDoc=instm;  uid=//apple_ref/occ/instm/mCatalogueDBManager/selectCartContents;   name=mCatalogueDBManager::selectCartContents --><a name="//apple_ref/occ/instm/mCatalogueDBManager/selectCartContents"></a>
+<h3><a name="selectCartContents">selectCartContents</a></h3>
+<hr class="afterName">
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/occ/instm/mCatalogueDBManager/selectCartContents;name=start -->-(<a machinegenerated="true" href="../../../mCatalogueCart_h/Classes/mCatalogueCart/index.html#//apple_ref/occ/cl/mCatalogueCart" logicalPath="//apple_ref/occ/cl/mCatalogueCart" target="_top"><span class="type">mCatalogueCart</span></a> <span class="type">*</span>)<!-- a logicalPath="//apple_ref/occ/econst/selectCartContents //apple_ref/occ/data/mCatalogueDBManager/selectCartContents //apple_ref/occ/data/selectCartContents //apple_ref/occ/clconst/mCatalogueDBManager/selectCartContents " machineGenerated="true" --><span class="var">selectCartContents</span><!-- /a -->; <!-- headerDoc=declaration;uid=//apple_ref/occ/instm/mCatalogueDBManager/selectCartContents;name=end --></pre>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Discussion</font></h5>
+<!-- begin discussion --><!-- headerDoc=discussion;uid=//apple_ref/occ/instm/mCatalogueDBManager/selectCartContents;name=start --><p>Selects all CartItems that are currently in the Cart
+<!-- headerDoc=discussion;uid=//apple_ref/occ/instm/mCatalogueDBManager/selectCartContents;name=end --><!-- end discussion -->
+</p>
+<hr class="betweenAPIEntries">
+<!-- headerDoc=instm;  uid=//apple_ref/occ/instm/mCatalogueDBManager/selectCategoriesWithParentId:;   name=mCatalogueDBManager::selectCategoriesWithParentId: --><a name="//apple_ref/occ/instm/mCatalogueDBManager/selectCategoriesWithParentId:"></a>
+<h3><a name="selectCategoriesWithParentId:">selectCategoriesWithParentId:</a></h3>
+<hr class="afterName">
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/occ/instm/mCatalogueDBManager/selectCategoriesWithParentId:;name=start -->- (<!-- a logicalPath="//apple_ref/occ/cl/NSArray //apple_ref/occ/tdef/NSArray //apple_ref/occ/tag/NSArray //apple_ref/occ/struct/NSArray //apple_ref/occ/intf/NSArray //apple_ref/doc/anysymbol/NSArray" machineGenerated="true" --><span class="type">NSArray</span><!-- /a --> <span class="type">*</span>)<a machinegenerated="true" href="index.html#//apple_ref/occ/instm/mCatalogueDBManager/selectCategoriesWithParentId:" logicalPath="//apple_ref/occ/instm/mCatalogueDBManager/selectCategoriesWithParentId" target="_top"><span class="function">selectCategoriesWithParentId</span></a>:(<!-- a logicalPath="//apple_ref/occ/cl/NSInteger //apple_ref/occ/tdef/NSInteger //apple_ref/occ/tag/NSInteger //apple_ref/occ/struct/NSInteger //apple_ref/occ/intf/NSInteger //apple_ref/doc/anysymbol/NSInteger" machineGenerated="true" --><span class="type">NSInteger</span><!-- /a -->)<!-- a logicalPath="//apple_ref/occ/econst/uidParent //apple_ref/occ/data/mCatalogueDBManager/uidParent //apple_ref/occ/data/uidParent //apple_ref/occ/clconst/mCatalogueDBManager/uidParent " machineGenerated="true" --><span class="var">uidParent</span><!-- /a -->; <!-- headerDoc=declaration;uid=//apple_ref/occ/instm/mCatalogueDBManager/selectCategoriesWithParentId:;name=end --></pre>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Parameters</font></h5>
+<div class="param_indent">
+<dl>
+<dt>
+<!-- headerDoc=methodparam;  uid=//apple_ref/doc/methodparam/mCatalogueDBManager/selectCategoriesWithParentId:/uidParent;   name=selectCategoriesWithParentId:::uidParent -->
+<a name="//apple_ref/doc/methodparam/mCatalogueDBManager/selectCategoriesWithParentId:/uidParent"></a>
+<code>uidParent</code>
+</dt>
+<dd><p>- category's parent uid</p></dd>
+</dl>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Return Value</font></h5>
+<p><!-- begin return value --></p>
+<p>list of objects of type &lt;mCatalogueCategory&gt;
+
+<!-- end return value --></p>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Discussion</font></h5>
+<!-- begin discussion --><!-- headerDoc=discussion;uid=//apple_ref/occ/instm/mCatalogueDBManager/selectCategoriesWithParentId:;name=start --><p>selects all categories with specified parent id
+</p>
+<!-- headerDoc=discussion;uid=//apple_ref/occ/instm/mCatalogueDBManager/selectCategoriesWithParentId:;name=end --><!-- end discussion -->
+<hr class="betweenAPIEntries">
+<!-- headerDoc=instm;  uid=//apple_ref/occ/instm/mCatalogueDBManager/selectProductsForCategoryId:;   name=mCatalogueDBManager::selectProductsForCategoryId: --><a name="//apple_ref/occ/instm/mCatalogueDBManager/selectProductsForCategoryId:"></a>
+<h3><a name="selectProductsForCategoryId:">selectProductsForCategoryId:</a></h3>
+<hr class="afterName">
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/occ/instm/mCatalogueDBManager/selectProductsForCategoryId:;name=start -->- (<!-- a logicalPath="//apple_ref/occ/cl/NSArray //apple_ref/occ/tdef/NSArray //apple_ref/occ/tag/NSArray //apple_ref/occ/struct/NSArray //apple_ref/occ/intf/NSArray //apple_ref/doc/anysymbol/NSArray" machineGenerated="true" --><span class="type">NSArray</span><!-- /a --> <span class="type">*</span>)<a machinegenerated="true" href="index.html#//apple_ref/occ/instm/mCatalogueDBManager/selectProductsForCategoryId:" logicalPath="//apple_ref/occ/instm/mCatalogueDBManager/selectProductsForCategoryId" target="_top"><span class="function">selectProductsForCategoryId</span></a>:(<!-- a logicalPath="//apple_ref/occ/cl/NSInteger //apple_ref/occ/tdef/NSInteger //apple_ref/occ/tag/NSInteger //apple_ref/occ/struct/NSInteger //apple_ref/occ/intf/NSInteger //apple_ref/doc/anysymbol/NSInteger" machineGenerated="true" --><span class="type">NSInteger</span><!-- /a -->)<!-- a logicalPath="//apple_ref/occ/econst/uidCategory //apple_ref/occ/data/mCatalogueDBManager/uidCategory //apple_ref/occ/data/uidCategory //apple_ref/occ/clconst/mCatalogueDBManager/uidCategory " machineGenerated="true" --><span class="var">uidCategory</span><!-- /a -->; <!-- headerDoc=declaration;uid=//apple_ref/occ/instm/mCatalogueDBManager/selectProductsForCategoryId:;name=end --></pre>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Parameters</font></h5>
+<div class="param_indent">
+<dl>
+<dt>
+<!-- headerDoc=methodparam;  uid=//apple_ref/doc/methodparam/mCatalogueDBManager/selectProductsForCategoryId:/uidCategory;   name=selectProductsForCategoryId:::uidCategory -->
+<a name="//apple_ref/doc/methodparam/mCatalogueDBManager/selectProductsForCategoryId:/uidCategory"></a>
+<code>uidCategory</code>
+</dt>
+<dd><p>- category uid</p></dd>
+</dl>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Return Value</font></h5>
+<p><!-- begin return value --></p>
+<p>sorted list of objects of type &lt;mCatalogueItem&gt;
+
+<!-- end return value --></p>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Discussion</font></h5>
+<!-- begin discussion --><!-- headerDoc=discussion;uid=//apple_ref/occ/instm/mCatalogueDBManager/selectProductsForCategoryId:;name=start --><p>selects all products for specified category
+</p>
+<!-- headerDoc=discussion;uid=//apple_ref/occ/instm/mCatalogueDBManager/selectProductsForCategoryId:;name=end --><!-- end discussion -->
+<hr class="betweenAPIEntries">
+<!-- headerDoc=instm;  uid=//apple_ref/occ/instm/mCatalogueDBManager/selectProductWithUID:;   name=mCatalogueDBManager::selectProductWithUID: --><a name="//apple_ref/occ/instm/mCatalogueDBManager/selectProductWithUID:"></a>
+<h3><a name="selectProductWithUID:">selectProductWithUID:</a></h3>
+<hr class="afterName">
+<div class="declaration_indent">
+<pre><!-- headerDoc=declaration;uid=//apple_ref/occ/instm/mCatalogueDBManager/selectProductWithUID:;name=start -->- (<a machinegenerated="true" href="../../../mCatalogueOrder_h/Classes/mCatalogueItem/index.html#//apple_ref/occ/cl/mCatalogueItem" logicalPath="//apple_ref/occ/cl/mCatalogueItem" target="_top"><span class="type">mCatalogueItem</span></a> <span class="type">*</span>)<a machinegenerated="true" href="index.html#//apple_ref/occ/instm/mCatalogueDBManager/selectProductWithUID:" logicalPath="//apple_ref/occ/instm/mCatalogueDBManager/selectProductWithUID" target="_top"><span class="function">selectProductWithUID</span></a>:(<!-- a logicalPath="//apple_ref/occ/cl/NSString //apple_ref/occ/tdef/NSString //apple_ref/occ/tag/NSString //apple_ref/occ/struct/NSString //apple_ref/occ/intf/NSString //apple_ref/doc/anysymbol/NSString" machineGenerated="true" --><span class="type">NSString</span><!-- /a --> <span class="type">*</span>)<!-- a logicalPath="//apple_ref/occ/econst/uid //apple_ref/occ/data/mCatalogueDBManager/uid //apple_ref/occ/data/uid //apple_ref/occ/clconst/mCatalogueDBManager/uid " machineGenerated="true" --><span class="var">uid</span><!-- /a -->; <!-- headerDoc=declaration;uid=//apple_ref/occ/instm/mCatalogueDBManager/selectProductWithUID:;name=end --></pre>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Parameters</font></h5>
+<div class="param_indent">
+<dl>
+<dt>
+<!-- headerDoc=methodparam;  uid=//apple_ref/doc/methodparam/mCatalogueDBManager/selectProductWithUID:/uidParent;   name=selectProductWithUID:::uidParent -->
+<a name="//apple_ref/doc/methodparam/mCatalogueDBManager/selectProductWithUID:/uidParent"></a>
+<code>uidParent</code>
+</dt>
+<dd><p>- product's parent uid</p></dd>
+</dl>
+</div>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Return Value</font></h5>
+<p><!-- begin return value --></p>
+<p>object of type &lt;mCatalogueItem&gt;
+
+<!-- end return value --></p>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Discussion</font></h5>
+<!-- begin discussion --><!-- headerDoc=discussion;uid=//apple_ref/occ/instm/mCatalogueDBManager/selectProductWithUID:;name=start --><p>selects product with specified parent id
+</p>
+<!-- headerDoc=discussion;uid=//apple_ref/occ/instm/mCatalogueDBManager/selectProductWithUID:;name=end --><!-- end discussion -->
+<p class="gapBeforeFooter">&nbsp;</p>
+<hr class="afterFooter">
+<div class="hd_copyright_and_timestamp">
+<p class="hd_timestamp">Last Updated: Monday, July 27, 2015
+</p>
+</div>
+</td>
+</tr></table>
+</body>
+</html>
