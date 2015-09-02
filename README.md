@@ -1,4 +1,4 @@
-# ios_module_Catalog
+# iOS module Catalog
 Catalog module is intended for displaying of n-level catalog. All elements can be separated using categories. Categories can be displayed in list view or grid view.
 
 **XML Structure declaration**
