@@ -39,7 +39,7 @@ count = _count;
   {
     _item  = nil;
     _count = 1;
-    _totalPrice = [[NSDecimalNumber decimalNumberWithString:@"0"] retain];
+    _totalPrice = [NSDecimalNumber decimalNumberWithString:@"0"];
   }
   return self;
 }
@@ -47,13 +47,7 @@ count = _count;
 - (void)dealloc
 {
   self.item = nil;
-  
-  if(_totalPrice){
-    [_totalPrice release];
     _totalPrice = nil;
-  }
-  
-  [super dealloc];
 }
 
 - (NSDictionary *)jsonDictionary
@@ -73,7 +67,6 @@ count = _count;
   [mutableResult setObject:[NSNumber numberWithInteger:self.count] forKey:@"qty"];
   
   NSDictionary *result = [NSDictionary dictionaryWithDictionary:mutableResult];
-  [mutableResult release];
   return result;
 }
 
@@ -150,10 +143,7 @@ count = _count;
   NSDecimalNumber *newTotalPrice = [self.item.price decimalNumberByMultiplyingBy:
                                       [NSDecimalNumber decimalNumberWithString:@(self.count).stringValue]];
   
-  if(_totalPrice){
-    [_totalPrice release];
-  }
-  _totalPrice = [newTotalPrice retain];
+  _totalPrice = newTotalPrice;
   
   return _totalPrice;
 }
@@ -161,7 +151,7 @@ count = _count;
 - (IBPCartItem *)asIBPCartItem
 {
   IBPItem *ibpItem = [self.item asIBPItem];
-  IBPCartItem *ibpCartItem = [[[IBPCartItem alloc] initWithItem:ibpItem count:self.count] autorelease];
+  IBPCartItem *ibpCartItem = [[IBPCartItem alloc] initWithItem:ibpItem count:self.count];
   
   return ibpCartItem;
 }

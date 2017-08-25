@@ -12,6 +12,7 @@
 
 
 #import <UIKit/UIKit.h>
+#import "IBSideBar/IBSideBarModuleAction.h"
 
 extern NSString *const mCatalogueCartButtonCartCountNotification;
 
@@ -29,6 +30,7 @@ extern NSString *const mCatalogueCartButtonCartCountNotification;
 @interface mCatalogueCartButton : UIButton
   @property(nonatomic, readonly) mCatalogueCartRoundedCornerLabel *countLabel;
   @property(nonatomic, assign  ) NSUInteger                        count;
+  @property(nonatomic, readonly) IBSideBarModuleAction            *sideBarModuleAction;
 
   -(id)initWithFrame:(CGRect)frame;
 

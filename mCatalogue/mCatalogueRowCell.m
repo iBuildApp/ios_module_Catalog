@@ -43,9 +43,7 @@
 -(void)setCatalogueEntryView:(mCatalogueEntryView *)catalogueEntryView
 {
   if(_catalogueEntryView != catalogueEntryView){
-    [catalogueEntryView retain];
     [_catalogueEntryView removeFromSuperview];
-    [_catalogueEntryView release];
     _catalogueEntryView = catalogueEntryView;
     
     [self addSubview:_catalogueEntryView];
@@ -56,7 +54,6 @@
 -(void)dealloc
 {
   self.catalogueEntryView = nil;
-  [super dealloc];
 }
 
 @end

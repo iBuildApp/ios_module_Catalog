@@ -106,3 +106,6 @@
 "mCatalogue_ITEMS_IN_YOUR_CART%@##{few}" = "В корзине %@ товара";
 "mCatalogue_ITEMS_IN_YOUR_CART%@##{many}" = "В корзине %@ товаров";
 "mCatalogue_ITEMS_IN_YOUR_CART%@##{other}" = "В корзине %@ товаров";
+
+"mCatalogue_SideBarCartActionLabel" = "Корзина";
+"mCatalogue_SKU"   = "Артикул";

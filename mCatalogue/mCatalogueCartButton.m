@@ -37,7 +37,6 @@ NSString *const mCatalogueCartButtonCartCountNotification = @"mCatalogueCartButt
 - (void)dealloc
 {
   self.borderColor = nil;
-  [super dealloc];
 }
 
 - (void)drawRect:(CGRect)rect
@@ -71,6 +70,13 @@ NSString *const mCatalogueCartButtonCartCountNotification = @"mCatalogueCartButt
 {
   [super layoutSubviews];
   [self setNeedsDisplay];
+}
+
+@end
+
+@interface mCatalogueCartButton()
+{
+  IBSideBarModuleAction *_sideBarModuleAction;
 }
 
 @end
@@ -122,8 +128,7 @@ NSString *const mCatalogueCartButtonCartCountNotification = @"mCatalogueCartButt
                                                   name:mCatalogueCartButtonCartCountNotification
                                                 object:nil];
   [_countLabel removeFromSuperview];
-  [_countLabel release];
-  [super dealloc];
+    _countLabel = nil;
 }
 
 - (mCatalogueCartRoundedCornerLabel *)countLabel
@@ -142,7 +147,13 @@ NSString *const mCatalogueCartButtonCartCountNotification = @"mCatalogueCartButt
   if ( _count != count_ )
   {
     _count = count_;
+    
     self.countLabel.text = _count ? [[NSNumber numberWithInteger:_count] stringValue] : @"";
+    
+    if(_sideBarModuleAction){
+      [self updateCartActionLabel];
+    }
+    
     [self setNeedsLayout];
   }
 }
@@ -164,9 +175,14 @@ NSString *const mCatalogueCartButtonCartCountNotification = @"mCatalogueCartButt
     CGSize maxSize = CGSizeMake( CGRectGetWidth(frm) - paddingX,
                                  CGRectGetHeight(frm) - kButtonTitleTopMargin - kButtonTitleBottomMargin );
     
-    CGSize expectedLabelSize = [_countLabel.text sizeWithFont:_countLabel.font
-                                            constrainedToSize:maxSize
-                                                lineBreakMode:_countLabel.lineBreakMode];
+    //CGSize expectedLabelSize = [_countLabel.text sizeWithFont:_countLabel.font constrainedToSize:maxSize lineBreakMode:_countLabel.lineBreakMode];
+      NSMutableParagraphStyle *paragraph = [[NSMutableParagraphStyle alloc] init];
+      paragraph.lineBreakMode = _countLabel.lineBreakMode;
+      CGRect rect = [_countLabel.text boundingRectWithSize:maxSize
+                                       options:NSStringDrawingUsesLineFragmentOrigin
+                                    attributes:@{ NSFontAttributeName: _countLabel.font, NSParagraphStyleAttributeName: paragraph }
+                                       context:nil];
+      CGSize expectedLabelSize = CGSizeMake(ceilf(rect.size.width), ceilf(rect.size.height));
     
     CGFloat titleWidth  = ceilf(expectedLabelSize.width) + paddingX;
     
@@ -182,7 +198,46 @@ NSString *const mCatalogueCartButtonCartCountNotification = @"mCatalogueCartButt
 {
   id obj = [notification object];
   if ( [obj isKindOfClass:[NSNumber class]] )
+  {
     self.count = [((NSNumber *)[notification object]) integerValue];
+  }
+}
+
+#pragma mark - IBSideBar
+-(IBSideBarModuleAction *)sideBarModuleAction
+{
+  if(!_sideBarModuleAction)
+  {
+    _sideBarModuleAction = [[self class] sharedAction];
+    [self updateCartActionLabel];
+  }
+  
+  return _sideBarModuleAction;
+}
+
+-(void)updateCartActionLabel
+{
+  NSMutableString *label = [NSMutableString stringWithString:NSBundleLocalizedString(@"mCatalogue_SideBarCartActionLabel", @"Cart")];
+  
+  if(_count)
+  {
+    [label appendFormat:@" (%lu)", (long unsigned) _count];
+  }
+  
+  self.sideBarModuleAction.label = label;
+}
+
++(IBSideBarModuleAction *)sharedAction
+{
+  static IBSideBarModuleAction *sharedAction = nil;
+  
+  static dispatch_once_t onceToken = 0;
+  
+  dispatch_once(&onceToken, ^{
+    sharedAction = [[IBSideBarModuleAction alloc] init];
+  });
+  
+  return sharedAction;
 }
 
 @end

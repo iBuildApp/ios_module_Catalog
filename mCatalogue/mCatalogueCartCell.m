@@ -30,9 +30,18 @@
   // the size of title is bottom limited with delete button height
   CGSize maxSize = CGSizeMake( 9999, 9999 );
   
-  CGSize expectedSize = [self.titleLabel.text sizeWithFont:self.titleLabel.font
-                                         constrainedToSize:maxSize
-                                             lineBreakMode:self.titleLabel.lineBreakMode];
+  //CGSize expectedSize = [self.titleLabel.text sizeWithFont:self.titleLabel.font constrainedToSize:maxSize  lineBreakMode:self.titleLabel.lineBreakMode];
+    
+    NSMutableParagraphStyle *paragraph = [[NSMutableParagraphStyle alloc] init];
+    paragraph.lineBreakMode = self.titleLabel.lineBreakMode;
+    CGRect rect = [self.titleLabel.text boundingRectWithSize:maxSize
+                                                    options:NSStringDrawingUsesLineFragmentOrigin
+                                                 attributes:@{ NSFontAttributeName: self.titleLabel.font, NSParagraphStyleAttributeName: paragraph }
+                                                    context:nil];
+    CGSize sizeR = rect.size;
+    CGSize expectedSize = CGSizeMake(ceilf(sizeR.width), ceilf(sizeR.height));
+    
+    
   expectedSize.width  += kDeleteTitleLeftMargin + kDeleteTitleRightMargin;
   CGSize imgSize = [self.imageView.image size];
   CGFloat titleHeight = floorf(self.titleLabel.font.lineHeight * ( 1 + kDeleteTitleScaleRatio) +
@@ -90,16 +99,15 @@
 -(void)dealloc
 {
   [_priceLabel removeFromSuperview];
-  [_priceLabel release];
+  _priceLabel = nil;
   
   [_amountField removeFromSuperview];
-  [_amountField release];
+  _amountField = nil;
   
   [_deleteButton removeFromSuperview];
-  [_deleteButton release];
+  _deleteButton = nil;
   
   self.item      = nil;
-  [super dealloc];
 }
 
 -(UILabel *)priceLabel

@@ -40,12 +40,11 @@
   self.title  = nil;
   self.text   = nil;
   self.note   = nil;
-  [super dealloc];
 }
 
 + (mCatalogueConfirmInfo *)createWithXMLElement:(TBXMLElement *)element_
 {
-  return [[[mCatalogueConfirmInfo alloc] initWithXMLElement:element_] autorelease];
+  return [[mCatalogueConfirmInfo alloc] initWithXMLElement:element_];
 }
 
 - (id)initWithXMLElement:(TBXMLElement *)element_
@@ -79,9 +78,9 @@
 - (id)copyWithZone:(NSZone *)zone
 {
   mCatalogueConfirmInfo *info = [[mCatalogueConfirmInfo alloc] init];
-  info.note     = [[self.note copyWithZone:zone] autorelease];
-  info.title    = [[self.title copyWithZone:zone] autorelease];
-  info.text     = [[self.text  copyWithZone:zone] autorelease];
+  info.note     = [self.note copyWithZone:zone];
+  info.title    = [self.title copyWithZone:zone];
+  info.text     = [self.text  copyWithZone:zone];
   return info;
 }
 

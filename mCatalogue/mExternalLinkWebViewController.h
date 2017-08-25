@@ -20,9 +20,4 @@
  */
 @interface mExternalLinkWebViewController : mWebVCViewController
 
-/**
- * Color of the navigation bar. Specified before the controller is pushed.
- */
-@property (nonatomic, strong) UIColor *navBarColor;
-
 @end

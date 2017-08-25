@@ -75,13 +75,13 @@
   self.catalogueParameters = nil;
   
   self.confirmationManager = nil;
-  
-  [super dealloc];
 }
 
 - (void)viewDidLoad
 {
   [super viewDidLoad];
+  
+  [[self.tabBarController tabBar] setHidden:YES];
   
   [self update];
 }
@@ -90,7 +90,7 @@
 {
   [super viewWillAppear:animated];
   self.customNavBar.title = NSBundleLocalizedString( @"mCatalogue_TITLE", nil );
-  self.customNavBar.cartButton.hidden = YES;
+  self.customNavBar.cartButtonHidden = YES;
   
   [self update];
 }
@@ -135,7 +135,7 @@
 
 -(void)placeEmptyCartMessage
 {
-  self.messageView = [[[UIView alloc] initWithFrame:self.view.bounds] autorelease];
+  self.messageView = [[UIView alloc] initWithFrame:self.view.bounds];
   self.messageView.backgroundColor     = [UIColor clearColor];
   self.messageView.autoresizesSubviews = YES;
   self.messageView.autoresizingMask    = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
@@ -144,7 +144,7 @@
   [UIImage imageNamed:resourceFromBundle(@"mCatalogueBigCart")] :
   [UIImage imageNamed:resourceFromBundle(@"mCatalogueBigCartDark")];
   // show cart empty message
-  UIImageView *imgView = [[[UIImageView alloc] initWithImage:cartImage] autorelease];
+  UIImageView *imgView = [[UIImageView alloc] initWithImage:cartImage];
   imgView.frame = CGRectMake(kImgLeftMargin,
                              kImgTopMargin + CGRectGetMaxY(self.customNavBar.frame),
                              CGRectGetWidth ( self.view.bounds ) - kImgLeftMargin - kImgRightMargin,
@@ -158,7 +158,7 @@
   [self.messageView addSubview:imgView];
   
   // display empty cart message
-  NRLabel *msgLabel = [[[NRLabel alloc] initWithFrame:CGRectZero] autorelease];
+  NRLabel *msgLabel = [[NRLabel alloc] initWithFrame:CGRectZero];
   msgLabel.backgroundColor  = [UIColor clearColor];
   msgLabel.textColor        = self.catalogueParameters.descriptionColor;
   msgLabel.font             = [UIFont boldSystemFontOfSize:18.f];
@@ -188,7 +188,7 @@
     self.view.bounds.size.height - offsetY,
   };
   
-  self.tableView = [[[TPKeyboardAvoidingTableView alloc] initWithFrame:tableViewFrame] autorelease];
+  self.tableView = [[TPKeyboardAvoidingTableView alloc] initWithFrame:tableViewFrame];
   self.tableView.backgroundColor     = self.view.backgroundColor;
   self.tableView.autoresizingMask    = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
   self.tableView.autoresizesSubviews = YES;
@@ -205,7 +205,7 @@
 
 -(void)placeConfirmationView
 {
-  self.confirmationManager = [[[mCatalogueConfirmationManager alloc] init] autorelease];
+  self.confirmationManager = [[mCatalogueConfirmationManager alloc] init];
   self.confirmationManager.presentingViewController = self;
   
   mCatalogueConfirmationView *confirmationManagerView = self.confirmationManager.view;
@@ -273,11 +273,10 @@
   mCatalogueCartItem *cartItem = [self.cart.allItems objectAtIndex:indexPath.row];
 
   mCatalogueItemVC *itemVC = [[mCatalogueItemVC alloc] initWithCatalogueItem:cartItem.item];
+  itemVC.colorSkin = self.colorSkin;
   itemVC.title = self.customNavBar.title;
   
   [self.navigationController pushViewController:itemVC animated:YES];
-  
-  [itemVC release];
 }
 
 - (void)updateTotalPrice
@@ -288,6 +287,13 @@
                                                    withCurrencyCode:self.catalogueParameters.currencyCode];
   
   orderView.priceLabel.text = strPrice;
+  self.confirmationManager.view.orderView.hidden = NO;
+  self.confirmationManager.view.orderView.totalLabel.hidden = NO;
+  self.confirmationManager.view.orderView.priceLabel.hidden = NO;
+  if ([self.cart.totalPrice  isEqual: @0]){
+    self.confirmationManager.view.orderView.totalLabel.hidden = YES;
+    self.confirmationManager.view.orderView.priceLabel.hidden = YES;
+  }
   
   [orderView setNeedsLayout];
 }
@@ -310,7 +316,7 @@
   // remove footer if cart is empty...
   if ( ![[self.cart allItems] count] )
   {
-    [self.tableView setTableFooterView:[[[UIView alloc] init] autorelease]];
+    [self.tableView setTableFooterView:[[UIView alloc] init]];
     [self performSelector:@selector(update) withObject:nil afterDelay:0.3f];
   }
 }
@@ -330,6 +336,14 @@
     UITableViewCell *cell = [[self.tableView visibleCells] lastObject];
     [self didDeleteCell:cell];
   }
+}
+
+#pragma mark - IBSideBar
+-(NSArray *)actionsForIBSideBar
+{
+  self.customNavBar.hamburgerHidden = NO;
+  
+  return nil;
 }
 
 @end

@@ -16,7 +16,7 @@
 
 #import "mDBResource.h"
 
-static NSInteger DBVersion = 6;
+static NSInteger DBVersion = 8;
 
 @implementation mCatalogueDBManager
 
@@ -68,7 +68,9 @@ static NSInteger DBVersion = 6;
   \"ProductName\" TEXT,\
   \"Description\" TEXT,\
   \"DescriptionPlainText\" TEXT,\
+  \"ProductSKU\" TEXT,\
   \"Price\" INTEGER NOT NULL DEFAULT 0,\
+  \"OldPrice\" INTEGER NOT NULL DEFAULT 0,\
   \"ImageUrl\" TEXT,\
   \"ImagePath\" TEXT,\
   \"ThumbnailUrl\" TEXT,\
@@ -143,12 +145,13 @@ static NSInteger DBVersion = 6;
 - (BOOL)insertProducts:(NSArray *)products_
 {
   static NSString *insertStr = @"INSERT OR REPLACE INTO Products\
-  (Id, Pid, ProductOrder, CategoryId, ProductName, Description, DescriptionPlainText, Price, ImageUrl, ImagePath, ThumbnailUrl, ThumbnailPath, Valid, Visibility) ";
+  (Id, Pid, ProductOrder, CategoryId, ProductName, Description, DescriptionPlainText, \
+   ProductSKU, Price, OldPrice, ImageUrl, ImagePath, ThumbnailUrl, ThumbnailPath, Valid, Visibility) ";
 
   @autoreleasepool {
     for (mCatalogueItem *item in products_) {
       
-      NSString *valuesString =  [NSString stringWithFormat:@"SELECT '%ld', '%ld', '%ld', '%ld', '%@', '%@', '%@', '%@', '%@', '%@', '%@', '%@', '%d', '%d';",
+      NSString *valuesString =  [NSString stringWithFormat:@"SELECT '%ld', '%ld', '%ld', '%ld', '%@', '%@', '%@', '%@', '%@', '%@', '%@', '%@', '%@', '%@', '%d', '%d';",
                                  (long)item.uid,
                                  (long)item.pid,
                                  (long)item.order,
@@ -156,7 +159,9 @@ static NSInteger DBVersion = 6;
                                  mCatalogueGetCorrectDBString(item.name),
                                  mCatalogueGetCorrectDBString(item.description),
                                  mCatalogueGetCorrectDBString(item.descriptionPlainText),
+                                 mCatalogueGetCorrectDBString(item.sku),
                                  [item.price stringValue],
+                                 [item.oldPrice stringValue],                                          
                                  mCatalogueGetCorrectDBString(item.imgUrl),
                                  mCatalogueGetCorrectDBString(item.imgUrlRes),
                                  mCatalogueGetCorrectDBString(item.thumbnailUrl),
@@ -311,10 +316,10 @@ static NSInteger DBVersion = 6;
 - (NSArray *) selectCategoriesWithQuery:(NSString *)query
 {
   NSArray *rows = [self getRowsForQuery:query];
-  NSMutableArray *result = [[[NSMutableArray alloc] init] autorelease];
+  NSMutableArray *result = [[NSMutableArray alloc] init];
   
   for (NSDictionary *row in rows) {
-    mCatalogueCategory *category = [[[mCatalogueCategory alloc] init] autorelease];
+    mCatalogueCategory *category = [[mCatalogueCategory alloc] init];
     
     category.uid                = [[row objectForKey:@"Id"] intValue];
     category.order              = [[row objectForKey:@"CategoryOrder"] intValue];
@@ -340,7 +345,7 @@ static NSInteger DBVersion = 6;
 - (NSArray *)selectAllProducts
 {
   NSString *query = [NSString stringWithFormat:
-                     @"SELECT p.Id, p.Pid, p.ProductOrder, p.CategoryId, p.ProductName, p.Description, p.DescriptionPlainText, p.Price, p.ImageUrl, p.ImagePath, p.ThumbnailUrl, p.ThumbnailPath, p.Valid, p.Visibility \
+                     @"SELECT p.Id, p.Pid, p.ProductOrder, p.CategoryId, p.ProductName, p.Description, p.DescriptionPlainText, p.ProductSKU, p.Price, p.OldPrice, p.ImageUrl, p.ImagePath, p.ThumbnailUrl, p.ThumbnailPath, p.Valid, p.Visibility \
                      FROM Products p WHERE p.Valid = 1 AND p.Visibility = 1"];
 
   return [self selectProductsWithQuery:query];
@@ -356,7 +361,7 @@ static NSInteger DBVersion = 6;
 - (mCatalogueItem *)selectProductWithUID:(NSString *)uid;
 {
   NSString *query = [NSString stringWithFormat:
-                     @"SELECT p.Id, p.Pid, p.ProductOrder, p.CategoryId, p.ProductName, p.Description, p.DescriptionPlainText, p.Price, p.ImageUrl, p.ImagePath, p.ThumbnailUrl, p.ThumbnailPath, p.Valid, p.Visibility \
+                     @"SELECT p.Id, p.Pid, p.ProductOrder, p.CategoryId, p.ProductName, p.Description, p.DescriptionPlainText, p.ProductSKU, p.Price, p.OldPrice, p.ImageUrl, p.ImagePath, p.ThumbnailUrl, p.ThumbnailPath, p.Valid, p.Visibility \
                      FROM Products p \
                      WHERE p.Id = '%@' AND p.Visibility = 1", uid];
   
@@ -365,7 +370,7 @@ static NSInteger DBVersion = 6;
   if (rows && [rows count]){
     NSDictionary *row = [rows objectAtIndex:0];
     
-    mCatalogueItem *item = [[[mCatalogueItem alloc] init] autorelease];
+    mCatalogueItem *item = [[mCatalogueItem alloc] init];
     
     item.uid                  = [[row objectForKey:@"Id"] integerValue];
     item.pid                  = [[row objectForKey:@"Pid"] integerValue];
@@ -374,7 +379,10 @@ static NSInteger DBVersion = 6;
     item.name                 = [row objectForKey:@"ProductName"];
     item.description          = [row objectForKey:@"Description"];
     item.descriptionPlainText = [row objectForKey:@"DescriptionPlainText"];
+    item.sku                  = [row objectForKey:@"ProductSKU"];
     item.price                = [NSDecimalNumber decimalNumberWithString:[[row objectForKey:@"Price"] stringValue]];
+    item.oldPrice             = [NSDecimalNumber decimalNumberWithString:
+                                                      [[row objectForKey:@"OldPrice"] stringValue]];
     item.imgUrl               = [row objectForKey:@"ImageUrl"];
     item.imgUrlRes            = [row objectForKey:@"ImagePath"];
     item.thumbnailUrl         = [row objectForKey:@"ThumbnailUrl"];
@@ -400,7 +408,7 @@ static NSInteger DBVersion = 6;
 - (NSArray *)selectProductsForCategoryId:(NSInteger)uidCategory
 {
   NSString *query = [NSString stringWithFormat:
-                     @"SELECT p.Id, p.Pid, p.ProductOrder, p.CategoryId, p.ProductName, p.Description, p.DescriptionPlainText, p.Price, p.ImageUrl, p.ImagePath, p.ThumbnailUrl, p.ThumbnailPath, p.Valid, p.Visibility \
+                     @"SELECT p.Id, p.Pid, p.ProductOrder, p.CategoryId, p.ProductName, p.Description, p.DescriptionPlainText, p.ProductSKU, p.Price, p.OldPrice, p.ImageUrl, p.ImagePath, p.ThumbnailUrl, p.ThumbnailPath, p.Valid, p.Visibility \
                      FROM Products p \
                      WHERE p.CategoryId = '%ld' AND p.Visibility = 1 ORDER BY p.ProductOrder ASC", (long)uidCategory];
   
@@ -442,10 +450,10 @@ static NSInteger DBVersion = 6;
 - (NSArray *)selectProductsWithQuery:(NSString *)query
 {
   NSArray *rows = [self getRowsForQuery:query];
-  NSMutableArray *result = [[[NSMutableArray alloc] init] autorelease];
+  NSMutableArray *result = [[NSMutableArray alloc] init];
   
   for (NSDictionary *row in rows) {
-    mCatalogueItem *item = [[[mCatalogueItem alloc] init] autorelease];
+    mCatalogueItem *item = [[mCatalogueItem alloc] init];
     
     item.uid                  = [[row objectForKey:@"Id"] integerValue];
     item.pid                  = [[row objectForKey:@"Pid"] integerValue];
@@ -454,7 +462,10 @@ static NSInteger DBVersion = 6;
     item.name                 = [row objectForKey:@"ProductName"];
     item.description          = [row objectForKey:@"Description"];
     item.descriptionPlainText = [row objectForKey:@"DescriptionPlainText"];
+    item.sku                  = [row objectForKey:@"ProductSKU"];
     item.price                = [NSDecimalNumber decimalNumberWithString:[[row objectForKey:@"Price"] stringValue]];
+    item.oldPrice             = [NSDecimalNumber decimalNumberWithString:
+                                                      [[row objectForKey:@"OldPrice"] stringValue]];
     item.imgUrl               = [row objectForKey:@"ImageUrl"];
     item.imgUrlRes            = [row objectForKey:@"ImagePath"];
     item.thumbnailUrl         = [row objectForKey:@"ThumbnailUrl"];
@@ -472,7 +483,7 @@ static NSInteger DBVersion = 6;
   mCatalogueDBSearchResult result;
   
   NSString *productsQuery = [NSString stringWithFormat:
-                     @"SELECT p.Id, p.Pid, p.ProductOrder, p.CategoryId, p.ProductName, p.Description, p.DescriptionPlainText, p.Price, p.ImageUrl, p.ImagePath, p.ThumbnailUrl, p.ThumbnailPath, p.Valid, p.Visibility \
+                     @"SELECT p.Id, p.Pid, p.ProductOrder, p.CategoryId, p.ProductName, p.Description, p.DescriptionPlainText, p.ProductSKU, p.Price, p.OldPrice, p.ImageUrl, p.ImagePath, p.ThumbnailUrl, p.ThumbnailPath, p.Valid, p.Visibility \
                      FROM Products p \
                      WHERE p.Valid = 1 AND p.Visibility = 1 AND (p.ProductName LIKE '%%%@%%' OR p.DescriptionPlainText LIKE '%%%@%%') ORDER BY ProductName", token, token];
 
@@ -570,7 +581,7 @@ static NSInteger DBVersion = 6;
   
   NSArray *rows = [self getRowsForQuery:query];
   
-  mCatalogueCart *cart = [[[mCatalogueCart alloc] init] autorelease];
+  mCatalogueCart *cart = [[mCatalogueCart alloc] init];
   
   [self openDatabase];
   

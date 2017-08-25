@@ -51,14 +51,25 @@
 @property(nonatomic, strong) NSString *thumbnailUrlRes;
 
 /**
+ * Item sku
+ */
+@property(nonatomic, strong) NSString *sku;
+
+/**
  * Item price
  */
 @property(nonatomic, strong) NSDecimalNumber *price;
 
 /**
- * Item price as NSString
+ * Item old price
  */
-@property(nonatomic, strong) NSString *priceStr;
+@property(nonatomic, strong) NSDecimalNumber *oldPrice;
+
+/**
+ * The item formatted price. This is deprecated, as a model class must not involve view-related
+ * issues.
+ */
+@property(nonatomic, strong, readonly) NSString *priceStr;
 
 /**
  * Currency code of item's price.
@@ -96,5 +107,20 @@
  */
 +(NSString *)formattedPriceStringForPrice:(NSDecimalNumber *)aPrice
                          withCurrencyCode:(NSString *)currencyCode;
+
+/**
+ * Format a price.
+ *
+ * @param price the price numeric value to format
+ * @param currencyCode an international three-letter currency code to be used to determine the
+ *        currency symbol.
+ * @param emptyStringWhenZeroPrice return the empty string instead of the zero price representation.
+ *
+ * @return string representation of the price with the locale-dependent currency symbol.
+ * 
+ */
++ (NSString *)formattedPriceStringForPrice:(NSDecimalNumber *)price
+                          withCurrencyCode:(NSString *)currencyCode
+                  emptyStringWhenZeroPrice:(BOOL)emptyStringWhenZeroPrice;
 
 @end

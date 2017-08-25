@@ -111,6 +111,11 @@ typedef enum {
 }
 
 /**
+ * mCatalogueSearchBarView singleton.
+ */
++(mCatalogueSearchBarView *)sharedCatalogueSearchBarView;
+
+/**
  * Initializes the search bar view with frame and appearance specified.
  *
  * @param frame - frame for the view.
@@ -203,5 +208,10 @@ typedef enum {
  * @see mCatalogueCartButton
  */
 @property (nonatomic, retain) mCatalogueCartButton *cartButton;
+
+/**
+ * Whether or not to show hamburger for IBSideBar.
+ */
+@property (nonatomic, assign) BOOL hamburgerHidden;
 
 @end

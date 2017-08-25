@@ -56,7 +56,6 @@
 - (void)dealloc
 {
   self.completion = nil;
-  [super dealloc];
 }
 
 #pragma mark
@@ -121,7 +120,6 @@
 {
   self.cancelHandler = nil;
   self.actionHandler = nil;
-  [super dealloc];
 }
 
 @end

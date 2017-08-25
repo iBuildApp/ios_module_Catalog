@@ -13,10 +13,7 @@
 #import "mCatalogueSearchBarView.h"
 #import "mCatalogueParameters.h"
 #import "mCatalogueItemView.h"
-
-#define kCatalogueNavBarColorLight [[UIColor whiteColor] colorWithAlphaComponent:0.5f]
-#define kCatalogueNavBarColorDark [[UIColor blackColor] colorWithAlphaComponent:0.2f]
-#define kCatalogueNavBarColor kCatalogueNavBarColorDark
+#import "iphColorskinModel.h"
 
 #define kCustomNavBarHeight 66.0f
 
@@ -28,15 +25,6 @@
                                                mCatalogueItemViewDelegate>
 {
   @protected
-  /**
-   *  Defines TabBar behavior.
-   */
-  BOOL _tabBarIsHidden;
-  
-  /**
-   *  Option for show or hide TabBar.
-   */
-  BOOL _showTabBar;
   
   /**
    * Module-wide inheritable parameters.
@@ -72,20 +60,12 @@
 @property (nonatomic, strong) mCatalogueSearchBarView *customNavBar;
 
 /**
- *  Defines TabBar behavior
- */
-@property (nonatomic, assign) BOOL tabBarIsHidden;
-
-/**
- *  Option for show or hide TabBar
- */
-@property (nonatomic, assign) BOOL showTabBar;
-
-/**
  * When implementing custom navigation flow, specifies the controller index in
  * navigationController's <code>viewControllers</code> array to pop.
  */
 @property (nonatomic) NSInteger controllerIndexToPopTo;
+
+@property (nonatomic, strong) iphColorskinModel *colorSkin;
 
 /**
  * Notificatiom handler, called when core navigation controller finishes setting it's appearance.
@@ -97,6 +77,11 @@
  * Point for adding catalogue item to cart from any descdendant controller.
  */
 -(void)addCatalogueItemToCart:(mCatalogueItem *)item;
+
+/**
+ * Point for adding multiple catalogue item to cart from any descdendant controller.
+ */
+-(void)addCatalogueItemToCart:(mCatalogueItem *)item withQuantity:(int)quantity;
 
 /**
  *  Remove all viewController's from stack with current VC

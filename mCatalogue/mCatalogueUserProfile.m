@@ -28,8 +28,8 @@ static NSString *kCatalogueUserProfile_NoteTag      = @"note";
 
 typedef struct tagCatalogueValidatorMap
 {
-  NSString *name;                      // tag name
-  NSString *validator;                 // reg exp string
+  __unsafe_unretained NSString *name;                      // tag name
+  __unsafe_unretained NSString *validator;                 // reg exp string
 }CatalogueValidatorMap;
 
 // email reg exp validator
@@ -64,7 +64,7 @@ static CatalogueValidatorMap g_CatalogueValidatorMap[] = {
 
 + (mCatalogueUserProfileItem *)createWithXMLElement:(TBXMLElement *)element
 {
-  mCatalogueUserProfileItem *item = [[[mCatalogueUserProfileItem alloc] initWithXMLElement:element] autorelease];
+  mCatalogueUserProfileItem *item = [[mCatalogueUserProfileItem alloc] initWithXMLElement:element];
   return (item.name && [item.name length]) ? item : nil;
 }
 
@@ -129,15 +129,13 @@ static CatalogueValidatorMap g_CatalogueValidatorMap[] = {
   self.placeholder  = nil;
   self.value        = nil;
   self.validator    = nil;
-  [super dealloc];
 }
 
 - (void)setName:(NSString *)name_
 {
   if ( _name != name_ )
   {
-    [_name release];
-    _name = [name_ retain];
+    _name = name_;
     
     // select reg exp for this field...
     if ( _name && [_name length] )
@@ -206,9 +204,9 @@ static CatalogueValidatorMap g_CatalogueValidatorMap[] = {
   
   userProfileItem.required     = self.required;
   userProfileItem.visible      = self.visible;
-  userProfileItem.name         = [[self.name        copyWithZone:zone] autorelease];
-  userProfileItem.placeholder  = [[self.placeholder copyWithZone:zone] autorelease];
-  userProfileItem.value        = [[self.value       copyWithZone:zone] autorelease];
+  userProfileItem.name         = [self.name        copyWithZone:zone];
+  userProfileItem.placeholder  = [self.placeholder copyWithZone:zone];
+  userProfileItem.value        = [self.value       copyWithZone:zone];
   return userProfileItem;
 }
 
@@ -265,7 +263,7 @@ static CatalogueValidatorMap g_CatalogueValidatorMap[] = {
 
 + (mCatalogueUserProfile *)createWithXMLElement:(TBXMLElement *)element
 {
-  return [[[mCatalogueUserProfile alloc] initWithXMLElement:element] autorelease];
+  return [[mCatalogueUserProfile alloc] initWithXMLElement:element];
 }
 
 - (void)initialize
@@ -307,9 +305,6 @@ static CatalogueValidatorMap g_CatalogueValidatorMap[] = {
     {
       self.fields = profileElementsList;
     }
-    
-    [profileElementsList release];
-    [profileElementsDictionary release];
   }
   return self;
 }
@@ -328,7 +323,6 @@ static CatalogueValidatorMap g_CatalogueValidatorMap[] = {
 {
   self.fields           = nil;
   self.fieldsDictionary = nil;
-  [super dealloc];
 }
 
 - (void)setFields:(NSArray *)fields_
@@ -349,16 +343,12 @@ static CatalogueValidatorMap g_CatalogueValidatorMap[] = {
       if ( [mutableFieldsDictionary count] )
       {
         self.fieldsDictionary = [NSDictionary dictionaryWithDictionary:mutableFieldsDictionary];
-        [_fields release];
-        _fields = [fields_ retain];
+        _fields = fields_;
       }else{
-        [_fields release];
         _fields = nil;
       }
-      [mutableFieldsDictionary release];
     }else{
-      [_fields release];
-      _fields = [fields_ retain];
+      _fields = fields_;
     }
   }
 }
@@ -445,7 +435,7 @@ static CatalogueValidatorMap g_CatalogueValidatorMap[] = {
 - (id)copyWithZone:(NSZone *)zone
 {
   mCatalogueUserProfile *userProfile = [[[self class] alloc] init];
-  userProfile.fields   = [[self.fields copyWithZone:zone] autorelease];
+  userProfile.fields   = [self.fields copyWithZone:zone];
   return userProfile;
 }
 
@@ -473,8 +463,6 @@ static CatalogueValidatorMap g_CatalogueValidatorMap[] = {
     invItems = [NSArray arrayWithArray:invalidItems];
   }
   
-  [invalidItems release];
-  
   return invItems;
 }
 
@@ -490,7 +478,6 @@ static CatalogueValidatorMap g_CatalogueValidatorMap[] = {
     }
   }
   NSDictionary *result = [NSDictionary dictionaryWithDictionary:resultMutable];
-  [resultMutable release];
   return result;
 }
 

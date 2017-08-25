@@ -42,7 +42,6 @@
 {
   self.bgColor     = nil;
   self.borderColor = nil;
-  [super dealloc];
 }
 
 - (void)setBackgroundColor:(UIColor *)backgroundColor_
@@ -65,8 +64,7 @@
 {
   if ( _borderColor != borderColor_ )
   {
-    [_borderColor release];
-    _borderColor = [borderColor_ retain];
+    _borderColor = borderColor_;
     [self setNeedsDisplay];
   }
 }
@@ -75,8 +73,7 @@
 {
   if ( _bgColor != bgColor_ )
   {
-    [_bgColor release];
-    _bgColor = [bgColor_ retain];
+    _bgColor = bgColor_;
     [self setNeedsDisplay];
   }
 }

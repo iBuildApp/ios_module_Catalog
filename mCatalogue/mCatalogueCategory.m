@@ -38,8 +38,6 @@ subcategories;
 {
   self.items  = nil;
   self.subcategories = nil;
-   
-  [super dealloc];
 }
 
 - (id)initWithDictionary:(NSDictionary*)categoryDict
@@ -73,12 +71,15 @@ subcategories;
 
 - (void)setItems:(NSArray *)items_{
   if(items != items_){
-    [items_ retain];
-    [items release];
     items = items_;
     
     for(mCatalogueItem *item in items){
       if (item.imgUrl && [item.imgUrl length]){
+        if(self.imgUrl != NULL && [self.imgUrl length]){
+          
+        } else {
+          self.imgUrl = item.imgUrl;
+        }
         self.showItemsImgs = YES;
         break;
       }

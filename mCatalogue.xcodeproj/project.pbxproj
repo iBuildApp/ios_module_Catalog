@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3708BE3A1B8F5C96006E6CCC /* mCatalogueHamburger_black.png in Resources */ = {isa = PBXBuildFile; fileRef = 3708BE381B8F5C96006E6CCC /* mCatalogueHamburger_black.png */; };
+		3708BE3B1B8F5C96006E6CCC /* mCatalogueHamburger_black@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3708BE391B8F5C96006E6CCC /* mCatalogueHamburger_black@2x.png */; };
 		370995251B09D9CA0019C32A /* mCatalogueCartButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 370995241B09D9CA0019C32A /* mCatalogueCartButton.m */; };
 		3709D3DA1742229C0013142F /* mCatalogueCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = 3709D3D81742229C0013142F /* mCatalogueCategory.m */; };
 		3709D3DE17422B670013142F /* mCatalogueItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 3709D3DC17422B670013142F /* mCatalogueItem.m */; };
@@ -75,6 +77,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		3708BE381B8F5C96006E6CCC /* mCatalogueHamburger_black.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mCatalogueHamburger_black.png; path = mCatalogue/resources/mCatalogueHamburger_black.png; sourceTree = SOURCE_ROOT; };
+		3708BE391B8F5C96006E6CCC /* mCatalogueHamburger_black@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "mCatalogueHamburger_black@2x.png"; path = "mCatalogue/resources/mCatalogueHamburger_black@2x.png"; sourceTree = SOURCE_ROOT; };
 		370995231B09D9CA0019C32A /* mCatalogueCartButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mCatalogueCartButton.h; sourceTree = "<group>"; };
 		370995241B09D9CA0019C32A /* mCatalogueCartButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = mCatalogueCartButton.m; sourceTree = "<group>"; };
 		3709D3D71742229C0013142F /* mCatalogueCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mCatalogueCategory.h; sourceTree = "<group>"; };
@@ -348,6 +352,8 @@
 				371E6C0E1B01E9010052D77A /* mCatalogueDeleteItem@2x.png */,
 				371E6C0F1B01E9010052D77A /* mCatalogueDeleteItemLight.png */,
 				371E6C101B01E9010052D77A /* mCatalogueDeleteItemLight@2x.png */,
+				3708BE381B8F5C96006E6CCC /* mCatalogueHamburger_black.png */,
+				3708BE391B8F5C96006E6CCC /* mCatalogueHamburger_black@2x.png */,
 				5914D70719331D5900E6CB7A /* Localizable.strings */,
 			);
 			name = Resources;
@@ -432,7 +438,6 @@
 				5914D6B219331ADD00E6CB7A /* Sources */,
 				5914D6B319331ADD00E6CB7A /* Frameworks */,
 				5914D6B419331ADD00E6CB7A /* Resources */,
-				5914D6CA19331B5F00E6CB7A /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -449,7 +454,6 @@
 			buildPhases = (
 				59705420159DB8080003BA92 /* Sources */,
 				59705421159DB8080003BA92 /* Frameworks */,
-				777704D215A59872005E1A33 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -467,7 +471,7 @@
 		5970541B159DB8080003BA92 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0500;
+				LastUpgradeCheck = 0900;
 			};
 			buildConfigurationList = 5970541E159DB8080003BA92 /* Build configuration list for PBXProject "mCatalogue" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -495,8 +499,10 @@
 			files = (
 				CE2A155C1AFB6E3300A12593 /* mCatalogue_cart@2x.png in Resources */,
 				371E6C131B01E9010052D77A /* mCatalogueDeleteItemLight.png in Resources */,
+				3708BE3B1B8F5C96006E6CCC /* mCatalogueHamburger_black@2x.png in Resources */,
 				37E540541A790527004D7E50 /* mCatalogue_search@2x.png in Resources */,
 				5914D6C319331ADD00E6CB7A /* InfoPlist.strings in Resources */,
+				3708BE3A1B8F5C96006E6CCC /* mCatalogueHamburger_black.png in Resources */,
 				772DA9391A73FBB600C537AC /* mCatalogue_ItemImagePlaceholder.png in Resources */,
 				371E6C0A1B01D2960052D77A /* mCatalogueBigCart@2x.png in Resources */,
 				772DA93C1A73FBB600C537AC /* mCatalogue_ItemShare@2x.png in Resources */,
@@ -521,35 +527,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		5914D6CA19331B5F00E6CB7A /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 8;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 1;
-			shellPath = /bin/sh;
-			shellScript = "cp -fR \"$CODESIGNING_FOLDER_PATH\" `echo $PROJECT_DIR | sed 's/appbuilder/appbuilder_server/g'`";
-		};
-		777704D215A59872005E1A33 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 8;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 1;
-			shellPath = /bin/sh;
-			shellScript = "cp -fR \"$CODESIGNING_FOLDER_PATH\" `echo $PROJECT_DIR | sed 's/appbuilder/appbuilder_server/g'`";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		5914D6B219331ADD00E6CB7A /* Sources */ = {
@@ -654,9 +631,10 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				INFOPLIST_FILE = "mCatalogueResources/mCatalogueResources-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MACOSX_DEPLOYMENT_TARGET = "";
 				ONLY_ACTIVE_ARCH = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "iBuildApp.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = mCatalogueResources;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -688,8 +666,9 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				INFOPLIST_FILE = "mCatalogueResources/mCatalogueResources-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MACOSX_DEPLOYMENT_TARGET = "";
+				PRODUCT_BUNDLE_IDENTIFIER = "iBuildApp.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = mCatalogueResources;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -702,15 +681,29 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = NO;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -724,8 +717,8 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
-				ONLY_ACTIVE_ARCH = NO;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				VALID_ARCHS = "armv7 arm64";
 			};
@@ -735,14 +728,27 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = NO;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
@@ -750,7 +756,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 				VALID_ARCHS = "armv7 arm64";
@@ -779,11 +785,11 @@
 					../../libs/SBJson/src/main/objc/,
 					../../libs/MBProgressHUD/,
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = mCatalogue;
 				SKIP_INSTALL = YES;
-				USER_HEADER_SEARCH_PATHS = "../../libs/tbxml/tbxml-headers/ ../../Classes/common/ ../../libs/SBJson/src/main/objc/ ../../Classes ../../libs/SDWebImage/ ../../libs/nrGridView/ ../../Classes/layout/ ../../Classes/network/ ../mWebVC/mWebVC ../../libs/IBPayments/ ../../Classes/common/CustomControls ../../appbuilder";
+				USER_HEADER_SEARCH_PATHS = "../../libs/tbxml/tbxml-headers/ ../../Classes/common/ ../../libs/SBJson/src/main/objc/ ../../Classes ../../libs/SDWebImage/ ../../libs/nrGridView/ ../../Classes/layout/ ../../Classes/network/ ../mWebVC/mWebVC ../../libs/IBPayments/ ../../Classes/common/CustomControls ../../appbuilder ../../Classes/customControls/iphone/ USER_HEADER_SEARCH_PATHS = \"../../libs/tbxml/tbxml-headers/ ../../Classes/common/ ../../libs/SBJson/src/main/objc/ ../../Classes ../../libs/SDWebImage/ ../../Classes/nrGridView/ ../../Classes/layout/ ../../Classes/network/ ../mWebVC/mWebVC ../../libs/IBPayments/ ../../Classes/customControls/iphone/\"; ../../Classes/customControls/iphone/";
 				VALID_ARCHS = "armv7 arm64";
 			};
 			name = Debug;
@@ -810,11 +816,11 @@
 					../../libs/SBJson/src/main/objc/,
 					../../libs/MBProgressHUD/,
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = mCatalogue;
 				SKIP_INSTALL = YES;
-				USER_HEADER_SEARCH_PATHS = "../../libs/tbxml/tbxml-headers/ ../../Classes/common/ ../../libs/SBJson/src/main/objc/ ../../Classes ../../libs/SDWebImage/ ../../libs/nrGridView/ ../../Classes/layout/ ../../Classes/network/ ../mWebVC/mWebVC ../../libs/IBPayments/ ../../Classes/common/CustomControls ../../appbuilder";
+				USER_HEADER_SEARCH_PATHS = "../../libs/tbxml/tbxml-headers/ ../../Classes/common/ ../../libs/SBJson/src/main/objc/ ../../Classes ../../libs/SDWebImage/ ../../libs/nrGridView/ ../../Classes/layout/ ../../Classes/network/ ../mWebVC/mWebVC ../../libs/IBPayments/ ../../Classes/common/CustomControls ../../appbuilder ../../Classes/customControls/iphone/ USER_HEADER_SEARCH_PATHS = \"../../libs/tbxml/tbxml-headers/ ../../Classes/common/ ../../libs/SBJson/src/main/objc/ ../../Classes ../../libs/SDWebImage/ ../../Classes/nrGridView/ ../../Classes/layout/ ../../Classes/network/ ../mWebVC/mWebVC ../../libs/IBPayments/ ../../Classes/customControls/iphone/\"; ../../Classes/customControls/iphone/";
 				VALID_ARCHS = "armv7 arm64";
 			};
 			name = Release;

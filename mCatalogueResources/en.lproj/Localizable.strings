@@ -105,3 +105,6 @@
 
 "mCatalogue_ITEMS_IN_YOUR_CART%@##{one}" = "There is one item in your cart";
 "mCatalogue_ITEMS_IN_YOUR_CART%@##{other}" = "There are %@ items in your cart";
+
+"mCatalogue_SideBarCartActionLabel" = "Cart";
+"mCatalogue_SKU"   = "SKU";

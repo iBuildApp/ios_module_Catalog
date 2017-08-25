@@ -15,8 +15,8 @@
 @class mCatalogueItem;
 
 typedef struct{
-  NSArray *categories;
-  NSArray *products;
+  __unsafe_unretained NSArray *categories;
+  __unsafe_unretained NSArray *products;
 } mCatalogueDBSearchResult;
 
 /**

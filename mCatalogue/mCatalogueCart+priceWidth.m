@@ -27,14 +27,26 @@
     NSString *strTotalPrice = [mCatalogueItem formattedPriceStringForPrice:item.totalPrice
                                                           withCurrencyCode:mCatalogueParameters.sharedParameters.currencyCode];
     
-    CGSize priceSize = [strPrice sizeWithFont:font
-                            constrainedToSize:CGSizeMake(9999.f, 9999.f)
-                                lineBreakMode:NSLineBreakByClipping];
+    //CGSize priceSize = [strPrice sizeWithFont:font constrainedToSize:CGSizeMake(9999.f, 9999.f) lineBreakMode:NSLineBreakByClipping];
+      NSMutableParagraphStyle *paragraph = [[NSMutableParagraphStyle alloc] init];
+      paragraph.lineBreakMode = NSLineBreakByClipping;
+      CGRect rect = [strPrice boundingRectWithSize:CGSizeMake(9999.f, 9999.f)
+                                       options:NSStringDrawingUsesLineFragmentOrigin
+                                    attributes:@{ NSFontAttributeName: font, NSParagraphStyleAttributeName: paragraph }
+                                       context:nil];
+      CGSize priceSize = CGSizeMake(ceilf(rect.size.width), ceilf(rect.size.height));
+      
     CGFloat priceWidth = priceSize.width;
     
-    CGSize totalPriceSize = [strTotalPrice sizeWithFont:font
-                                      constrainedToSize:CGSizeMake(9999.f, 9999.f)
-                                          lineBreakMode:NSLineBreakByClipping];
+    //CGSize totalPriceSize = [strTotalPrice sizeWithFont:font constrainedToSize:CGSizeMake(9999.f, 9999.f)  lineBreakMode:NSLineBreakByClipping];
+      paragraph = [[NSMutableParagraphStyle alloc] init];
+      paragraph.lineBreakMode = NSLineBreakByClipping;
+      rect = [strTotalPrice boundingRectWithSize:CGSizeMake(9999.f, 9999.f)
+                                       options:NSStringDrawingUsesLineFragmentOrigin
+                                    attributes:@{ NSFontAttributeName: font, NSParagraphStyleAttributeName: paragraph }
+                                       context:nil];
+      CGSize totalPriceSize = CGSizeMake(ceilf(rect.size.width), ceilf(rect.size.height));
+      
     CGFloat totalPriceWidth = totalPriceSize.width;
     if ( priceWidth > maxWidth.priceWidth )
       maxWidth.priceWidth = priceWidth;
@@ -70,19 +82,34 @@
     
     NSString *strItems = blockFormaterQty_ ? blockFormaterQty_(item.count) : [[NSNumber numberWithInteger:item.count] stringValue];
 
-    CGSize qtySize = [strItems sizeWithFont:qtyFont_
-                          constrainedToSize:CGSizeMake(9999.f, 9999.f)
-                              lineBreakMode:NSLineBreakByClipping];
+    //CGSize qtySize = [strItems sizeWithFont:qtyFont_ constrainedToSize:CGSizeMake(9999.f, 9999.f) lineBreakMode:NSLineBreakByClipping];
+      NSMutableParagraphStyle *paragraph = [[NSMutableParagraphStyle alloc] init];
+      paragraph.lineBreakMode = NSLineBreakByClipping;
+      CGRect rect = [strItems boundingRectWithSize:CGSizeMake(9999.f, 9999.f)
+                                       options:NSStringDrawingUsesLineFragmentOrigin
+                                    attributes:@{ NSFontAttributeName: qtyFont_, NSParagraphStyleAttributeName: paragraph }
+                                       context:nil];
+      CGSize qtySize = CGSizeMake(ceilf(rect.size.width), ceilf(rect.size.height));
     CGFloat qtyWidth = ceilf(qtySize.width);
     
-    CGSize priceSize = [strPrice sizeWithFont:priceFont_
-                            constrainedToSize:CGSizeMake(9999.f, 9999.f)
-                                lineBreakMode:NSLineBreakByClipping];
+    //CGSize priceSize = [strPrice sizeWithFont:priceFont_ constrainedToSize:CGSizeMake(9999.f, 9999.f) lineBreakMode:NSLineBreakByClipping];
+      paragraph = [[NSMutableParagraphStyle alloc] init];
+      paragraph.lineBreakMode = NSLineBreakByClipping;
+      rect = [strPrice boundingRectWithSize:CGSizeMake(9999.f, 9999.f)
+                                           options:NSStringDrawingUsesLineFragmentOrigin
+                                        attributes:@{ NSFontAttributeName: priceFont_, NSParagraphStyleAttributeName: paragraph }
+                                           context:nil];
+      CGSize priceSize = CGSizeMake(ceilf(rect.size.width), ceilf(rect.size.height));
     CGFloat priceWidth = ceilf(priceSize.width);
     
-    CGSize totalPriceSize = [strTotalPrice sizeWithFont:priceFont_
-                                      constrainedToSize:CGSizeMake(9999.f, 9999.f)
-                                          lineBreakMode:NSLineBreakByClipping];
+    //CGSize totalPriceSize = [strTotalPrice sizeWithFont:priceFont_ constrainedToSize:CGSizeMake(9999.f, 9999.f) lineBreakMode:NSLineBreakByClipping];
+      paragraph = [[NSMutableParagraphStyle alloc] init];
+      paragraph.lineBreakMode = NSLineBreakByClipping;
+      rect = [strTotalPrice boundingRectWithSize:CGSizeMake(9999.f, 9999.f)
+                                    options:NSStringDrawingUsesLineFragmentOrigin
+                                 attributes:@{ NSFontAttributeName: priceFont_, NSParagraphStyleAttributeName: paragraph }
+                                    context:nil];
+      CGSize totalPriceSize = CGSizeMake(ceilf(rect.size.width), ceilf(rect.size.height));
     CGFloat totalPriceWidth = ceilf(totalPriceSize.width);
     
     if ( qtyWidth > maxWidth.qtyWidth )

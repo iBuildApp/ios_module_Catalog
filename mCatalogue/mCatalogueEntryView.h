@@ -63,13 +63,8 @@ typedef enum {
 
 /**
  * Returns the size of the EntryView depending on it's style (row / grid).
- *
- * @param  BOOL shouldShowPlaceholder so far used only for itemViews
- * because they have different sizes for presentation with and without 
- * placeholder. Other way it will be ignored.
  */
-+(CGSize)sizeForStyle:(mCatalogueEntryViewStyle)style
-      withPlaceholder:(BOOL)shouldShowPlaceholder;
++ (CGSize)sizeForStyle:(mCatalogueEntryViewStyle)style;
 
 /**
  * Current mCatalogueEntryViewStyle.

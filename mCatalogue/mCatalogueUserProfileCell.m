@@ -50,8 +50,7 @@
 - (void)dealloc
 {
   [_title removeFromSuperview];
-  [_title release];
-  [super dealloc];
+  _title = nil;
 }
 
 - (UILabel *)title
@@ -84,9 +83,14 @@
   ///
   CGRect frm = UIEdgeInsetsInsetRect([self bounds], _labelInsets );
   
-  CGSize expectedSize = [_title.text sizeWithFont:_title.font
-                                constrainedToSize:CGSizeMake( CGRectGetWidth(frm), 9999.f )
-                                    lineBreakMode:_title.lineBreakMode];
+  //CGSize expectedSize = [_title.text sizeWithFont:_title.font constrainedToSize:CGSizeMake( CGRectGetWidth(frm), 9999.f ) lineBreakMode:_title.lineBreakMode];
+    NSMutableParagraphStyle *paragraph = [[NSMutableParagraphStyle alloc] init];
+    paragraph.lineBreakMode = _title.lineBreakMode;
+    CGRect rect = [_title.text boundingRectWithSize:CGSizeMake( CGRectGetWidth(frm), 9999.f )
+                                                        options:NSStringDrawingUsesLineFragmentOrigin
+                                                     attributes:@{ NSFontAttributeName: _title.font, NSParagraphStyleAttributeName: paragraph }
+                                                        context:nil];
+    CGSize expectedSize = CGSizeMake(ceilf(rect.size.width), ceilf(rect.size.height));
   
   _title.frame = CGRectMake(frm.origin.x,
                             frm.origin.y + kTopSeparatorViewHeight,
@@ -128,12 +132,11 @@
 - (void)dealloc
 {
   [_noteLabel removeFromSuperview];
-  [_noteLabel release];
+  _noteLabel = nil;
   [_noteField removeFromSuperview];
-  [_noteField release];
+  _noteField = nil;
   [_button removeFromSuperview];
-  [_button release];
-  [super dealloc];
+  _button = nil;
 }
 
 - (UIButton *)button
@@ -212,7 +215,7 @@
                                           [mCatalogueUserProfileCell defaultHeight] );
         _noteLabel.frame = UIEdgeInsetsInsetRect( elementFrame, insetsTitle );
       }
-      confirmButtonTopMargin = 32.f;
+      //confirmButtonTopMargin = 32.f;
       frm = frame;
     }else{
       _noteField.frame = CGRectMake(CGRectGetMinX(frm),
@@ -288,10 +291,9 @@
 - (void)dealloc
 {
   [_editField removeFromSuperview];
-  [_editField release];
+  _editField = nil;
   
   self.item = nil;
-  [super dealloc];
 }
 
 - (mCatalogueTextField *)editField
@@ -364,8 +366,8 @@
                                                         cellMetrics:(CatalogueUserProfileCellMetrics *)metrics_
                                                            delegate:(id<NSObject>)delegate_
 {
-  mCatalogueUserProfileCell *cell = [[[mCatalogueUserProfileCell alloc] initWithStyle:UITableViewCellStyleDefault
-                                                                                      reuseIdentifier:identifier_] autorelease];
+  mCatalogueUserProfileCell *cell = [[mCatalogueUserProfileCell alloc] initWithStyle:UITableViewCellStyleDefault
+                                                                                      reuseIdentifier:identifier_];
   
   
   [cell configureCellWithCellIdentifier:identifier_

@@ -48,8 +48,8 @@
 +(mCatalogueCartItemCell *)createCellWithCellIdentifier:(NSString *)identifier_
                                                delegate:(id<NSObject>)delegate_
 {
-  mCatalogueCartItemCell *cell = [[[mCatalogueCartItemCell alloc] initWithStyle:UITableViewCellStyleSubtitle
-                                                                                reuseIdentifier:identifier_] autorelease];
+  mCatalogueCartItemCell *cell = [[mCatalogueCartItemCell alloc] initWithStyle:UITableViewCellStyleSubtitle
+                                                                                reuseIdentifier:identifier_];
   cell.clipsToBounds   = NO;
   cell.selectionStyle  = UITableViewCellSelectionStyleNone;
   cell.backgroundColor = [UIColor clearColor];
@@ -81,11 +81,15 @@
                           forState:UIControlStateNormal];
   cell.deleteButton.titleLabel.font      = [UIFont systemFontOfSize:14.f];
   
-  cell.textLabel.textColor         = [[mCatalogueParameters sharedParameters] captionColor];
-  cell.textLabel.font              = [UIFont boldSystemFontOfSize:13.f];
-  cell.textLabel.backgroundColor   = [UIColor clearColor];
-  cell.textLabel.lineBreakMode     = NSLineBreakByTruncatingTail;
-  cell.textLabel.numberOfLines     = 0;
+  cell.textLabel.textColor              = [[mCatalogueParameters sharedParameters] captionColor];
+  cell.textLabel.font                   = [UIFont boldSystemFontOfSize:13.f];
+  cell.textLabel.backgroundColor        = [UIColor clearColor];
+  cell.textLabel.lineBreakMode          = NSLineBreakByTruncatingTail;
+  cell.textLabel.numberOfLines          = 0;
+  
+  cell.detailTextLabel.textColor        = [[UIColor blackColor] colorWithAlphaComponent:0.6f];
+  cell.detailTextLabel.font             = [UIFont systemFontOfSize:12.f];
+  cell.detailTextLabel.backgroundColor  = [UIColor whiteColor];
   
   cell.imageView.contentMode       = UIViewContentModeScaleAspectFit;
   cell.imageView.clipsToBounds     = YES;
@@ -119,9 +123,18 @@
 {
   self.item = item_;
   self.textLabel.text        = item_.item.name;
-  self.amountField.text      = item_.countAsString;
-  self.priceLabel.text       = item_.item.priceStr;
+  if (item_.item.sku && item_.item.sku.length) {
+    self.detailTextLabel.text = [NSString stringWithFormat:@"%@: %@", NSBundleLocalizedString(@"mCatalogue_SKU", @"SKU"), item_.item.sku];
+  } else {
+    self.detailTextLabel.text = @"";
+  }
   
+  self.amountField.text      = item_.countAsString;
+  if ([item_.item.price isEqual:@0]) {
+    self.priceLabel.text = @"";
+  } else {
+  self.priceLabel.text       = item_.item.priceStr;
+  }
   self.containImage = YES;
   [self setThumbnailWithCatalogueCartItem:item_];
 }
@@ -158,8 +171,13 @@
   }
   {
     // text field placed in top right corner
-    CGSize expectedLabelSize = [@"_9999_" sizeWithFont:self.amountField.font
-                                     constrainedToSize:infoFieldFrm.size];
+    //CGSize expectedLabelSize = [@"_9999_" sizeWithFont:self.amountField.font constrainedToSize:infoFieldFrm.size];
+      CGRect rect = [@"_9999_" boundingRectWithSize:infoFieldFrm.size
+                                       options:NSStringDrawingUsesLineFragmentOrigin
+                                    attributes:@{ NSFontAttributeName: self.amountField.font }
+                                       context:nil];
+      CGSize expectedLabelSize = CGSizeMake(ceilf(rect.size.width), ceilf(rect.size.height));
+      
     self.amountField.frame = CGRectMake(CGRectGetMaxX(infoFieldFrm) - expectedLabelSize.width,
                                         CGRectGetMinY(infoFieldFrm),
                                         floorf(expectedLabelSize.width),
@@ -180,10 +198,15 @@
                                 kCellTextLabelRightMargin,
                                 infoFieldFrm.size.height - CGRectGetHeight( self.deleteButton.frame ) - kCellTextLabelTopMargin - kCellTextLabelBottomMargin );
     
-    CGSize expectedSize = [self.textLabel.text sizeWithFont:self.textLabel.font
-                                          constrainedToSize:maxSize
-                                              lineBreakMode:self.textLabel.lineBreakMode];
-    
+    //CGSize expectedSize = [self.textLabel.text sizeWithFont:self.textLabel.font constrainedToSize:maxSize lineBreakMode:self.textLabel.lineBreakMode];
+      NSMutableParagraphStyle *paragraph = [[NSMutableParagraphStyle alloc] init];
+      paragraph.lineBreakMode = self.textLabel.lineBreakMode;
+      CGRect rect = [self.textLabel.text boundingRectWithSize:maxSize
+                                                      options:NSStringDrawingUsesLineFragmentOrigin
+                                                   attributes:@{ NSFontAttributeName: self.textLabel.font, NSParagraphStyleAttributeName: paragraph }
+                                                      context:nil];
+      CGSize expectedSize = CGSizeMake(ceilf(rect.size.width), ceilf(rect.size.height));
+      
     CGFloat labelHeight = !self.textLabel.numberOfLines ?
     expectedSize.height :
     MIN( expectedSize.height, maxSize.height );
@@ -195,11 +218,31 @@
                                        labelHeight );
   }
   
+  BOOL sku = self.item.item.sku && self.item.item.sku.length;
+  
+  if (sku) {
+    //CGSize expectedSize = [self.detailTextLabel.text sizeWithFont:self.detailTextLabel.font constrainedToSize:CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX)  lineBreakMode:self.detailTextLabel.lineBreakMode];
+      NSMutableParagraphStyle *paragraph = [[NSMutableParagraphStyle alloc] init];
+      paragraph.lineBreakMode = self.detailTextLabel.lineBreakMode;
+      CGRect rect = [self.detailTextLabel.text boundingRectWithSize:CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX)
+                                                          options:NSStringDrawingUsesLineFragmentOrigin
+                                                       attributes:@{ NSFontAttributeName: self.detailTextLabel.font, NSParagraphStyleAttributeName: paragraph }
+                                                          context:nil];
+      CGSize expectedSize = CGSizeMake(ceilf(rect.size.width), ceilf(rect.size.height));
+    
+    self.detailTextLabel.frame = CGRectMake(CGRectGetMinX(infoFieldFrm),
+                                            CGRectGetMaxY(self.textLabel.frame) + kCellTextLabelBottomMargin,
+                                            expectedSize.width,
+                                            expectedSize.height );
+    [[self.detailTextLabel layer] setBorderWidth:1.0f] ;
+    [[self.detailTextLabel layer] setBorderColor:[[UIColor whiteColor] CGColor]];
+  }
+  
   {
     // price placed under title label
     // this field right limited with delete button
     self.priceLabel.frame = CGRectMake( CGRectGetMinX(infoFieldFrm),
-                                       CGRectGetMaxY(self.textLabel.frame) + kCellTextLabelBottomMargin,
+                                       CGRectGetMaxY(sku ? self.detailTextLabel.frame : self.textLabel.frame) + kCellTextLabelBottomMargin,
                                        CGRectGetMinX( self.deleteButton.frame ) - CGRectGetMinX( infoFieldFrm ),
                                        CGRectGetMaxY( infoFieldFrm ) - (CGRectGetMaxY( self.textLabel.frame ) + kCellTextLabelBottomMargin ));
   }

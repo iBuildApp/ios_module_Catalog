@@ -12,7 +12,7 @@
 
 
 #import <UIKit/UIKit.h>
-
+#import <WebKit/WebKit.h>
 /**
  *  Customized UIView for order's cart detail info.
  */
@@ -27,6 +27,11 @@
  *  Price label view
  */
 @property(nonatomic, readonly) UILabel  *priceLabel;
+
+/**
+ *  Price label view
+ */
+@property(nonatomic, strong) WKWebView  *descriptionWebView;
 
 /**
  *  Header horizontal separator color

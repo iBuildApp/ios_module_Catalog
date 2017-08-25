@@ -44,8 +44,7 @@ delegate = _delegate;
 - (void)dealloc
 {
   [self reset];
-  [_cartItems release];
-  [super dealloc];
+  _cartItems = nil;
 }
 
 - (void)reset
@@ -61,9 +60,7 @@ delegate = _delegate;
     for ( mCatalogueCartItem *item in _cartItems )
       item.delegate = nil;
     
-    [_cartItems release];
-  
-    _cartItems = [array_ retain];
+    _cartItems = array_;
     
     for ( mCatalogueCartItem *item in _cartItems )
     {
@@ -94,8 +91,10 @@ delegate = _delegate;
   element_.delegate = nil;
   
   if ( [self.delegate respondsToSelector:@selector(catalogueCart:didDeleteItem:)] )
+  {
     [self.delegate catalogueCart:self
                      didDeleteItem:element_];
+  }
  
   [[mCatalogueParameters sharedParameters].dbManager deleteCartItems:@[element_]];
   [self.cartItems removeObject:element_];
@@ -120,6 +119,8 @@ delegate = _delegate;
     }
     
     [self.cartItems removeObjectAtIndex:index_];
+    
+    [self notifyTotalCountChanged];
   }
 }
 
@@ -145,8 +146,10 @@ delegate = _delegate;
 - (void)addCatalogueItem:(mCatalogueItem *)product_
       withQuantity:(NSInteger)quantity_
 {
-  mCatalogueCartItem *item = [[[mCatalogueCartItem alloc] initWithCatalogueItem:product_ count:quantity_] autorelease];
+  mCatalogueCartItem *item = [[mCatalogueCartItem alloc] initWithCatalogueItem:product_ count:quantity_];
   [self addCartItems:@[item]];
+  
+  [self notifyTotalCountChanged];
 }
 
 - (void)addCartItems:(NSArray *)cartItems
@@ -262,7 +265,6 @@ delegate = _delegate;
       summaryRange.length = [strSummary length] - [strSeparator length];
     }
     self.summary = [strSummary substringWithRange:summaryRange];
-    [strSummary release];
   }else{
     self.summary = @"";
   }

@@ -14,10 +14,10 @@
 #import "mCatalogueEntryView.h"
 
 #define kCatalogueItemCellWidth_Row 300.0f
-#define kCatalogueItemCellHeight_Row 90.0f//110.0f
+#define kCatalogueItemCellHeight_Row 110.0f
 
 #define kCatalogueItemCellWidth_Grid 150.0f
-#define kCatalogueItemCellHeight_Grid 220.0f
+#define kCatalogueItemCellHeight_Grid 250.0f
 
 
 @class mCatalogueItemView;
@@ -53,11 +53,6 @@
  * Button to add catalogue item to cart.
  */
 @property (nonatomic, strong) UIButton *cartButton;
-
-/**
- * Show placeholder only if owning category has items with images.
- */
-@property (nonatomic, setter=showPlaceholder:) BOOL shouldShowPlaceholder;
 
 /**
  * mCatalogueItemView delegate.

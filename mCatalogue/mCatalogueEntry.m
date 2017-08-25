@@ -43,8 +43,8 @@ imgUrlRes;
   self = [super init];
   
   if(self){
-    name = nil,
-    imgUrl = nil,
+      name = nil;
+      imgUrl = nil;
     imgUrlRes = nil;
   }
   
@@ -53,11 +53,9 @@ imgUrlRes;
 
 - (void)dealloc
 {
-  self.name = nil,
-  self.imgUrl = nil,
+    self.name = nil;
+    self.imgUrl = nil;
   self.imgUrlRes = nil;
-  
-  [super dealloc];
 }
 
 - (BOOL)hasImage{

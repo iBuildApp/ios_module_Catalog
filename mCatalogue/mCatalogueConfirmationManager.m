@@ -74,8 +74,6 @@
   self.orderView = nil;
   self.confirmationView = nil;
   self.tableView = nil;
-  
-  [super dealloc];
 }
 
 @end
@@ -129,20 +127,15 @@
   
   self.payPalManager.presentingViewController = nil;
   self.payPalManager = nil;
-  
-  if(view){
-    [view release];
     view = nil;
-  }
+
   
   self.parameters = nil;
-  
-  [super dealloc];
 }
 
 -(void)initPayPal
 {
-  self.payPalManager = [[[IBPPayPalManager alloc] init] autorelease];
+  self.payPalManager = [[IBPPayPalManager alloc] init];
   self.payPalManager.widgetId = self.parameters.widgetId;
   [self.payPalManager preconnect];
   
@@ -162,9 +155,7 @@
 -(void)setPresentingViewController:(mCatalogueBaseVC *)presentingViewController
 {
   if(presentingViewController != _presentingViewController){
-    [presentingViewController retain];
-    [_presentingViewController release];
-    
+   
     _presentingViewController = presentingViewController;
     
     _payPalManager.presentingViewController = _presentingViewController;
@@ -220,7 +211,7 @@
 {
   CGRect tableViewFrame = CGRectZero;
 
-  view.tableView = [[[UITableView alloc] initWithFrame:tableViewFrame] autorelease];
+  view.tableView = [[UITableView alloc] initWithFrame:tableViewFrame];
   
   view.tableView.backgroundColor     = [UIColor clearColor];
   view.tableView.autoresizingMask    = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
@@ -318,9 +309,8 @@
 
 -(UIView *)makeTableViewHeader
 {
-  mCatalogueUserProfileHeaderView *headerView = [[[mCatalogueUserProfileHeaderView alloc]
-                                                  initWithFrame:self.presentingViewController.view.bounds]
-                                                 autorelease];
+  mCatalogueUserProfileHeaderView *headerView = [[mCatalogueUserProfileHeaderView alloc]
+                                                  initWithFrame:self.presentingViewController.view.bounds];
   
   headerView.autoresizesSubviews = YES;
   headerView.autoresizingMask    = UIViewAutoresizingFlexibleWidth;
@@ -342,8 +332,8 @@
 
 -(UIView *)makeTableViewFooter
 {
-  view.confirmationView = [[[mCatalogueUserProfileOrderConfirmationView alloc]
-                            initWithFrame:self.presentingViewController.view.bounds] autorelease];
+  view.confirmationView = [[mCatalogueUserProfileOrderConfirmationView alloc]
+                            initWithFrame:self.presentingViewController.view.bounds];
   
   if ( self.parameters.confirmInfo.note.visible )
   {
@@ -359,9 +349,8 @@
 
 -(void)setupOrderView
 {
-  view.orderView = [[[mCatalogueCartOrderView alloc]
-                     initWithFrame:self.presentingViewController.view.bounds]
-                    autorelease];
+  view.orderView = [[mCatalogueCartOrderView alloc]
+                     initWithFrame:self.presentingViewController.view.bounds];
   
   view.orderView.autoresizesSubviews = YES;
   view.orderView.autoresizingMask    = UIViewAutoresizingFlexibleWidth;
@@ -491,7 +480,7 @@
                                 NSBundleLocalizedString(@"mCatalogue_INCORRECT_EMAIL", nil ):
                                 NSBundleLocalizedString(@"mCatalogue_FILL_OUT_FIELDS_MESSAGE", nil );
       
-      mCatalogueCartAlertView *alert = [[[mCatalogueCartAlertView alloc] initWithTitle:@""
+      mCatalogueCartAlertView *alert = [[mCatalogueCartAlertView alloc] initWithTitle:@""
                                                                                message:msg
                                                                      cancelButtonTitle:NSLocalizedString(@"general_defaultButtonTitleOK",nil)
                                                                      otherButtonTitles:nil
@@ -511,7 +500,7 @@
                                           cell = (mCatalogueUserProfileCell *)[view.tableView cellForRowAtIndexPath:indexPath];
                                           [cell.editField becomeFirstResponder];
                                           
-                                        }] autorelease];
+                                        }];
       [alert show];
       [self updateInvalidFields:invalidFields];
       // sey not show alert when check note field
@@ -523,14 +512,14 @@
       {
         // validate note field
         NSString *msg = NSBundleLocalizedString(@"mCatalogue_FILL_OUT_FIELDS_MESSAGE", nil );
-        mCatalogueCartAlertView *alert = [[[mCatalogueCartAlertView alloc] initWithTitle:@""
+        mCatalogueCartAlertView *alert = [[mCatalogueCartAlertView alloc] initWithTitle:@""
                                                                                message:msg
                                                                      cancelButtonTitle:NSLocalizedString(@"general_defaultButtonTitleOK",nil)
                                                                      otherButtonTitles:nil
                                                                             completion:^(UIAlertView *alertView, NSInteger idx)
                                           {
                                             [view.confirmationView.noteField becomeFirstResponder];
-                                          }] autorelease];
+                                          }];
         [alert show];
       }
       [[view.confirmationView.noteField layer] setBorderColor:[UIColor redColor].CGColor];
@@ -550,7 +539,7 @@
        [MBProgressHUD hideAllHUDsForView:self.presentingViewController.view animated:YES];
        // parse server response...
        
-       SBJsonParser *jsonParser = [[SBJsonParser new] autorelease];
+       SBJsonParser *jsonParser = [SBJsonParser new];
        NSDictionary *serverResp = [jsonParser objectWithData:data];
        if ( serverResp )
        {
@@ -589,11 +578,11 @@
        [MBProgressHUD hideAllHUDsForView:self.presentingViewController.view animated:YES];
        
        // show data transfer filure error alert
-       UIAlertView *msg = [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"general_cellularDataTurnedOff", nil )
+       UIAlertView *msg = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"general_cellularDataTurnedOff", nil )
                                                       message:NSLocalizedString(@"general_cellularDataTurnOnMessage", nil)
                                                      delegate:nil
                                             cancelButtonTitle:NSLocalizedString(@"general_defaultButtonTitleOK", nil)
-                                            otherButtonTitles:nil] autorelease];
+                                            otherButtonTitles:nil];
        [msg show];
      }];
   }
@@ -603,9 +592,9 @@
 // show order accepted success message
 - (void)showOrderSuccessMessageWithOrderNumber:(NSInteger)orderNumber_
 {
-  self.orderConfirm = [[[mCatalogueOrderConfirmVC alloc]
-                        initWithNavBarAppearance:mCatalogueSearchBarViewPureNavigationAppearance]
-                       autorelease];
+  self.orderConfirm = [[mCatalogueOrderConfirmVC alloc]
+                        initWithNavBarAppearance:mCatalogueSearchBarViewPureNavigationAppearance];
+  self.orderConfirm.colorSkin = self.presentingViewController.colorSkin;
   
   self.orderConfirm.title = NSBundleLocalizedString( @"mCatalogue_ORDER_CONFIRMATION", nil );
   self.orderConfirm.view.backgroundColor = self.parameters.backgroundColor;
@@ -631,7 +620,14 @@
                                       self.parameters.confirmInfo.title :
                                       NSBundleLocalizedString( @"mCatalogue_YOUR_ORDER_NUMBER", nil);
   summaryView.titleLabel.backgroundColor = [UIColor clearColor];
-  summaryView.titleLabel.text            = [titleStr stringByAppendingFormat:@" %ld", (long)orderNumber_ ];
+  
+  if ([titleStr containsString:@"{order}"]) {
+    summaryView.titleLabel.text = [titleStr stringByReplacingOccurrencesOfString:@"{order}" withString:[@"" stringByAppendingFormat:@"%ld", (long)orderNumber_ ]];
+  } else {
+    summaryView.titleLabel.text            = [titleStr stringByAppendingFormat:@" %ld", (long)orderNumber_ ];
+  }
+  
+  
   summaryView.titleLabel.font            = [UIFont boldSystemFontOfSize:18.f];
   summaryView.titleLabel.numberOfLines   = 0;
   summaryView.titleLabel.textAlignment   = NSTextAlignmentCenter;
@@ -643,6 +639,12 @@
   
   summaryView.subtitleLabel.backgroundColor = [UIColor clearColor];
   summaryView.subtitleLabel.text            = subTitleStr;
+  
+  
+  if ([subTitleStr containsString:@"{order}"]) {
+    summaryView.subtitleLabel.text = [subTitleStr stringByReplacingOccurrencesOfString:@"{order}" withString:[@"" stringByAppendingFormat:@"%ld", (long)orderNumber_ ]];
+  }
+  
   summaryView.subtitleLabel.font            = [UIFont systemFontOfSize:18.f];
   summaryView.subtitleLabel.numberOfLines   = 0;
   summaryView.subtitleLabel.textAlignment   = NSTextAlignmentCenter;
@@ -662,11 +664,11 @@
 - (void)showOrderErrorMessage:(NSString *)message
 {
   // show error alert view (data transfer error)
-  UIAlertView *msg = [[[UIAlertView alloc] initWithTitle:NSBundleLocalizedString(@"mCatalogue_ORDER_FAILED_TO_SEND",nil)
+  UIAlertView *msg = [[UIAlertView alloc] initWithTitle:NSBundleLocalizedString(@"mCatalogue_ORDER_FAILED_TO_SEND",nil)
                                                  message:message
                                                 delegate:nil
                                        cancelButtonTitle:NSLocalizedString(@"general_defaultButtonTitleOK", nil)
-                                       otherButtonTitles:nil] autorelease];
+                                       otherButtonTitles:nil];
   [msg show];
 }
 
@@ -693,8 +695,8 @@
 
 -(void)showThankYouPage
 {
-  mCatalogueThankYouPageVC *thankYouPage = [[[mCatalogueThankYouPageVC alloc] init] autorelease];
-  thankYouPage.showTabBar = self.presentingViewController.showTabBar;
+  mCatalogueThankYouPageVC *thankYouPage = [[mCatalogueThankYouPageVC alloc] init];
+  thankYouPage.colorSkin = self.presentingViewController.colorSkin;
   thankYouPage.controllerIndexToPopTo = [self.presentingViewController previousViewControllerIndex];
   
   [self.presentingViewController.navigationController pushViewController:thankYouPage animated:NO];

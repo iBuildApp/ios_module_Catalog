@@ -14,21 +14,19 @@
 
 @implementation mCatalogueThankYouPageVC
 
--(void)dealloc
-{
-  [super dealloc];
-}
 
 #pragma mark - View Lifecycle
 -(void)viewDidLoad {
   [super viewDidLoad];
   
+  [[self.tabBarController tabBar] setHidden:YES];
+  
   self.customNavBar.title = _catalogueParams.pageTitle;
   
   self.view.backgroundColor = [UIColor whiteColor];
   
-  self.statusBarView.backgroundColor = kCatalogueNavBarColor;
-  self.customNavBar.backgroundColor = kCatalogueNavBarColor;
+  self.statusBarView.backgroundColor = [self.colorSkin navBarBackgroundColor];
+  self.customNavBar.backgroundColor = [self.colorSkin navBarBackgroundColor];
   
   [self placeThankYouMessage];
 }
@@ -47,7 +45,7 @@
   labelFrame.size.width -= 20.0f;
   labelFrame.origin.x += 10.0f;
   
-  UILabel *firstLabel = [[[UILabel alloc] initWithFrame:labelFrame] autorelease];
+  UILabel *firstLabel = [[UILabel alloc] initWithFrame:labelFrame];
   firstLabel.textColor = [UIColor blackColor];
   firstLabel.backgroundColor = [UIColor clearColor];
   firstLabel.textAlignment = NSTextAlignmentCenter;

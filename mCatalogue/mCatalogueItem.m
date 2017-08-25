@@ -11,6 +11,7 @@
 
 #import "mCatalogueItem.h"
 #import "NSString+html.h"
+#import <math.h>
 
 #define mCatalogueItemUidKey @"id"
 
@@ -22,7 +23,9 @@
 
 #define mCatalogueItemNameKey @"itemname"
 #define mCatalogueItemDescriptionKey @"itemdescription"
+#define mCatalogueItemSKUKey @"itemsku"
 #define mCatalogueItemPriceKey @"itemprice"
+#define mCatalogueItemOldPriceStrKey @"itemoldprice"
 #define mCatalogueItemPriceStrKey @"itemprice_str"
 
 #define mCatalogueItemImgUrlKey @"image"
@@ -34,12 +37,7 @@
 
 @implementation mCatalogueItem
 
-@synthesize
-  description,
-  priceStr,
-  thumbnailUrl,
-  thumbnailUrlRes,
-  price;
+@synthesize description = _description;
 
 - (id)initWithDictionary:(NSDictionary *)itemDict{
   
@@ -50,7 +48,7 @@
     return self;
   }
   
-  if(self){
+  if (self) {
     self.uid = [[itemDict objectForKey:mCatalogueItemUidKey] integerValue];
     self.pid = [[itemDict objectForKey:mCatalogueItemPidKey] integerValue];
     self.order = [[itemDict objectForKey:mCatalogueItemOrderKey] integerValue];
@@ -61,18 +59,16 @@
     self.name = [itemDict objectForKey:mCatalogueItemNameKey];
     self.description = [itemDict objectForKey:mCatalogueItemDescriptionKey];
     
+    self.sku = [itemDict objectForKey:mCatalogueItemSKUKey];
+    
     self.descriptionPlainText = [self.description htmlToNewLinePreservingText];
+
+    self.price = [NSDecimalNumber decimalNumberWithString:
+                                   [itemDict objectForKey:mCatalogueItemPriceKey]];
     
-    self.priceStr = [itemDict objectForKey:mCatalogueItemPriceKey];
+    self.oldPrice = [NSDecimalNumber decimalNumberWithString:
+                                      [itemDict objectForKey:mCatalogueItemOldPriceStrKey]];
     
-    if(self.priceStr.length){
-      self.price = [NSDecimalNumber decimalNumberWithString:self.priceStr];
-    } else {
-      self.price = [NSDecimalNumber decimalNumberWithString:@"0"];
-    }
-    
-    [self formatPriceStr];
-  
     self.imgUrl = [itemDict objectForKey:mCatalogueItemImgUrlKey];
     self.imgUrlRes = [itemDict objectForKey:mCatalogueItemImgUrlResKey];
     self.thumbnailUrl = [itemDict objectForKey:mCatalogueItemThumbnailUrlKey];
@@ -84,22 +80,24 @@
 
 - (void)dealloc
 {
-  self.description = nil,
-  self.descriptionPlainText = nil,
-  self.priceStr = nil,
-  self.thumbnailUrl = nil,
+    self.description = nil;
+    self.descriptionPlainText = nil;
+    self.thumbnailUrl = nil;
   self.thumbnailUrlRes = nil;
-  self.priceStr = nil;
-  
   self.price = nil;
-  
-  [super dealloc];
+  self.oldPrice = nil;
 }
 
-- (void) formatPriceStr
-{
-  priceStr = [[self class] formattedPriceStringForPrice:price
-                                       withCurrencyCode:self.currencyCode];
+- (void)setPrice:(NSDecimalNumber *)price {
+  if (price && NSOrderedSame == [price compare:[NSDecimalNumber notANumber]])
+    price = [NSDecimalNumber zero];
+  _price = price;
+}
+
+- (void)setOldPrice:(NSDecimalNumber *)oldPrice {
+  if (oldPrice && NSOrderedSame == [oldPrice compare:[NSDecimalNumber notANumber]])
+    oldPrice = [NSDecimalNumber zero];
+  _oldPrice = oldPrice;
 }
 
 - (BOOL)hasValidImageWithRes:(NSString *)imageRes orURLString:(NSString *)imageUrlString
@@ -122,8 +120,8 @@
 
 - (BOOL)hasThumbnail{
   
-  return [self hasValidImageWithRes:thumbnailUrlRes
-                        orURLString:thumbnailUrl];
+  return [self hasValidImageWithRes:_thumbnailUrlRes
+                        orURLString:_thumbnailUrl];
 }
 
 -(NSString *)imageUrlStringForThumbnail
@@ -135,7 +133,7 @@
 
 - (IBPItem *)asIBPItem
 {
-  IBPItem *ibpItem = [[[IBPItem alloc] init] autorelease];
+  IBPItem *ibpItem = [[IBPItem alloc] init];
   
   ibpItem.pid = self.pid;
   ibpItem.currencyCode = self.currencyCode;
@@ -151,33 +149,36 @@
   return [mCatalogueParameters sharedParameters].currencyCode;
 }
 
--(void)setPrice:(NSDecimalNumber *)price_
-{
-  [price_ retain];
-  [price release];
-  
-  price = price_;
-  
-  [self formatPriceStr];
+- (NSString *)priceStr {
+  return [[self class] formattedPriceStringForPrice:_price
+                                   withCurrencyCode:self.currencyCode
+                           emptyStringWhenZeroPrice:YES];
 }
 
 +(NSString *)formattedPriceStringForPrice:(NSDecimalNumber *)aPrice
                          withCurrencyCode:(NSString *)currencyCode
 {
-  NSString *formattedPrice = nil;
-  
   NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-  [numberFormatter setNumberStyle:NSNumberFormatterCurrencyStyle];
+  numberFormatter.numberStyle = NSNumberFormatterCurrencyStyle;
   numberFormatter.currencyCode = currencyCode;
-  
   numberFormatter.locale = [NSLocale currentLocale];
-  numberFormatter.maximumFractionDigits = 2;
-  
-  formattedPrice = [[numberFormatter stringFromNumber:[NSNumber numberWithDouble:[aPrice doubleValue]]] retain];
-  
-  [numberFormatter release];
-  
-  return formattedPrice;
+
+  double integralPart;
+  double fractionalPart = modf( [aPrice doubleValue], &integralPart);
+  if (!fractionalPart)
+    numberFormatter.minimumFractionDigits = 0;
+
+  return [numberFormatter stringFromNumber:aPrice];
+}
+
++ (NSString *)formattedPriceStringForPrice:(NSDecimalNumber *)price
+                          withCurrencyCode:(NSString *)currencyCode
+                         emptyStringWhenZeroPrice:(BOOL)emptyStringWhenZeroPrice
+{
+  if (emptyStringWhenZeroPrice && NSOrderedSame == [price compare:[NSDecimalNumber zero]])
+    return @"";
+  else
+    return [[self class] formattedPriceStringForPrice:price withCurrencyCode:currencyCode];
 }
 
 @end

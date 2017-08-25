@@ -12,7 +12,7 @@
 #import "mCatalogueParameters.h"
 #import "reachability.h"
 #import "appconfig.h"
-
+#import "mCatalogueDBManager.h"
 #import "UIColor+HSL.h"
 
 #define kDBFileNameTemplate @"mCatalogue_%@.sqlite"
@@ -47,6 +47,7 @@ categoryTitleColor,
 captionColor,
 descriptionColor,
 priceColor,
+enabledButtons,
 
 normalFormatDate,
 showLink,
@@ -67,31 +68,21 @@ dbManager = _dbManager;
 
 - (void)dealloc
 {
-  appID = nil,
-  appName = nil,
+    appID = nil;
+    appName = nil;
   moduleID = nil;
-  if(_pageTitle){
-    [_pageTitle release];
     _pageTitle = nil;
-  }
-
-  [categories release];
   categories = nil;
   currencyCode = nil;
-  
-  backgroundColor = nil,
+    backgroundColor = nil;
   categoryTitleColor = nil;
-  captionColor = nil,
+    captionColor = nil;
   descriptionColor = nil;
   priceColor = nil;
-  
-  [self.successBlock release];
-  [self.failureBlock release];
   
   if ( self.dbManager )
   {
     [self.dbManager closeDatabase];
-    [_dbManager release];
   }
   
   self.products = nil;
@@ -107,8 +98,6 @@ dbManager = _dbManager;
   self.sender = nil;
   
   self.orderEndpointURL = nil;
-  
-  [super dealloc];
 }
 
 - (id)init
@@ -261,16 +250,23 @@ dbManager = _dbManager;
   
   NSURL *endpointURL = [NSURL URLWithString:self.orderEndpointURL];
   
-  NSMutableURLRequest *request = [[[NSMutableURLRequest alloc] init] autorelease];
+//  UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"ROFL"
+//                                                  message:self.orderEndpointURL
+//                                                 delegate:self
+//                                        cancelButtonTitle:@"OK"
+//                                        otherButtonTitles:nil];
+//  [alert show];
+  
+  NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
   [request setURL:endpointURL];
   [request setHTTPMethod:@"POST"];
   [request setValue:postLength forHTTPHeaderField:@"Content-Length"];
   [request setValue:[@"multipart/form-data; boundary=" stringByAppendingString:boundary] forHTTPHeaderField:@"Content-Type"];
   [request setHTTPBody:postBody];
   
-  self.sender = [[[IBURLLoader alloc] initWithRequest:request
+  self.sender = [[IBURLLoader alloc] initWithRequest:request
                                               success:success_
-                                              failure:failure_] autorelease];
+                                              failure:failure_];
 }
 
 + (NSString *)formatJSONRequestWithUserProfile:(mCatalogueUserProfile *)userProfile_
@@ -284,14 +280,13 @@ dbManager = _dbManager;
     [shippingForm setObject:value forKey:note_.name];
   }
   NSDictionary *shFormWithNote = [NSDictionary dictionaryWithDictionary:shippingForm];
-  [shippingForm release];
   
   NSDictionary *jsonDictionary = @{@"shipping_form" : shFormWithNote};
   
   NSError *error = nil;
   NSData *jsonData = [NSJSONSerialization dataWithJSONObject:jsonDictionary options:0 error:&error];
   
-  return [[[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding] autorelease];
+  return [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
 }
 
 /**
@@ -343,7 +338,7 @@ dbManager = _dbManager;
 -(NSString *)orderEndpointURL
 {
   if(!_orderEndpointURL.length){
-    _orderEndpointURL = [[NSString stringWithFormat:@"http://%@%@", appIBuildAppHostName(), kOrderEndpointPath] retain];
+    _orderEndpointURL = [NSString stringWithFormat:@"http://%@%@", appIBuildAppHostName(), kOrderEndpointPath];
   }
   
   return _orderEndpointURL;
@@ -357,7 +352,12 @@ dbManager = _dbManager;
     return nil;
   }
   
-  id obj = [NSKeyedUnarchiver unarchiveObjectWithFile:filePath];
+  id obj = nil;
+  @try
+  {
+    obj = [NSKeyedUnarchiver unarchiveObjectWithFile:filePath];
+  }
+  @catch (NSException *e) {}
   if ( [obj isKindOfClass:[mCatalogueParameters class]] )
   {
     ((mCatalogueParameters *)obj).moduleID = moduleID;
@@ -369,15 +369,15 @@ dbManager = _dbManager;
 
 -(void)fillWithParameters:(mCatalogueParameters *)parameters
 {
-  self.userProfile = [[parameters.userProfile copy] autorelease];
-  self.confirmInfo = [[parameters.confirmInfo copy] autorelease];
+  self.userProfile = [parameters.userProfile copy];
+  self.confirmInfo = [parameters.confirmInfo copy];
 }
 
 -(void)setUserProfile:(mCatalogueUserProfile *)userProfile
 {
   if(_userProfile != userProfile){
     if(!_userProfile){
-      _userProfile = [userProfile retain];
+      _userProfile = userProfile;
     } else {
       [_userProfile mergeWithProfile:userProfile];
     }

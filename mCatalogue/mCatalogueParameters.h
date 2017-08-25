@@ -76,6 +76,12 @@ typedef void(^mCatalogueParametersFailureBlock)(NSError *error);
 @property(nonatomic, strong) NSMutableArray *categories;
 
 /**
+ *  String with 1\0 values for enabling\disabling buttons on item detail page
+ */
+@property(nonatomic, strong) NSString *enabledButtons;
+
+
+/**
  *  Array of products out of categories
  */
 @property(nonatomic, strong) NSMutableArray *products;

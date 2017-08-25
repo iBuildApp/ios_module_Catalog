@@ -43,9 +43,7 @@
 -(void)setFirstView:(mCatalogueEntryView *)firstView
 {
   if(_firstView != firstView){
-    [firstView retain];
     [_firstView removeFromSuperview];
-    [_firstView release];
     _firstView = firstView;
     
     [self addSubview:_firstView];
@@ -56,9 +54,7 @@
 -(void)setSecondView:(mCatalogueEntryView *)secondView
 {
   if(_secondView != secondView){
-    [secondView retain];
     [_secondView removeFromSuperview];
-    [_secondView release];
     _secondView = secondView;
     
     [self addSubview:_secondView];
@@ -70,8 +66,6 @@
 {
   self.firstView = nil;
   self.secondView = nil;
-  
-  [super dealloc];
 }
 
 @end

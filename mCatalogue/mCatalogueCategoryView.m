@@ -83,14 +83,14 @@
 
   self.clipsToBounds = YES;
   
-  self.categoryNameLabel = [[[UILabel alloc] init] autorelease];
+  self.categoryNameLabel = [[UILabel alloc] init];
   self.categoryNameLabel.backgroundColor = [UIColor clearColor];
   self.categoryNameLabel.numberOfLines = 0;
   self.categoryNameLabel.adjustsFontSizeToFitWidth = NO;
   self.categoryNameLabel.lineBreakMode = NSLineBreakByTruncatingTail;
   [self addSubview:self.categoryNameLabel];
   
-  self.categoryImageView = [[[UIImageView alloc] init] autorelease];
+  self.categoryImageView = [[UIImageView alloc] init];
   self.categoryImageView.alpha = 0.0f;
   self.categoryImageView.contentMode = UIViewContentModeScaleAspectFill;
   self.categoryImageView.clipsToBounds = YES;
@@ -102,7 +102,7 @@
   CGFloat imageViewWidth = 0.0f;
   CGFloat imageViewHeight = 0.0f;
   
-  UIFont *categoryNameLabelFont;
+  UIFont *categoryNameLabelFont = [UIFont systemFontOfSize:kCategoryNameLabelFontSize_Grid];
   
   if(self.style == mCatalogueEntryViewStyleGrid){
     cellWidth = kCatalogueCategoryCellWidth_Grid;
@@ -134,7 +134,6 @@
   self.imageBackgroundView = [[UIView alloc] initWithFrame:imageViewFrame];
   self.imageBackgroundView.backgroundColor = self.imagePlaceholderMaskColor;
   [self insertSubview:self.imageBackgroundView belowSubview:self.categoryImageView];
-  [self.imageBackgroundView release];
   
   //we need to show image placeholder with 50% background color and name text with color of price
   //so we have to hide gradient and show it up only when image finishes downloading
@@ -197,13 +196,11 @@
     }
   }
   
-  NSDictionary *attributes = @{
-                               NSForegroundColorAttributeName : foregroundColor,
-                               NSFontAttributeName : font
-                               };
+  NSDictionary *attributes = @{NSForegroundColorAttributeName : foregroundColor,
+                               NSFontAttributeName : font};
   NSString *plainName = self.catalogueCategory.name ? self.catalogueCategory.name : @"";
   
-  NSAttributedString *attributedName = [[[NSAttributedString alloc] initWithString:plainName attributes:attributes] autorelease];
+  NSAttributedString *attributedName = [[NSAttributedString alloc] initWithString:plainName attributes:attributes];
   
   return attributedName;
 }
@@ -214,23 +211,24 @@
   
   self.categoryNameLabel.attributedText = [self categoryNameWithColor:[self.catalogueParameters priceColor]];
   self.gradientBackgroundView.alpha = 0.0f;
-  
+  __weak typeof(self) weakSelf = self;
   fadeInBlock = ^(UIImage *image, BOOL cached)
   {
-    [self makeInnerAnimationEfficient];
+      __strong typeof(self) strongSelf = weakSelf;
+    [strongSelf makeInnerAnimationEfficient];
     
-    [UIView transitionWithView:self.categoryNameLabel
+    [UIView transitionWithView:strongSelf.categoryNameLabel
                       duration:kCatalogueCellImageViewFadeInDuration
                        options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
-                         self.categoryNameLabel.attributedText = [self categoryNameWithColor:kCategoryNameLabelTextColor];
+                         strongSelf.categoryNameLabel.attributedText = [strongSelf categoryNameWithColor:kCategoryNameLabelTextColor];
                        }
                     completion:nil];
     
     [UIView animateWithDuration:kCatalogueCellImageViewFadeInDuration animations:^{
-      self.categoryImageView.alpha = 1.0f;
-      self.gradientBackgroundView.alpha = 1.0f;
+      strongSelf.categoryImageView.alpha = 1.0f;
+      strongSelf.gradientBackgroundView.alpha = 1.0f;
     } completion:^(BOOL finished) {
-      [self makeScrollingEfficient];
+      [strongSelf makeScrollingEfficient];
     }];
   };
   
@@ -265,9 +263,6 @@
 -(void)setCatalogueCategory:(mCatalogueCategory *)catalogueCategory
 {
   if(catalogueCategory != _catalogueCategory){
-    [catalogueCategory retain];
-    [_catalogueCategory release];
-  
     _catalogueCategory = catalogueCategory;
     
     [self positionCategoryNameLabel];
@@ -291,7 +286,7 @@
       kGradientViewHeight_Row};
   }
   
-  self.gradientBackgroundView = [[[UIView alloc] initWithFrame:gradientViewFrame] autorelease];
+  self.gradientBackgroundView = [[UIView alloc] initWithFrame:gradientViewFrame];
   self.gradientBackgroundView.backgroundColor = [UIColor clearColor];
   
   CAGradientLayer *gradientLayer = [CAGradientLayer layer];
@@ -307,9 +302,6 @@
 -(void)setImagePlaceholderMaskColor:(UIColor *)placeholderMaskColor
 {
   if(_imagePlaceholderMaskColor != placeholderMaskColor){
-    [placeholderMaskColor retain];
-    [_imagePlaceholderMaskColor release];
-    
     _imagePlaceholderMaskColor = placeholderMaskColor;
     
     _imageBackgroundView.backgroundColor = placeholderMaskColor;
@@ -317,7 +309,6 @@
 }
 
 +(CGSize)sizeForStyle:(mCatalogueEntryViewStyle)style
-      withPlaceholder:(BOOL)shouldShowPlaceholder
 {
   switch(style){
     case mCatalogueEntryViewStyleGrid:
@@ -339,8 +330,6 @@
   
   self.imagePlaceholderMaskColor = nil;
   self.imageBackgroundView = nil;
-  
-  [super dealloc];
 }
 
 @end

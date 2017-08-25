@@ -12,41 +12,52 @@
 #import "mCatalogueSearchBarView.h"
 #import "NSString+size.h"
 #import "UIColor+HSL.h"
+//#import "iphone/iphmasterviewcontroller.h"
 
 @interface mCatalogueSearchBarView()
 {
-    CGRect searchTextFieldCollapsedFrame;
-    CGRect searchTextFieldExpandedFrame;
-    BOOL _cartButtonHidden;
+  CGRect searchTextFieldCollapsedFrame;
+  CGRect searchTextFieldExpandedFrame;
+  
+  BOOL _cartButtonHidden;
+  BOOL _hamburgerHidden;
 }
-    @property (nonatomic, assign, readwrite) mCatalogueSearchBarViewAppearance appearance;
-    @property (nonatomic, retain) UILabel *cancelSearchLabel;
-    @property (nonatomic, retain) UIView *searchIconView;
-    @property (nonatomic, retain) UIView *hamburgerView;
-    @property (nonatomic, retain) UIView *backLabelView;
-    @property (nonatomic, retain) UILabel *titleLabel;
-    @property (nonatomic, retain) UILabel *foundApplicationsCountLabel;
-    @property (nonatomic, retain) UIView *separator;
+@property (nonatomic, assign, readwrite) mCatalogueSearchBarViewAppearance appearance;
+@property (nonatomic, retain) UILabel *cancelSearchLabel;
+@property (nonatomic, retain) UIView *searchIconView;
+@property (nonatomic, retain) UIView *hamburgerView;
+@property (nonatomic, retain) UIView *backLabelView;
+@property (nonatomic, retain) UILabel *titleLabel;
+@property (nonatomic, retain) UILabel *foundApplicationsCountLabel;
+@property (nonatomic, retain) UIView *separator;
+
 @end
 
-@implementation mCatalogueSearchBarView{
-  /**
-   * Width for hamburger imageview
-   * or back item depending on appearance
-   */
-  CGFloat leftItemWith;
-}
+@implementation mCatalogueSearchBarView
 
 @synthesize searchInProgress = searchInProgress;
 
++(mCatalogueSearchBarView *)sharedCatalogueSearchBarView
+{
+  static mCatalogueSearchBarView *sharedCatalogueSearchBarView = nil;
+  
+  static dispatch_once_t onceToken = 0;
+  
+  dispatch_once(&onceToken, ^{
+    sharedCatalogueSearchBarView = [[mCatalogueSearchBarView alloc] initWithApperance:mCatalogueSearchBarViewDefaultAppearance];
+  });
+  
+  return sharedCatalogueSearchBarView;
+}
+
 - (id) initWithFrame:(CGRect)frame {
-    self = [super initWithFrame:frame];
-    if(self){
-      self.appearance = mCatalogueSearchBarViewDefaultAppearance;
-      NSLog(@"mCatalogueSearchBarView: WARNING initWithFrame: constructor invoked, assuming mCatalogueSearchBarViewDefaultAppearance");
-      [self setupSelf];
-    }
-    return self;
+  self = [super initWithFrame:frame];
+  if(self){
+    self.appearance = mCatalogueSearchBarViewDefaultAppearance;
+    NSLog(@"mCatalogueSearchBarView: WARNING initWithFrame: constructor invoked, assuming mCatalogueSearchBarViewDefaultAppearance");
+    [self setupSelf];
+  }
+  return self;
 }
 
 - (id)initWithFrame:(CGRect)frame apperance:(mCatalogueSearchBarViewAppearance) appearance
@@ -87,10 +98,10 @@
   _foundApplicationsCountLabel = nil;
   _cartButton = nil;
   
+  _cartButtonHidden = YES;
+  _hamburgerHidden = YES;
+  
   switch(self.appearance){
-    case mCatalogueSearchBarViewHamburgerAppearance:
-      [self placeHamburgerImageView];
-      break;
     default:
       NSLog(@"mCatalogueSearchBarView: WARNING unrecognized appearance, assumed mCatalogueSearchBarViewDefaultAppearance");
     case mCatalogueSearchBarViewPureNavigationAppearance:
@@ -102,6 +113,8 @@
   [self placeSearchIconImageView];
   
   [self placeCartButton]; //hidden by default
+  
+  [self placeHamburgerView];  //hidden by default
   
   [self placeTitleLabel];
   
@@ -118,7 +131,7 @@
     self.searchTextField.hidden = YES;
     
   }
-
+  
   self.backgroundColor = [UIColor blackColor];
 }
 
@@ -133,14 +146,14 @@
 
 - (void) placeNavigationBackView
 {
-  self.backLabelView = [[[UIView alloc] initWithFrame:(CGRect){0.0f, 0.0f, 82.0f, self.frame.size.height}] autorelease];
+  self.backLabelView = [[UIView alloc] initWithFrame:(CGRect){0.0f, 0.0f, 82.0f, self.frame.size.height}];
   UIImage *backImg = [UIImage imageNamed:resourceFromBundle(@"mCatalogue_back")];
-  UIImageView *backImgView = [[[UIImageView alloc] initWithImage:backImg] autorelease];
+  UIImageView *backImgView = [[UIImageView alloc] initWithImage:backImg];
   backImgView.frame = (CGRect){7.0f, 0.0f, 13.0f, 20.0f};
   [self centerView:backImgView];
   [self.backLabelView addSubview:backImgView];
   
-  self.backButtonLabel = [[[UILabel alloc] init] autorelease];
+  self.backButtonLabel = [[UILabel alloc] init];
   _backButtonLabel.frame = (CGRect){23.0f, 0.0f, 64.0f, self.frame.size.height};
   _backButtonLabel.textAlignment = NSTextAlignmentLeft;
   _backButtonLabel.text = NSBundleLocalizedString(@"mCatalogue_Back", @"Back");
@@ -150,83 +163,122 @@
   [self centerView:_backButtonLabel];
   [self.backLabelView addSubview:_backButtonLabel];
   
-  UITapGestureRecognizer *backTapRecognizer = [[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(leftButtonPressed)] autorelease];
+  UITapGestureRecognizer *backTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(leftButtonPressed)];
   [self.backLabelView addGestureRecognizer:backTapRecognizer];
   [self addSubview:self.backLabelView];
 }
 
-- (void) placeHamburgerImageView
+-(UIView *)hamburgerView
 {
-    self.hamburgerView = [[[UIView alloc] initWithFrame:(CGRect){0.0f, 0.0f, kToolbarHeight, kToolbarHeight}] autorelease];
-    self.hamburgerView.userInteractionEnabled = YES;
-    [self addSubview:self.hamburgerView];
+  if(!_hamburgerView)
+  {
+    CGFloat hamburgerOriginX = self.frame.size.width - kToolbarHeight - 7.0f;
+    
+    CGRect hamburgerFrame = (CGRect){hamburgerOriginX, 0.0f, kToolbarHeight, kToolbarHeight};
+    
+    _hamburgerView = [[UIView alloc] initWithFrame:hamburgerFrame];
+    _hamburgerView.userInteractionEnabled = YES;
+    
+    UITapGestureRecognizer *hamburgerTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hamburgerPressed)];
+    [_hamburgerView addGestureRecognizer:hamburgerTapRecognizer];
+    
+    UIImage *hamburger = [UIImage imageNamed:resourceFromBundle(@"mCatalogueHamburger_black")];
+    UIImageView *hamburgerImageView = [[UIImageView alloc] initWithImage:hamburger];
+    hamburgerImageView.contentMode = UIViewContentModeCenter;
+    
+    hamburgerImageView.frame = _hamburgerView.bounds;
+    hamburgerImageView.center = (CGPoint){hamburgerImageView.center.x, _hamburgerView.center.y};
+    
+    [_hamburgerView addSubview:hamburgerImageView];
+  }
   
-    UITapGestureRecognizer *hamburgerTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(leftButtonPressed)];
-    [self.hamburgerView addGestureRecognizer:hamburgerTapRecognizer];
-    
-    UIImage *hamburger = [UIImage imageNamed:@"hamburger"]; //not used
-    UIImageView *hamburgerImageView = [[[UIImageView alloc] initWithImage:hamburger] autorelease];
-    CGRect hamburgerFrame = hamburgerImageView.frame;
-    hamburgerFrame.origin.x = kHamburgerPadding;
-    hamburgerFrame.origin.y = 0.0f;
-    
-    hamburgerImageView.frame = hamburgerFrame;
-    hamburgerImageView.center =  (CGPoint){hamburgerImageView.center.x, self.hamburgerView.center.y};
-    
-    [self.hamburgerView addSubview:hamburgerImageView];
+  return _hamburgerView;
+}
+
+- (void) placeHamburgerView
+{
+  [self addSubview:self.hamburgerView];
+  
+  self.hamburgerView.hidden = _hamburgerHidden;
 }
 
 - (void) placeSearchIconImageView
 {
-    CGFloat tapAreaOriginX = self.frame.size.width - kToolbarHeight;
-    
-    self.searchIconView = [[[UIView alloc] initWithFrame:(CGRect){tapAreaOriginX, 0.0f, kToolbarHeight, kToolbarHeight}] autorelease];
-    self.searchIconView.backgroundColor = [UIColor clearColor];
-    self.searchIconView.userInteractionEnabled = YES;
-    
-    UITapGestureRecognizer *searchIconTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(searchIconTapped)];
-    [self.searchIconView addGestureRecognizer:searchIconTapRecognizer];
-    [self addSubview:self.searchIconView];
-    
-    CGFloat searchIconOriginX = kToolbarHeight - kSearchIconWidth - kSearchIconPaddingRight;
-    
-    UIImage *searchIcon = [UIImage imageNamed:resourceFromBundle(@"mCatalogue_search")];
-    UIImageView *searchIconImageView = [[[UIImageView alloc] initWithImage:searchIcon] autorelease];
-    
-    CGRect searchIconFrame = (CGRect){searchIconOriginX, 0.0f, kSearchIconWidth, kSearchIconWidth};
-    searchIconImageView.frame = searchIconFrame;
-    searchIconImageView.center = (CGPoint){(int)searchIconImageView.center.x, (int)(kToolbarHeight/2)};
-    
-    [self.searchIconView addSubview:searchIconImageView];
+  CGFloat tapAreaOriginX = self.frame.size.width - kToolbarHeight;
+  
+  self.searchIconView = [[UIView alloc] initWithFrame:(CGRect){tapAreaOriginX, 0.0f, kToolbarHeight, kToolbarHeight}];
+  self.searchIconView.backgroundColor = [UIColor clearColor];
+  self.searchIconView.userInteractionEnabled = YES;
+  
+  UITapGestureRecognizer *searchIconTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(searchIconTapped)];
+  [self.searchIconView addGestureRecognizer:searchIconTapRecognizer];
+  [self addSubview:self.searchIconView];
+  
+  CGFloat searchIconOriginX = kToolbarHeight - kSearchIconWidth - kSearchIconPaddingRight;
+  
+  UIImage *searchIcon = [UIImage imageNamed:resourceFromBundle(@"mCatalogue_search")];
+  UIImageView *searchIconImageView = [[UIImageView alloc] initWithImage:searchIcon];
+  
+  int space = 0;
+  
+  NSUserDefaults *preferences = [NSUserDefaults standardUserDefaults];
+  
+  NSString *cartEnabledKey = @"currentlevel";
+  
+  if ([preferences objectForKey:cartEnabledKey] == nil)
+  {
+      //  Doesn't exist.
+  }
+  else
+  {
+      //  Get current level
+    const BOOL cartEnabled = [preferences integerForKey:cartEnabledKey];
+    if (cartEnabled) {
+      space = 20;
+    }
+  }
+  
+  CGRect searchIconFrame = (CGRect){searchIconOriginX + space, 0.0f, kSearchIconWidth, kSearchIconWidth};
+  searchIconImageView.frame = searchIconFrame;
+  searchIconImageView.center = (CGPoint){(int)searchIconImageView.center.x, (int)(kToolbarHeight/2)};
+  
+  [self.searchIconView addSubview:searchIconImageView];
 }
 
 - (void) placeCartButton
 {
-  _cartButtonHidden = YES;
-  CGRect cartButtonFrame = CGRectMake(self.frame.size.width - kToolbarHeight, 0.0f, kToolbarHeight, kToolbarHeight);
-  
-  self.cartButton = [[[mCatalogueCartButton alloc] initWithFrame:cartButtonFrame] autorelease];
-  
-  [self.cartButton addTarget:self
-                        action:@selector(cartButtonPressed)
-              forControlEvents:UIControlEventTouchUpInside];
-  
-  self.cartButton.count = 10;
-  
   [self addSubview:self.cartButton];
+  
+  self.cartButton.hidden = _cartButtonHidden;
+}
+
+-(mCatalogueCartButton *)cartButton
+{
+  if(!_cartButton)
+  {
+    CGRect cartButtonFrame = CGRectMake(self.frame.size.width - kToolbarHeight, 0.0f, kToolbarHeight, kToolbarHeight);
+    
+    _cartButton = [[mCatalogueCartButton alloc] initWithFrame:cartButtonFrame];
+    
+    [_cartButton addTarget:self
+                    action:@selector(cartButtonPressed)
+          forControlEvents:UIControlEventTouchUpInside];
+  }
+  
+  return _cartButton;
 }
 
 - (void) placeTitleLabel
 {
-  self.titleLabel = [[[UILabel alloc] init] autorelease];
+  self.titleLabel = [[UILabel alloc] init];
   
   switch(self.appearance){
-    case mCatalogueSearchBarViewHamburgerAppearance:
-      //not used
-      break;
     case mCatalogueSearchBarViewDefaultAppearance:
       break;
+      
     case mCatalogueSearchBarViewPureNavigationAppearance:
+      break;
+      
     default:
       break;
   }
@@ -249,73 +301,73 @@
 
 - (void) placeCancelSearchLabel
 {
-    self.cancelSearchLabel = [[[UILabel alloc] init] autorelease];
-    self.cancelSearchLabel.font = [UIFont systemFontOfSize:kCancelLabelFontSize];
-    
-    NSString *labelText = NSBundleLocalizedString(@"mCatalogue_CancelSearch", @"Cancel");
-    
-    CGSize cancelSearchLabelSize = [labelText sizeForFont:self.cancelSearchLabel.font limitSize:self.frame.size];
-    CGFloat cancelSearchLabelOriginX = self.bounds.size.width - kCancelLabelHorizontalPadding - cancelSearchLabelSize.width;
-    CGFloat cancelSearchLabelOriginY = 0.0f;
-    
-    CGRect cancelLabelFrame = (CGRect){cancelSearchLabelOriginX, cancelSearchLabelOriginY, cancelSearchLabelSize.width, kToolbarHeight};
-    
-    self.cancelSearchLabel.frame = cancelLabelFrame;
-    self.cancelSearchLabel.backgroundColor = [UIColor clearColor];
-    self.cancelSearchLabel.text = labelText;
-    self.cancelSearchLabel.textColor = kCancelLabelFontColor;
-    self.cancelSearchLabel.userInteractionEnabled = YES;
-    
-    UITapGestureRecognizer *cancelSearchTapRecognizer = [[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(cancelSearch)] autorelease];
-    
-    [self.cancelSearchLabel addGestureRecognizer:cancelSearchTapRecognizer];
-    
-    [self addSubview:self.cancelSearchLabel];
+  self.cancelSearchLabel = [[UILabel alloc] init];
+  self.cancelSearchLabel.font = [UIFont systemFontOfSize:kCancelLabelFontSize];
+  
+  NSString *labelText = NSBundleLocalizedString(@"mCatalogue_CancelSearch", @"Cancel");
+  
+  CGSize cancelSearchLabelSize = [labelText sizeForFont:self.cancelSearchLabel.font limitSize:self.frame.size];
+  CGFloat cancelSearchLabelOriginX = self.bounds.size.width - kCancelLabelHorizontalPadding - cancelSearchLabelSize.width;
+  CGFloat cancelSearchLabelOriginY = 0.0f;
+  
+  CGRect cancelLabelFrame = (CGRect){cancelSearchLabelOriginX, cancelSearchLabelOriginY, cancelSearchLabelSize.width, kToolbarHeight};
+  
+  self.cancelSearchLabel.frame = cancelLabelFrame;
+  self.cancelSearchLabel.backgroundColor = [UIColor clearColor];
+  self.cancelSearchLabel.text = labelText;
+  self.cancelSearchLabel.textColor = kCancelLabelFontColor;
+  self.cancelSearchLabel.userInteractionEnabled = YES;
+  
+  UITapGestureRecognizer *cancelSearchTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(cancelSearch)];
+  
+  [self.cancelSearchLabel addGestureRecognizer:cancelSearchTapRecognizer];
+  
+  [self addSubview:self.cancelSearchLabel];
 }
 
 - (void) placeSearchTextField
 {
-    self.searchTextField = [[[UITextField alloc] init] autorelease];
+  self.searchTextField = [[UITextField alloc] init];
   
-    self.searchTextField.autocorrectionType = UITextAutocorrectionTypeNo;
+  self.searchTextField.autocorrectionType = UITextAutocorrectionTypeNo;
   
-    if(SYSTEM_VERSION_LESS_THAN(@"7.0")){
-        self.searchTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-    }
-    
-    searchTextFieldCollapsedFrame = (CGRect){self.cancelSearchLabel.frame.origin.x - kCancelLabelHorizontalPadding,
-        (self.frame.size.height - kSearchTextFieldHeight) / 2,
-        0.0f,
-        kSearchTextFieldHeight};
+  if(SYSTEM_VERSION_LESS_THAN(@"7.0")){
+    self.searchTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+  }
+  
+  searchTextFieldCollapsedFrame = (CGRect){self.cancelSearchLabel.frame.origin.x - kCancelLabelHorizontalPadding,
+    (self.frame.size.height - kSearchTextFieldHeight) / 2,
+    0.0f,
+    kSearchTextFieldHeight};
 
-    CGFloat searchTextFieldWidth = self.frame.size.width - (kCancelLabelHorizontalPadding + 2 * kCancelLabelHorizontalPadding + self.cancelSearchLabel.frame.size.width);
-    
-    searchTextFieldExpandedFrame = (CGRect){kCancelLabelHorizontalPadding, searchTextFieldCollapsedFrame.origin.y, searchTextFieldWidth, kSearchTextFieldHeight};
-    
-    self.searchTextField.returnKeyType = UIReturnKeySearch;
-    self.searchTextField.delegate = self.mCatalogueSearchViewTextFieldDelegate;
-    self.searchTextField.borderStyle = UITextBorderStyleNone;
-    self.searchTextField.layer.backgroundColor = [UIColor whiteColor].CGColor;
-    
-    self.searchTextField.layer.cornerRadius = kSearchBarTextFieldCornerRadius;
-    self.searchTextField.font = [UIFont systemFontOfSize:kSearchBarTextViewFontSize];
-    self.searchTextField.textAlignment = NSTextAlignmentLeft;
-    
-    UIView *spacerView = [[[UIView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 10.0f, kSearchTextFieldHeight)] autorelease];
-    [self.searchTextField setLeftViewMode:UITextFieldViewModeAlways];
-    [self.searchTextField setLeftView:spacerView];
+  CGFloat searchTextFieldWidth = self.frame.size.width - (kCancelLabelHorizontalPadding + 2 * kCancelLabelHorizontalPadding + self.cancelSearchLabel.frame.size.width);
   
-    self.searchTextField.clearButtonMode = UITextFieldViewModeWhileEditing;
+  searchTextFieldExpandedFrame = (CGRect){kCancelLabelHorizontalPadding, searchTextFieldCollapsedFrame.origin.y, searchTextFieldWidth, kSearchTextFieldHeight};
   
-    [self setupSearchPlaceholder];
+  self.searchTextField.returnKeyType = UIReturnKeySearch;
+  self.searchTextField.delegate = self.mCatalogueSearchViewTextFieldDelegate;
+  self.searchTextField.borderStyle = UITextBorderStyleNone;
+  self.searchTextField.layer.backgroundColor = [UIColor whiteColor].CGColor;
   
-    self.searchTextField.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
-    self.searchTextField.frame = searchTextFieldCollapsedFrame;
-    self.searchTextField.delegate = self;
+  self.searchTextField.layer.cornerRadius = kSearchBarTextFieldCornerRadius;
+  self.searchTextField.font = [UIFont systemFontOfSize:kSearchBarTextViewFontSize];
+  self.searchTextField.textAlignment = NSTextAlignmentLeft;
   
-    [self addSubview:self.searchTextField];
+  UIView *spacerView = [[UIView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 10.0f, kSearchTextFieldHeight)];
+  [self.searchTextField setLeftViewMode:UITextFieldViewModeAlways];
+  [self.searchTextField setLeftView:spacerView];
   
-    [self placeFoundApplicationsCountRightView];
+  self.searchTextField.clearButtonMode = UITextFieldViewModeWhileEditing;
+  
+  [self setupSearchPlaceholder];
+  
+  self.searchTextField.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
+  self.searchTextField.frame = searchTextFieldCollapsedFrame;
+  self.searchTextField.delegate = self;
+  
+  [self addSubview:self.searchTextField];
+  
+  [self placeFoundApplicationsCountRightView];
 }
 
 -(void)setupSearchPlaceholder{
@@ -323,7 +375,7 @@
   
   if ([self.searchTextField respondsToSelector:@selector(setAttributedPlaceholder:)]) {
     UIColor *color = [UIColor blackColor];
-    self.searchTextField.attributedPlaceholder = [[[NSAttributedString alloc] initWithString:placeholderText attributes:@{NSForegroundColorAttributeName: color}] autorelease];
+    self.searchTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:placeholderText attributes:@{NSForegroundColorAttributeName: color}];
   } else {
     self.searchTextField.placeholder = placeholderText;
   }
@@ -333,7 +385,7 @@
 {
   CGRect separatorFrame = (CGRect){0.0f, kToolbarHeight, self.frame.size.width, kToolbarSeparatorHeight};
   
-  self.separator = [[[UIView alloc] initWithFrame:separatorFrame] autorelease];
+  self.separator = [[UIView alloc] initWithFrame:separatorFrame];
   
   if([self.backgroundColor isLight]){
     self.separator.backgroundColor = kSeparatorColorDark;
@@ -360,6 +412,13 @@
   }
 }
 
+- (void) hamburgerPressed
+{
+  [[NSNotificationCenter defaultCenter] postNotificationName:@"moduleHamburgerPressed"
+                                                      object:nil];
+  //[[CIphoneMasterViewController appHomeScreenVC] toggleSideBar];
+}
+
 - (void) searchIconTapped
 {
   searchInProgress = !searchInProgress;
@@ -367,9 +426,6 @@
   [self setupSearchPlaceholder];
   
   switch(self.appearance){
-    case mCatalogueSearchBarViewHamburgerAppearance:
-      self.hamburgerView.hidden = YES;
-      break;
     case mCatalogueSearchBarViewDefaultAppearance:
       self.backLabelView.hidden = YES;
       break;
@@ -380,7 +436,11 @@
   
   self.titleLabel.hidden = YES;
   self.searchIconView.hidden = YES;
-  self.cartButton.hidden = YES;
+
+  self.cartButton.alpha = 0.0f;
+  self.cartButton.enabled = NO;
+  self.hamburgerView.alpha = 0.0f;
+  self.hamburgerView.userInteractionEnabled = NO;
   
   self.cancelSearchLabel.alpha = 0.0f;
   self.cancelSearchLabel.hidden = NO;
@@ -413,17 +473,9 @@
   
   self.searchIconView.alpha = 0.0f;
   self.searchIconView.hidden = NO;
-  if (!_cartButtonHidden)
-  {
-    self.cartButton.hidden = NO;
-    self.cartButton.alpha = 0.0f;
-  }
+  
   
   switch(self.appearance){
-    case mCatalogueSearchBarViewHamburgerAppearance:
-      self.hamburgerView.alpha = 0.0f;
-      self.hamburgerView.hidden = NO;
-      break;
     case mCatalogueSearchBarViewDefaultAppearance:
       self.backLabelView.alpha = 0.0f;
       self.backLabelView.hidden = NO;
@@ -447,13 +499,14 @@
     [UIView animateWithDuration:0.1f animations:^{
       self.titleLabel.alpha = 1.0f;
       self.searchIconView.alpha = 1.0f;
-      if (!_cartButtonHidden)
-        self.cartButton.alpha = 1.0f;
-        
+      
+      self.cartButton.alpha = 1.0f;
+      self.hamburgerView.alpha = 1.0f;
+      
+      self.cartButton.enabled = YES;
+      self.hamburgerView.userInteractionEnabled = YES;
+      
       switch(self.appearance){
-        case mCatalogueSearchBarViewHamburgerAppearance:
-          self.hamburgerView.alpha = 1.0f;
-          break;
         case mCatalogueSearchBarViewDefaultAppearance:
           self.backLabelView.alpha = 1.0f;
           break;
@@ -467,18 +520,17 @@
 }
 
 
-- (void) setmCatalogueSearchViewTextFieldDelegate:(id<NSObject,UITextFieldDelegate>)mCatalogueSearchViewTextFieldDelegate {
-    if(_mCatalogueSearchViewTextFieldDelegate != mCatalogueSearchViewTextFieldDelegate){
-        _mCatalogueSearchViewTextFieldDelegate = mCatalogueSearchViewTextFieldDelegate;
-        self.searchTextField.delegate = _mCatalogueSearchViewTextFieldDelegate;
-    }
+- (void) setCatalogueSearchViewTextFieldDelegate:(id<NSObject,UITextFieldDelegate>)mCatalogueSearchViewTextFieldDelegate {
+  if(_mCatalogueSearchViewTextFieldDelegate != mCatalogueSearchViewTextFieldDelegate){
+    _mCatalogueSearchViewTextFieldDelegate = mCatalogueSearchViewTextFieldDelegate;
+    self.searchTextField.delegate = _mCatalogueSearchViewTextFieldDelegate;
+  }
 }
 
 - (void) setTitle:(NSString *)title
 {
   if(_title != title){
-    [_title release];
-    _title = [title retain];
+    _title = title;
     self.titleLabel.text = _title;
     self.titleLabel.center = (CGPoint){self.bounds.size.width / 2, kToolbarHeight / 2};
     
@@ -493,9 +545,6 @@
 - (void) setSeparatorColor:(UIColor *)separatorColor
 {
   if(_separatorColor != separatorColor){
-    [separatorColor retain];
-    [_separatorColor release];
-    
     _separatorColor = separatorColor;
     
     _separator.backgroundColor = _separatorColor;
@@ -517,7 +566,7 @@
 
 -(void)placeFoundApplicationsCountRightView
 {
-  self.foundApplicationsCountLabel = [[[UILabel alloc] init] autorelease];
+  self.foundApplicationsCountLabel = [[UILabel alloc] init];
   self.foundApplicationsCountLabel.textColor = kAppCountTextColor;
   self.foundApplicationsCountLabel.backgroundColor = [UIColor clearColor];
   self.foundApplicationsCountLabel.font = [UIFont systemFontOfSize:12.0f];
@@ -545,34 +594,59 @@
   self.foundApplicationsCountLabel.frame = newFrame;
 }
 
--(void) setCartButtonHidden:(BOOL)value
+
+- (void)setCartButtonHidden:(BOOL)hidden
 {
-  if (_cartButtonHidden != value)
+  if ((_cartButtonHidden != hidden) &&  _hamburgerHidden)
   {
-    CGPoint c = self.searchIconView.center;
-    CGRect r = self.titleLabel.frame;
-    if (value)
-    {
-      c.x += kToolbarHeight;
-      r.size = CGSizeMake(r.size.width + kToolbarHeight, r.size.height);
-    }
-    else
-    {
-      c.x -= kToolbarHeight;
-      r.size = CGSizeMake(r.size.width - kToolbarHeight, r.size.height);
-    }
+    if (!hidden && _hamburgerHidden)
+        [self moveSearchIcon:-kToolbarHeight];
     
-    self.searchIconView.center = c;
-    self.titleLabel.frame = r;
+    if (hidden && _hamburgerHidden)
+      [self moveSearchIcon:kToolbarHeight];
     
-    self.cartButton.hidden = value;
-    _cartButtonHidden = value;
+    self.cartButton.hidden = hidden;
+    _cartButtonHidden = hidden;
   }
+}
+
+- (void)setHamburgerHidden:(BOOL)hidden
+{
+  if(_hamburgerHidden != hidden)
+  {
+    if (!hidden && _cartButtonHidden)
+      [self moveSearchIcon:-kToolbarHeight];
+    
+    if (hidden && _cartButtonHidden)
+      [self moveSearchIcon:kToolbarHeight];
+    
+    if (!hidden) self.cartButton.hidden = YES;
+    
+    self.hamburgerView.hidden = hidden;
+    _hamburgerHidden = hidden;
+  }
+}
+
+-(void)moveSearchIcon:(CGFloat)offset
+{
+  CGPoint searchIconViewCenter = self.searchIconView.center;
+  CGRect titleLabelFrame = self.titleLabel.frame;
+  
+  searchIconViewCenter.x += offset;
+  titleLabelFrame.size = CGSizeMake(titleLabelFrame.size.width, titleLabelFrame.size.height);
+  
+  self.searchIconView.center = searchIconViewCenter;
+  self.titleLabel.frame = titleLabelFrame;
 }
 
 -(BOOL) cartButtonHidden
 {
-  return self.cartButton ? self.cartButton.hidden : YES;
+  return _cartButtonHidden;
+}
+
+-(BOOL) hamburgerHidden
+{
+  return _hamburgerHidden;
 }
 
 
@@ -617,17 +691,16 @@
 
 - (void) dealloc
 {
-    self.titleLabel = nil;
-    self.backButtonLabel = nil;
-    self.searchTextField = nil;
-    self.cancelSearchLabel = nil;
-    self.searchIconView = nil;
-    self.hamburgerView = nil;
-    self.foundApplicationsCountLabel = nil;
-    self.separatorColor = nil;
-    self.cartButton = nil;
+  self.titleLabel = nil;
+  self.backButtonLabel = nil;
+  self.searchTextField = nil;
+  self.cancelSearchLabel = nil;
+  self.searchIconView = nil;
+  self.hamburgerView = nil;
+  self.foundApplicationsCountLabel = nil;
+  self.separatorColor = nil;
   
-    [super dealloc];
+  self.cartButton = nil;
 }
 
 @end

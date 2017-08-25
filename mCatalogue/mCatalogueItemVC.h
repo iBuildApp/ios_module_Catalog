@@ -10,7 +10,7 @@
  ****************************************************************************/
 
 #import <UIKit/UIKit.h>
-
+#import <WebKit/WebKit.h>
 #import "mCatalogueItem.h"
 #import "mCatalogueParameters.h"
 
@@ -29,7 +29,7 @@
                                           MFMailComposeViewControllerDelegate,
                                           MFMessageComposeViewControllerDelegate,
                                           auth_ShareDelegate,
-                                          UIWebViewDelegate>
+                                          WKNavigationDelegate>
 
 /**
  *  Catalogue item to present with more datail.

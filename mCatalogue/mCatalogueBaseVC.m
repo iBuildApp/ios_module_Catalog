@@ -15,10 +15,15 @@
 #import "mCatalogueCartVC.h"
 #import "mCatalogueCartAlertView.h"
 
-@implementation mCatalogueBaseVC
+@interface mCatalogueBaseVC()
 {
   mCatalogueSearchBarViewAppearance searchBarAppearance;
 }
+
+@end
+
+
+@implementation mCatalogueBaseVC
 
 -(instancetype)initWithNavBarAppearance:(mCatalogueSearchBarViewAppearance)appearance
 {
@@ -27,6 +32,8 @@
   if(self){
     searchBarAppearance = appearance;
     _catalogueParams = [mCatalogueParameters sharedParameters];
+    
+    _colorSkin = nil;
   }
   
   return self;
@@ -39,6 +46,8 @@
   if(self){
     searchBarAppearance = mCatalogueSearchBarViewPureNavigationAppearance;
     _catalogueParams = [mCatalogueParameters sharedParameters];
+    
+    _colorSkin = nil;
   }
   
   return self;
@@ -52,7 +61,7 @@
   self.customNavBar = nil;
   self.statusBarView = nil;
   
-  [super dealloc];
+  _colorSkin = nil;
 }
 
 #pragma mark - View lifecycle
@@ -60,9 +69,12 @@
 {
   [super viewDidLoad];
   
-  if(SYSTEM_VERSION_LESS_THAN(@"7.0")){
-    self.wantsFullScreenLayout = YES;
-  }
+  [[self.tabBarController tabBar] setHidden:YES];
+  
+  //if(SYSTEM_VERSION_LESS_THAN(@"7.0")){
+    //self.wantsFullScreenLayout = YES;
+      self.extendedLayoutIncludesOpaqueBars = YES;
+  //}
   
   self.view.backgroundColor = [UIColor whiteColor];
   [self placeNavBar];
@@ -75,11 +87,7 @@
   internetReachable = _catalogueParams.isInternetReachable;
   
   self.customNavBar.cartButton.count = _catalogueParams.cart.totalCount;
-  self.customNavBar.cartButton.hidden = !_catalogueParams.cartEnabled;
-  
-  // before hiding / displaying tabBar we must remember its previous state
-  self.tabBarIsHidden = [[self.tabBarController tabBar] isHidden];
-  [[self.tabBarController tabBar] setHidden:!self.showTabBar];
+  self.customNavBar.cartButtonHidden = !_catalogueParams.cartEnabled;
   
   [self.navigationController setNavigationBarHidden:YES];
   
@@ -96,8 +104,7 @@
 
 -(void)viewWillDisappear:(BOOL)animated
 {
-  // restore tabBar state
-  [[self.tabBarController tabBar] setHidden:self.tabBarIsHidden];
+
   [self.navigationController setNavigationBarHidden:YES];
   
   [[NSNotificationCenter defaultCenter] removeObserver:self
@@ -115,13 +122,13 @@
 -(void)placeNavBar
 {
   if(!_customNavBar){
-    self.customNavBar = [[[mCatalogueSearchBarView alloc] initWithApperance:searchBarAppearance] autorelease];
+    self.customNavBar = [[mCatalogueSearchBarView alloc] initWithApperance:searchBarAppearance];
     
     CGRect barFrame = (CGRect){0.0f, 0.0f, self.customNavBar.frame.size.width, 20.0f};
     
-    UIColor *navBarColor = _catalogueParams.isWhiteBackground ? kCatalogueNavBarColorDark : kCatalogueNavBarColorLight;
+    UIColor *navBarColor = [_colorSkin navBarBackgroundColor];
     
-    self.statusBarView = [[[UIView alloc] initWithFrame:barFrame] autorelease];
+    self.statusBarView = [[UIView alloc] initWithFrame:barFrame];
     self.statusBarView.backgroundColor = navBarColor;
     [self.view addSubview:self.statusBarView];
     
@@ -162,8 +169,8 @@
 -(void)gotoCart
 {
   mCatalogueCartVC *cartVC = [[mCatalogueCartVC alloc] init];
+  cartVC.colorSkin = self.colorSkin;
   [self.navigationController pushViewController:cartVC animated:YES];
-  [cartVC release];
 }
 
 -(void)cartButtonPressed:(mCatalogueItemView *)sender
@@ -174,23 +181,31 @@
 }
 
 -(void)addCatalogueItemToCart:(mCatalogueItem *)item
-{
+{//adding many items
   [_catalogueParams.cart addCatalogueItem:item
                              withQuantity:1];
   
   [self showGotoCartPrompt];
 }
 
+-(void)addCatalogueItemToCart:(mCatalogueItem *)item withQuantity:(int)quantity
+{//adding many items
+  [_catalogueParams.cart addCatalogueItem:item
+                             withQuantity:quantity];
+  
+  [self showGotoCartPrompt];
+}
+
 -(void)showGotoCartPrompt
 {
-  mCatalogueCartAlertView *cartAlert = [[[mCatalogueCartAlertView alloc] initWithCartCount:_catalogueParams.cart.totalCount
+  mCatalogueCartAlertView *cartAlert = [[mCatalogueCartAlertView alloc] initWithCartCount:_catalogueParams.cart.totalCount
                                                                                     addCount:1
                                                                                cancelHandler:nil
                                                                                actionHandler:^(UIAlertView *alertView)
                                            {
                                              //cart button was tapped
                                              [self gotoCart];
-                                           }] autorelease];
+                                           }];
   [cartAlert show];
 }
 
@@ -268,7 +283,7 @@
   return YES;
 }
 
--(NSUInteger)supportedInterfaceOrientations
+-(UIInterfaceOrientationMask)supportedInterfaceOrientations
 {
   return UIInterfaceOrientationMaskPortrait | UIInterfaceOrientationMaskPortraitUpsideDown;
 }
@@ -276,6 +291,19 @@
 - (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation
 {
   return UIInterfaceOrientationPortrait;
+}
+
+#pragma mark - IBSideBar
+-(NSArray *)actionsForIBSideBar
+{
+  self.customNavBar.hamburgerHidden = NO;
+  
+  if([mCatalogueParameters sharedParameters].cartEnabled)
+  {
+    return @[self.customNavBar.cartButton.sideBarModuleAction];
+  }
+  
+  return nil;
 }
 
 @end

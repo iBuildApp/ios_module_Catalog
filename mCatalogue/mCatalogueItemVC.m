@@ -37,19 +37,28 @@
 
 #import "mCatalogueThankYouPageVC.h"
 
+#import "phonecaller.h"
+
+#import "mCatalogueTextField.h"
 
 #define kItemNameLabelMarginTop (10.0f - 3.0f)
+#define kItemSKULabelMarginTop (10.0f - 3.0f)
 #define kItemDescriptionWebViewMarginTop (12.0f - 4.0f)
-#define kPriceContainerSeparatorMarginTop 10.0f
+#define kCartButtonContainerSeparatorMarginTop 10.0f
 #define kSeparatorHeight 0.5f
+#define kCartButtonContainerMarginTop 10.0f
 #define kPriceContainerMarginTop 10.0f
 #define kLikesCountLabelMarginRight 14.0f
 
 #define kItemNameLabelMarginRight 10.0f
 #define kItemNameLabelMarginLeft 14.0f
+#define kItemSKULabelMarginRight 10.0f
+#define kItemSKULabelMarginLeft 14.0f
 #define kItemDescriptionWebViewMarginLeft kItemNameLabelMarginLeft
 #define kItemDescriptionWebViewMarginRight kItemNameLabelMarginRight
+#define kCartButtonContainerMarginLeft kItemNameLabelMarginLeft
 #define kPriceContainerMarginLeft kItemNameLabelMarginLeft
+#define kSpaceBetweenPrices 6.0f
 
 #define kShareButtonWidth 35.0f 
 #define kShareButtonHeight kShareButtonWidth
@@ -59,23 +68,27 @@
 #define kLikeButtonLikeImageViewWidth kShareButtonWidth
 #define kLikeButtonLikeImageViewHeight kLikeButtonLikeImageViewWidth
 
-
 #define kShareButtonBorderWidth 1.5f
 #define kLikeButtonBorderWidth kShareButtonBorderWidth
 #define kSpaceBetweenShareAndLikeButtons 10.0f
 
-//price container with itemPriceLabel, shareButton, likeButton
-#define kPriceContainerHeight kShareButtonHeight
-
+// A price container with a shareButton, a likeButton
+#define kCartButtonContainerHeight kShareButtonHeight
 
 #define kItemNameLabelFontSize 19.0f
 #define kItemNameLabelTextColor [[UIColor blackColor] colorWithAlphaComponent:0.9f]
+
+#define kItemSKULabelFontSize 12.0f
+#define kItemSKULabelTextColor [[UIColor blackColor] colorWithAlphaComponent:0.6f]
 
 #define kLikesCountLabelFontSize 15.0f
 #define kLikesCountLabelTextColor [[UIColor blackColor] colorWithAlphaComponent:0.9f]
 
 #define kItemPriceLabelFontSize 19.0f
-#define kItemPriceLabelTextColor [UIColor blackColor]
+#define kItemPriceLabelTextColor [[UIColor blackColor] colorWithAlphaComponent:0.9f]
+
+#define kItemOldPriceLabelFontSize 15.0f
+#define kItemOldPriceLabelTextColor [[UIColor blackColor] colorWithAlphaComponent:0.5f]
 
 #define kSocialButtonsBorderColor [[UIColor blackColor] colorWithAlphaComponent:0.6f]
 
@@ -109,7 +122,7 @@
   BOOL shouldMakeStatusBarLight;
 }
 
-@property (nonatomic, strong) mCatalogueSearchBarView *customNavBar;
+//@property (nonatomic, strong) mCatalogueSearchBarView *customNavBar;
 
 @property (nonatomic, strong) UIScrollView  *scrollView;
 @property (nonatomic, strong) UIImageView   *itemImageView;
@@ -117,17 +130,25 @@
 @property (nonatomic, strong) UIView        *itemImageSeparatorView;
 
 @property (nonatomic, strong) UILabel       *itemNameLabel;
-@property (nonatomic, strong) UIWebView     *itemDescriptionWebView;
+@property (nonatomic, strong) UILabel       *itemSKULabel;
+@property (nonatomic, strong) WKWebView     *itemDescriptionWebView;
 
-@property (nonatomic, strong) UIView        *priceContainerSeparatorView;
+@property (nonatomic, strong) UIView        *cartButtonContainerSeparatorView;
 @property (nonatomic, strong) UIView        *buyNowSeparatorView;
 
 @property (nonatomic, strong) UIView        *priceContainer;
+@property (nonatomic, strong) UIView        *cartButtonContainer;
 @property (nonatomic, strong) UIView        *socialContainer;
 @property (nonatomic, strong) UILabel       *itemPriceLabel;
+@property (nonatomic, strong) UILabel       *itemOldPriceLabel;
 @property (nonatomic, strong) UIButton      *shareButton;
 @property (nonatomic, strong) UIButton      *likeButton;
 @property (nonatomic, strong) UIButton      *buyNowOrAddToCartButton;
+
+@property (nonatomic, strong) UIPageControl *pageControl;
+
+
+@property (nonatomic, strong) mCatalogueTextField *itemsQuantityField;
 
 @property (nonatomic, strong) IBPPayPalManager      *payPalManager;
 
@@ -143,10 +164,11 @@
   
   CGFloat itemNameLabelWidth;
   CGFloat itemDescriptionWebViewWidth;
-  CGFloat priceContainerWidth;
+  CGFloat cartButtonContainerWidth;
+  CGFloat _priceContainerWidth;
   
   NSInteger likesCount;
-  
+  int itemsQuantity;
   auth_Share *aSha;
   
   CGFloat _currentElementsYOffset;
@@ -170,9 +192,7 @@
     _catalogueParams = [mCatalogueParameters sharedParameters];
     _catalogueItem   = catalogueItem;
     
-    _tabBarIsHidden = YES;
-    _showTabBar     = NO;
-    
+    itemsQuantity = 1;
     defaultItemImageViewFrame = (CGRect){
       0.0f,
       0.0f,
@@ -182,7 +202,8 @@
     
     itemNameLabelWidth = [[UIScreen mainScreen] bounds].size.width - kItemNameLabelMarginLeft - kLikeButtonMarginRight;
     itemDescriptionWebViewWidth = itemNameLabelWidth;
-    priceContainerWidth = itemNameLabelWidth;
+    cartButtonContainerWidth = itemNameLabelWidth;
+    _priceContainerWidth = itemNameLabelWidth;
     
     likesCount = 0;// -1 reserved for case when we do not show any number of likes at start
     
@@ -192,6 +213,7 @@
     _payPalManager = [[IBPPayPalManager alloc] init];
     _payPalManager.widgetId = _catalogueParams.widgetId;
     _buyNowSeparatorView = nil;
+    _itemsQuantityField = nil;
     
     _thankYouPage = nil;
   }
@@ -204,24 +226,26 @@
   self.scrollView = nil;
   self.itemImageView = nil;
   self.itemNameLabel = nil;
+  self.itemSKULabel = nil;
   self.itemDescriptionWebView = nil;
   self.itemPriceLabel = nil;
+  self.itemOldPriceLabel = nil;
+  self.itemsQuantityField = nil;
   
   self.itemImageSeparatorView = nil;
-  self.priceContainerSeparatorView = nil;
+  self.cartButtonContainerSeparatorView = nil;
   
   self.shareButton = nil;
   self.likeButton = nil;
   self.buyNowOrAddToCartButton = nil;
 
-  self.priceContainer = nil;
+  self.cartButtonContainer = nil;
   self.socialContainer = nil;
+  self.priceContainer = nil;
   
   if(aSha){
     aSha.delegate = nil;
     aSha.viewController = nil;
-    
-    [aSha release];
     aSha = nil;
   }
   
@@ -231,8 +255,6 @@
   self.buyNowSeparatorView = nil;
   
   self.thankYouPage = nil;
-  
-  [super dealloc];
 }
 
 #pragma mark - View Lifecycle
@@ -240,10 +262,12 @@
 {
   [super viewDidLoad];
   
+  [[self.tabBarController tabBar] setHidden:YES];
+  
   [self drawInterface];
   
-  self.statusBarView.backgroundColor = kCatalogueNavBarColor;
-  self.customNavBar.backgroundColor = kCatalogueNavBarColor;
+  self.statusBarView.backgroundColor = [self.colorSkin navBarBackgroundColor];
+  self.customNavBar.backgroundColor = [self.colorSkin navBarBackgroundColor];
   
   aSha.delegate = self;
   aSha.viewController = self;
@@ -263,6 +287,8 @@
    object:nil];
   
   [self loadLikesCount];
+  
+  self.customNavBar.cartButtonHidden = ![mCatalogueParameters sharedParameters].cartEnabled;
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -320,25 +346,17 @@
   [self placeItemImageView];
   [self placeItemImageSeparatorView];
   [self placeItemNameLabel];
-  [self placeItemDescriptionWebView];
   
-  if(_catalogueParams.cartEnabled)
-  {
-    
-    [self placePriceRelatedViews];
-    [self placeBuyNowOrAddToCartButton];
-    
-  } else {
-    if ([self.catalogueItem.price doubleValue] > 0.0f)
-    {
-      [self placePriceRelatedViews];
-      
-      if (_catalogueParams.payPalClientId.length)
-      {
-        [self placeBuyNowOrAddToCartButton];
-      }
-    }
+  if (self.catalogueItem.sku && self.catalogueItem.sku.length) {
+    [self placeItemSKULabel];
   }
+  [self placeItemDescriptionWebView];
+  [self placePriceRelatedViews];
+  
+  if ((_catalogueParams.payPalClientId.length &&
+       NSOrderedSame != [self.catalogueItem.price compare:@0] ) ||
+      _catalogueParams.cartEnabled)
+    [self placeCartButtonRelatedViews];
   
   [self placeBuyNowSeparatorView];
   [self placeSocialContainer];
@@ -346,7 +364,7 @@
   [self placeShareButton];
   
   CGSize newContentSize = _scrollView.contentSize;
-  newContentSize.height = _currentElementsYOffset +  kPriceContainerSeparatorMarginTop;
+  newContentSize.height = _currentElementsYOffset +  kCartButtonContainerSeparatorMarginTop;
   self.scrollView.contentSize = newContentSize;
   
   [self setupItemImageView];
@@ -354,10 +372,10 @@
 
 -(void)placeScrollView
 {
-  self.scrollView = [[[UIScrollView alloc] initWithFrame:(CGRect){0.0f,
+  self.scrollView = [[UIScrollView alloc] initWithFrame:(CGRect){0.0f,
     kCustomNavBarHeight - 2.5f,
     self.view.bounds.size.width,
-    self.view.bounds.size.height - (kCustomNavBarHeight - 2.5f)}] autorelease];
+    self.view.bounds.size.height - (kCustomNavBarHeight - 2.5f)}];
   CGSize contentSize = self.scrollView.frame.size;
   contentSize.height = 0.0f;
   
@@ -376,14 +394,53 @@
   _scrollView.delegate = nil;
   _scrollView.userInteractionEnabled = YES;
   
+  [self.scrollView setUserInteractionEnabled:YES];
+  UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(oneTap:)];
+  [self.scrollView addGestureRecognizer:singleTap];
+  
   [self.view insertSubview:self.scrollView belowSubview:self.customNavBar];
 }
 
--(void)placePriceRelatedViews
+-(void)placeCartButtonRelatedViews
 {
-  [self placePriceContainerSeparatorView];
+  [self placeCartButtonContainerSeparatorView];
+  [self placeCartButtonContainer];
+  [self placeBuyNowOrAddToCartButton];
+}
+
+- (void)placePriceRelatedViews {
+  BOOL priceIsNonZero = (NSOrderedSame != [self.catalogueItem.price compare:@0] );
+  BOOL oldPriceIsNonZero = (NSOrderedSame != [self.catalogueItem.oldPrice compare:@0] );
+
+  if (!priceIsNonZero && !oldPriceIsNonZero)
+    return;
+
   [self placePriceContainer];
-  [self placeItemPriceLabel];
+
+  if (priceIsNonZero)
+    [self placeItemPriceLabel];
+
+  if (oldPriceIsNonZero)
+    [self placeItemOldPriceLabel];
+}
+
+- (void)placePriceContainer
+{
+  const float textHeight = 
+    [[UIFont systemFontOfSize:MAX(kItemPriceLabelFontSize, kItemOldPriceLabelFontSize)] lineHeight];
+  
+  CGRect priceContainerFrame = (CGRect) {
+    kPriceContainerMarginLeft, _currentElementsYOffset + kPriceContainerMarginTop,
+    _priceContainerWidth, textHeight
+  };
+
+  self.priceContainer = [[UIView alloc] initWithFrame:priceContainerFrame];
+  self.priceContainer.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin;
+  self.priceContainer.clipsToBounds = NO;
+
+  [self.scrollView addSubview:self.priceContainer];
+  
+  _currentElementsYOffset = CGRectGetMaxY(priceContainerFrame);
 }
 
 -(void)adjustViewToFitImage:(UIImage *)image
@@ -400,12 +457,14 @@
   }
   
   self.itemImageView.frame = itemImageViewFrame;
+  self.pageControl.frame = CGRectMake(0, self.itemImageView.frame.size.height, 320, 20);
   [self adjustSubviewsFramesDependingOnActualSizeOfItemImage];
+  
 }
 
 - (void)placeItemImageView
 {
-  self.itemImageView = [[[UIImageView alloc] initWithFrame:defaultItemImageViewFrame] autorelease];
+  self.itemImageView = [[UIImageView alloc] initWithFrame:defaultItemImageViewFrame];
   
   if(kUseBuiltInConfigOnly || kUseCustomConfigXMLurl){
     //case for third-party xmls
@@ -414,11 +473,124 @@
     //case for iba-like server where we have cropped images
     self.itemImageView.contentMode = UIViewContentModeScaleAspectFit;
   }
-  
   self.itemImageView.contentMode = UIViewContentModeScaleAspectFit;
-  self.itemImageView.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin;
+//  self.itemImageView.contentMode = UIViewContentModeScaleToFill;//UIViewContentModeScaleAspectFill;//
+  self.itemImageView.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin;//UIViewAutoresizingFlexibleHeight;//
+ 
+  [self.itemImageView setUserInteractionEnabled:YES];
+  UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(oneTap2:)];
+  [self.itemImageView addGestureRecognizer:singleTap];
+  
+  self.pageControl = [[UIPageControl alloc] init];
+//  self.pageControl.frame = defaultItemImageViewFrame;
+  self.pageControl.backgroundColor=[UIColor blueColor];
+//  self.pageControl.frame = CGRectMake(0, self.itemImageView.frame.size.height, 320, 20);
+  self.pageControl.numberOfPages = 3;
+  self.pageControl.currentPage = 0;
+  [self.pageControl addTarget:self action:@selector(pageTurn:) forControlEvents:UIControlEventValueChanged];
+  self.pageControl.userInteractionEnabled = YES;
+  
+  UISwipeGestureRecognizer *swipeLeft = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipe:)];
+  swipeLeft.direction = UISwipeGestureRecognizerDirectionLeft;
+  swipeLeft.cancelsTouchesInView = YES;
+  [self.itemImageView addGestureRecognizer:swipeLeft];
+  
+  UISwipeGestureRecognizer *swipeRight = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipe:)];
+  swipeRight.direction = UISwipeGestureRecognizerDirectionRight;
+  swipeRight.cancelsTouchesInView = YES;
+//  [self.scrollView setUserInteractionEnabled:NO];
+  [self.itemImageView addGestureRecognizer:swipeRight];
+//  self.scrollView.pagingEnabled = YES;
+  
   
   [self.scrollView addSubview:self.itemImageView];
+  
+//  [self.scrollView addSubview:self.pageControl];
+  
+  
+  
+ 
+}
+
+- (void)swipe:(UISwipeGestureRecognizer *)swipeRecogniser
+{
+  UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"ROFL"
+                                                  message:@"Dee dee doo doo."
+                                                 delegate:self
+                                        cancelButtonTitle:@"OK"
+                                        otherButtonTitles:nil];
+  [alert show];
+  
+  
+  if ([swipeRecogniser direction] == UISwipeGestureRecognizerDirectionLeft)
+  {
+    self.pageControl.currentPage -=1;
+    [self pageTurn:self.pageControl];
+  }
+  else if ([swipeRecogniser direction] == UISwipeGestureRecognizerDirectionRight)
+  {
+    self.pageControl.currentPage +=1;
+    [self pageTurn:self.pageControl];
+  }
+//  _dssview.image = [UIImage imageNamed:
+//                    [NSString stringWithFormat:@"%d.jpg",self.pageControl.currentPage]];
+}
+
+-(void)pageTurn:(UIPageControl *) page
+{
+  long int c=page.currentPage;
+  if(c==0)
+  {
+    self.pageControl.backgroundColor=[UIColor blueColor];
+  }else if(c==1)
+  {
+    self.pageControl.backgroundColor=[UIColor redColor];
+  }else if(c==2)
+  {
+    self.pageControl.backgroundColor=[UIColor yellowColor];
+  }else if(c==3)
+  {
+    self.pageControl.backgroundColor=[UIColor greenColor];
+  }else if(c==4)
+  {
+    self.pageControl.backgroundColor=[UIColor grayColor];
+  }
+}
+
+-(void)oneTap2:(UITapGestureRecognizer*)recognizer
+{
+    //[[self view] endEditing:YES];
+  self.pageControl.currentPage += 1;
+  [self pageTurn:self.pageControl];
+    //    CGSize contentSize = self.scrollView.contentSize;
+    //  contentSize.height -= 162;//!!!
+    //  self.scrollView.contentSize = contentSize;
+}
+
+
+-(void)oneTap:(UITapGestureRecognizer*)recognizer
+{
+   [[self view] endEditing:YES];
+//    CGSize contentSize = self.scrollView.contentSize;
+//  contentSize.height -= 162;//!!!
+//  self.scrollView.contentSize = contentSize;
+}
+
+-(void)oneTap1:(UITapGestureRecognizer*)recognizer
+{
+  CGSize contentSize = self.scrollView.contentSize;
+  
+  /**
+   * As image can be downloaded asynchronously after the view appears,
+   * set new content size here.
+   */
+//  contentSize.height += offset;
+  contentSize.height += 162;//!!!
+  self.scrollView.contentSize = contentSize;
+  
+  CGPoint bottomOffset = CGPointMake(0, self.scrollView.contentSize.height - self.scrollView.bounds.size.height);
+  [self.scrollView setContentOffset:bottomOffset animated:YES];
+//  [[self view] endEditing:YES];
 }
 
 - (void)setupItemImageView
@@ -438,10 +610,12 @@
     }
     
     if([self.catalogueItem.imgUrl length]){
+        __weak typeof(self) weakSelf = self;
       [self.itemImageView setImageWithURL:[NSURL URLWithString:self.catalogueItem.imgUrl]
                          placeholderImage:[UIImage imageNamed:resourceFromBundle(@"mCatalogue_ItemImagePlaceholder.png")]
                                   success:^(UIImage *image, BOOL cached){
-                                    [self adjustViewToFitImage:image];
+                                      __strong typeof(self) strongSelf = weakSelf;
+                                    [strongSelf adjustViewToFitImage:image];
                                   }
                                   failure:nil];
     }
@@ -457,7 +631,7 @@
       self.scrollView.frame.size.width,
       kSeparatorHeight};
     
-    self.itemImageSeparatorView = [[[UIView alloc] initWithFrame:separatorFrame] autorelease];
+    self.itemImageSeparatorView = [[UIView alloc] initWithFrame:separatorFrame];
     self.itemImageSeparatorView.backgroundColor = kSeparatorColor;
     self.itemImageSeparatorView.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin;
     
@@ -470,7 +644,7 @@
 - (void)placeItemNameLabel
 {
   if(!_itemNameLabel){
-    self.itemNameLabel = [[[UILabel alloc] init] autorelease];
+    self.itemNameLabel = [[UILabel alloc] init];
     self.itemNameLabel.backgroundColor = [UIColor clearColor];
     self.itemNameLabel.font = [UIFont systemFontOfSize:kItemNameLabelFontSize];
     self.itemNameLabel.textColor = kItemNameLabelTextColor;
@@ -499,19 +673,49 @@
   }
 }
 
+- (void)placeItemSKULabel
+{
+  if (!_itemSKULabel)
+  {
+    self.itemSKULabel = [[UILabel alloc] init];
+    self.itemSKULabel.backgroundColor = [UIColor clearColor];
+    self.itemSKULabel.font = [UIFont systemFontOfSize:kItemSKULabelFontSize];
+    self.itemSKULabel.textColor = kItemSKULabelTextColor;
+    self.itemSKULabel.text = [NSString stringWithFormat:@"%@: %@", NSBundleLocalizedString(@"mCatalogue_SKU", @"SKU"), self.catalogueItem.sku];
+    
+    CGRect itemSKULabelFrame = (CGRect){
+      kItemSKULabelMarginLeft,
+      _currentElementsYOffset + kItemSKULabelMarginTop,
+      CGFLOAT_MAX,
+      CGFLOAT_MAX
+    };
+    
+    CGSize itemSKULabelSize = [self.itemSKULabel.text sizeForFont:self.itemSKULabel.font
+                                                          limitSize:itemSKULabelFrame.size
+                                                      lineBreakMode:self.itemSKULabel.lineBreakMode];
+    
+    itemSKULabelFrame.size = itemSKULabelSize;
+    
+    self.itemSKULabel.frame = itemSKULabelFrame;
+    [self.scrollView addSubview:self.itemSKULabel];
+    
+    _currentElementsYOffset = CGRectGetMaxY(self.itemSKULabel.frame);
+  }
+}
+
 - (void)placeItemDescriptionWebView
 {
   if(!_itemDescriptionWebView){
-    self.itemDescriptionWebView = [[[UIWebView alloc] init] autorelease];
+      WKWebViewConfiguration *theConfiguration = [[WKWebViewConfiguration alloc] init];
+      theConfiguration.dataDetectorTypes = UIDataDetectorTypeLink;
+      CGRect rect = CGRectMake(kItemDescriptionWebViewMarginLeft,
+                               _currentElementsYOffset + kItemDescriptionWebViewMarginTop,
+                               itemDescriptionWebViewWidth,
+                               1);
+    self.itemDescriptionWebView = [[WKWebView alloc] initWithFrame:rect configuration:theConfiguration];
     self.itemDescriptionWebView.backgroundColor = [UIColor clearColor];
     self.itemDescriptionWebView.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin;
-    
-    self.itemDescriptionWebView.frame = CGRectMake(kItemDescriptionWebViewMarginLeft,
-                                                   _currentElementsYOffset + kItemDescriptionWebViewMarginTop,
-                                                   itemDescriptionWebViewWidth,
-                                                   1);
-    self.itemDescriptionWebView.delegate = self;
-    self.itemDescriptionWebView.dataDetectorTypes = UIDataDetectorTypeLink;
+    self.itemDescriptionWebView.navigationDelegate = self;
     
     [self.itemDescriptionWebView loadHTMLString:self.catalogueItem.description baseURL:nil];
     
@@ -521,51 +725,51 @@
   }
 }
 
-- (void)placePriceContainerSeparatorView
+- (void)placeCartButtonContainerSeparatorView
 {
-  if(!_priceContainerSeparatorView){
+  if(!_cartButtonContainerSeparatorView){
     CGRect separatorFrame = (CGRect){
       0.0f,
-      _currentElementsYOffset + kPriceContainerSeparatorMarginTop - 1.0f,
+      _currentElementsYOffset + kCartButtonContainerSeparatorMarginTop - 1.0f,
       self.scrollView.frame.size.width,
       kSeparatorHeight};
+
+    self.cartButtonContainerSeparatorView = [[UIView alloc] initWithFrame:separatorFrame];
+    self.cartButtonContainerSeparatorView.backgroundColor = kSeparatorColor;
+    self.cartButtonContainerSeparatorView.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin;
     
-    self.priceContainerSeparatorView = [[[UIView alloc] initWithFrame:separatorFrame] autorelease];
-    self.priceContainerSeparatorView.backgroundColor = kSeparatorColor;
-    self.priceContainerSeparatorView.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin;
-    
-    [self.scrollView addSubview:self.priceContainerSeparatorView];
+    [self.scrollView addSubview:self.cartButtonContainerSeparatorView];
     
     _currentElementsYOffset = CGRectGetMaxY(separatorFrame);
   }
 }
 
-- (void)placePriceContainer
+- (void)placeCartButtonContainer
 {
-  CGRect priceContainerFrame = (CGRect){
-    kPriceContainerMarginLeft,
-    _currentElementsYOffset + kPriceContainerMarginTop,
-    priceContainerWidth,
-    kPriceContainerHeight};
-  
-  self.priceContainer = [[[UIView alloc] initWithFrame:priceContainerFrame] autorelease];
-  self.priceContainer.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin;
-  self.priceContainer.clipsToBounds = NO;
+  CGRect cartButtonContainerFrame = (CGRect){
+    kCartButtonContainerMarginLeft,
+    _currentElementsYOffset + kCartButtonContainerMarginTop,
+    cartButtonContainerWidth,
+    kCartButtonContainerHeight};
 
-  [self.scrollView addSubview:self.priceContainer];
+  self.cartButtonContainer = [[UIView alloc] initWithFrame:cartButtonContainerFrame];
+  self.cartButtonContainer.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin;
+  self.cartButtonContainer.clipsToBounds = NO;
+
+  [self.scrollView addSubview:self.cartButtonContainer];
   
-  _currentElementsYOffset = CGRectGetMaxY(priceContainerFrame);
+  _currentElementsYOffset = CGRectGetMaxY(cartButtonContainerFrame);
 }
 
 - (void)placeSocialContainer
 {
   CGRect socialContainerFrame = (CGRect){
-    kPriceContainerMarginLeft,
-    _currentElementsYOffset + kPriceContainerMarginTop,
-    priceContainerWidth,
-    kPriceContainerHeight};
+    kCartButtonContainerMarginLeft,
+    _currentElementsYOffset + kCartButtonContainerMarginTop,
+    cartButtonContainerWidth,
+    kCartButtonContainerHeight};
   
-  self.socialContainer = [[[UIView alloc] initWithFrame:socialContainerFrame] autorelease];
+  self.socialContainer = [[UIView alloc] initWithFrame:socialContainerFrame];
   self.socialContainer.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin;
   self.socialContainer.clipsToBounds = NO;
 
@@ -576,37 +780,85 @@
 
 - (void)placeItemPriceLabel
 {
-  if(!_itemPriceLabel){
-    CGFloat maxPriceLabelWidth = self.priceContainer.frame.size.width - 2 * (kShareButtonWidth + kSpaceBetweenShareAndLikeButtons);
-    
-    CGRect itemPriceLabelFrame = (CGRect){0.0f, 0.0f, maxPriceLabelWidth, kPriceContainerHeight};
-    
-    self.itemPriceLabel = [[[UILabel alloc] init] autorelease];
+  if (!_itemPriceLabel) {
+    self.itemPriceLabel = [[UILabel alloc] init];
     self.itemPriceLabel.backgroundColor = [UIColor clearColor];
     self.itemPriceLabel.numberOfLines = 1;
     self.itemPriceLabel.lineBreakMode = NSLineBreakByTruncatingTail;
     self.itemPriceLabel.font = [UIFont systemFontOfSize:kItemPriceLabelFontSize];
     self.itemPriceLabel.textColor = kItemPriceLabelTextColor;
+    self.itemPriceLabel.text = self.catalogueItem.priceStr;
     
-    if(self.catalogueItem.price.doubleValue > 0.0f){
-      self.itemPriceLabel.text = self.catalogueItem.priceStr;
-    }
-    
-    CGSize actualItemPriceLabelSize = [self.itemPriceLabel.text sizeForFont:self.itemPriceLabel.font
-                                                                  limitSize:itemPriceLabelFrame.size
-                                                              lineBreakMode:self.itemPriceLabel.lineBreakMode];
-    
-    itemPriceLabelFrame.size.width = actualItemPriceLabelSize.width;
-    
-    self.itemPriceLabel.frame = itemPriceLabelFrame;
+    CGSize maxSize = (CGSize) { _priceContainerWidth, self.priceContainer.frame.size.height };
+    CGSize actualSize = [self.itemPriceLabel.text sizeForFont:self.itemPriceLabel.font
+                                                    limitSize:maxSize
+                                                lineBreakMode:self.itemPriceLabel.lineBreakMode];
 
+    CGRect surroundingFrame = self.priceContainer.frame;
+    
+    self.itemPriceLabel.frame = (CGRect) {
+      surroundingFrame.size.width - actualSize.width,
+      surroundingFrame.size.height - actualSize.height,
+      actualSize
+    };
+    
     [self.priceContainer addSubview:self.itemPriceLabel];
+  }
+}
+
+- (void)placeItemOldPriceLabel
+{
+  if (!_itemOldPriceLabel) {
+    CGFloat maxWidth = _priceContainerWidth
+      - (self.itemPriceLabel ? self.itemPriceLabel.frame.size.width + kSpaceBetweenPrices : 0);
+      
+    if (maxWidth <= 0)
+      return;
+    
+    self.itemOldPriceLabel = [[UILabel alloc] init];
+    self.itemOldPriceLabel.backgroundColor = [UIColor clearColor];
+    self.itemOldPriceLabel.numberOfLines = 1;
+    self.itemOldPriceLabel.lineBreakMode = NSLineBreakByTruncatingTail;
+    self.itemOldPriceLabel.font = [UIFont systemFontOfSize:kItemOldPriceLabelFontSize];
+    self.itemOldPriceLabel.textColor = kItemOldPriceLabelTextColor;
+    self.itemOldPriceLabel.textAlignment = NSTextAlignmentRight;
+
+    NSString *text =
+      [[self.catalogueItem class] formattedPriceStringForPrice:self.catalogueItem.oldPrice
+                                              withCurrencyCode:self.catalogueItem.currencyCode
+                                      emptyStringWhenZeroPrice:YES];
+
+    NSMutableAttributedString *attributedText =
+      [[NSMutableAttributedString alloc] initWithString:text];
+      
+    [attributedText addAttribute:NSStrikethroughStyleAttributeName
+                           value:[NSNumber numberWithInteger:NSUnderlineStyleSingle]
+                           range:NSMakeRange(0, [attributedText length])];
+        
+    [self.itemOldPriceLabel setAttributedText:attributedText];
+    
+    self.itemOldPriceLabel.frame = (CGRect) {
+      CGPointZero, maxWidth, self.priceContainer.frame.size.height
+    };
+    
+    [self.priceContainer addSubview:self.itemOldPriceLabel];
   }
 }
 
 - (void)placeShareButton
 {
-  if(!_shareButton){
+  NSString *enabledButtons = [[NSUserDefaults standardUserDefaults]
+                          stringForKey:@"enabled_buttons"];
+  bool hasSharing = true;
+  if (enabledButtons && enabledButtons.length > 0 && ([enabledButtons isEqualToString:@"0"] || [enabledButtons isEqualToString:@"00"] || [enabledButtons isEqualToString:@"01"]) ) {
+
+    hasSharing = false;
+  }
+  bool hasLikes = true;
+  if (enabledButtons && enabledButtons.length > 0 && ([enabledButtons isEqualToString:@"00"] || [enabledButtons isEqualToString:@"10"]) ) {
+    hasLikes = false;
+  }
+  if(!_shareButton && hasSharing){
     self.shareButton = [UIButton buttonWithType:UIButtonTypeCustom];
     self.shareButton.backgroundColor = [UIColor clearColor];
     [self.shareButton setImage:[UIImage imageNamed:resourceFromBundle(@"mCatalogue_ItemShare")] forState:UIControlStateNormal];
@@ -616,8 +868,8 @@
     
     CGFloat shareButtonOriginX;
     
-    if(self.likeButton.hidden){
-      shareButtonOriginX = priceContainerWidth - kShareButtonWidth;
+    if(self.likeButton.hidden || !hasLikes){
+      shareButtonOriginX = cartButtonContainerWidth - kShareButtonWidth;
     } else {
       shareButtonOriginX = CGRectGetMinX(self.likeButton.frame) - kSpaceBetweenShareAndLikeButtons - kShareButtonWidth;
     }
@@ -635,7 +887,15 @@
 
 - (void)placeLikeButton
 {
-  if(!_likeButton){
+  NSString *enabledButtons = [[NSUserDefaults standardUserDefaults]
+                              stringForKey:@"enabled_buttons"];
+  bool hasLikes = true;
+  self.likeButton.hidden = NO;
+  if (enabledButtons && enabledButtons.length > 0 && ([enabledButtons isEqualToString:@"00"] || [enabledButtons isEqualToString:@"10"]) ) {
+    hasLikes = false;
+    self.likeButton.hidden = YES;
+  }
+  if(!_likeButton && hasLikes){
     
     CGRect likeImageViewFrame = (CGRect){
       0.0f, 0.0f, kLikeButtonLikeImageViewWidth, kLikeButtonLikeImageViewHeight
@@ -648,7 +908,8 @@
     
     //================
     
-    CGFloat likesLabelMaxWidth = priceContainerWidth - CGRectGetMaxX(self.itemPriceLabel.frame) - 2 * kSpaceBetweenShareAndLikeButtons - 2 * kShareButtonWidth  - kLikesCountLabelMarginRight;
+    CGFloat likesLabelMaxWidth = cartButtonContainerWidth - 2 * kSpaceBetweenShareAndLikeButtons
+      - 2 * kShareButtonWidth  - kLikesCountLabelMarginRight;
     
     CGRect likesCountLabelFrame;
     
@@ -657,7 +918,7 @@
     NSString *likesCountString = [NSString stringWithFormat:@"%ld", (long)likesCount];
     
     CGSize likesCountStringSize = [likesCountString sizeForFont:likesCountLabelFont
-                                                      limitSize:(CGSize){priceContainerWidth, likesCountLabelFont.lineHeight}
+                                                      limitSize:(CGSize){cartButtonContainerWidth, likesCountLabelFont.lineHeight}
                                                       lineBreakMode:likesCountLabelBreakMode];
     UILabel *likesCountLabel = nil;
     
@@ -668,7 +929,7 @@
         kShareButtonWidth,
         0.0f,
         likesLabelMaxWidth,
-        kPriceContainerHeight
+        kCartButtonContainerHeight
       };
       
       likesCountLabel = [[UILabel alloc] initWithFrame:likesCountLabelFrame];
@@ -698,13 +959,13 @@
       likeButtonWidth = kShareButtonWidth;
     }
     
-    CGFloat likeButtonOriginX = priceContainerWidth - likeButtonWidth;
+    CGFloat likeButtonOriginX = cartButtonContainerWidth - likeButtonWidth;
     
     CGRect likeButtonFrame = (CGRect){
       likeButtonOriginX,
       0.f,
       likeButtonWidth,
-      kPriceContainerHeight
+      kCartButtonContainerHeight
     };
     
     self.likeButton.frame = likeButtonFrame;
@@ -716,10 +977,7 @@
     if(likesCountLabel){
       [self.likeButton addSubview:likesCountLabel];
     }
-    
-    [likeImageView release];
-    [likesCountLabel release];
-    
+
     self.likeButton.layer.borderWidth = kShareButtonBorderWidth;
     self.likeButton.layer.borderColor = [kSocialButtonsBorderColor CGColor];
 
@@ -740,14 +998,18 @@
     if (_catalogueParams.cartEnabled)
     {
       self.buyNowOrAddToCartButton = [self makeAddToCartButton];
+      
+      [self placeQuantityField];
     }
     else if(_catalogueParams.payPalClientId.length)
     {
       self.buyNowOrAddToCartButton = [self makeBuyNowButton];
+      
     }
     
     if(self.buyNowOrAddToCartButton){
-      [self.priceContainer addSubview:self.buyNowOrAddToCartButton];
+      [self.cartButtonContainer addSubview:self.buyNowOrAddToCartButton];
+      
     }
   }
 }
@@ -765,8 +1027,8 @@
   
   buyNowButton.layer.cornerRadius = kBuyNowButtonCornerRadius;
   
-  CGFloat originX = ceilf(self.priceContainer.frame.size.width - kBuyNowButtonWidth);
-  CGFloat originY = ceilf((self.priceContainer.frame.size.height - kBuyNowButtonHeight) / 2);
+  CGFloat originX = ceilf(self.cartButtonContainer.frame.size.width - kBuyNowButtonWidth);
+  CGFloat originY = ceilf((self.cartButtonContainer.frame.size.height - kBuyNowButtonHeight) / 2);
   
   CGRect rect = (CGRect){
     originX,
@@ -791,8 +1053,8 @@
   addToCartButton.backgroundColor = kBuyNowButtonBackgroundColor;
   addToCartButton.layer.cornerRadius = kBuyNowButtonCornerRadius;
   
-  CGFloat buyNowButtonOriginX = ceilf(self.priceContainer.frame.size.width - kAddToCartButtonWidth);
-  CGFloat payPalButtonOriginY = ceilf((self.priceContainer.frame.size.height - kAddToCartButtonHeight) / 2);
+  CGFloat buyNowButtonOriginX = ceilf(self.cartButtonContainer.frame.size.width - kAddToCartButtonWidth);
+  CGFloat payPalButtonOriginY = ceilf((self.cartButtonContainer.frame.size.height - kAddToCartButtonHeight) / 2);
   
   CGRect rect = (CGRect){
     buyNowButtonOriginX,
@@ -810,8 +1072,7 @@
   imgView.frame = CGRectMake(imgMargin, imgMargin, img.size.width, img.size.height);
   
   [addToCartButton addSubview:imgView];
-  [imgView release];
-  
+
   UILabel *text = [[UILabel alloc] init];
   
   CGFloat textOriginX = CGRectGetMaxX(imgView.frame) + imgMargin;
@@ -823,13 +1084,84 @@
   text.backgroundColor = [UIColor clearColor];
   
   [addToCartButton addSubview:text];
-  [text release];
-  
+
   [addToCartButton addTarget:self
                    action:@selector(addToCart)
          forControlEvents:UIControlEventTouchUpInside];
   
   return addToCartButton;
+}
+
+-(void)placeQuantityField
+{
+  self.itemsQuantityField = [[mCatalogueTextField alloc] init];
+  self.itemsQuantityField.frame = CGRectMake(self.buyNowOrAddToCartButton.frame.origin.x - 65,
+                                        self.buyNowOrAddToCartButton.frame.origin.y,
+                                        55,
+                                        self.buyNowOrAddToCartButton.frame.size.height);
+  self.itemsQuantityField.placeholder              = @"1";
+  self.itemsQuantityField.hidden = NO;
+  self.itemsQuantityField.text                     = self.itemsQuantityField.placeholder;
+  self.itemsQuantityField.textColor                = [UIColor grayColor];//[[mCatalogueParameters sharedParameters] priceColor];
+  self.itemsQuantityField.font                     = [UIFont systemFontOfSize:15.f];
+  self.itemsQuantityField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+  self.itemsQuantityField.textAlignment            = NSTextAlignmentCenter;
+  self.itemsQuantityField.backgroundColor          = [UIColor whiteColor];
+  self.itemsQuantityField.contentInset             = UIEdgeInsetsMake(5.f, 5.f, 5.f, 5.f);
+  self.itemsQuantityField.keyboardType             = UIKeyboardTypeNumberPad;
+  [[self.itemsQuantityField layer] setCornerRadius:5.f];
+  [[self.itemsQuantityField layer] setBorderColor:[UIColor grayColor].CGColor];
+  [[self.itemsQuantityField layer] setBorderWidth:1.f];
+  [self.cartButtonContainer addSubview:self.itemsQuantityField];
+  
+  
+   [self.itemsQuantityField addTarget:self action:@selector(textField1Active:) forControlEvents:UIControlEventEditingDidBegin];
+  [self.itemsQuantityField addTarget:self action:@selector(textField1Active1:) forControlEvents:UIControlEventEditingDidEnd];
+  [self.itemsQuantityField addTarget:self action:@selector(textField1Active2:) forControlEvents:UIControlEventEditingChanged];
+    //[self.itemsQuantity setUserInteractionEnabled:YES];
+//  UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(oneTap1:)];
+//  [self.itemsQuantity addGestureRecognizer:singleTap];
+//  self.scrollView.contentSize = CGSizeMake(self.scrollView.contentSize.width, self.scrollView.contentSize.height - 200);
+}
+
+-(void)textField1Active1:(UITapGestureRecognizer*)recognizer
+{
+  CGSize contentSize = self.scrollView.contentSize;
+  contentSize.height -= 162;//!!!
+  self.scrollView.contentSize = contentSize;
+}
+
+
+-(void)textField1Active2:(UITapGestureRecognizer*)recognizer
+{
+  int limit = 4;
+  if ([self.itemsQuantityField.text length] > limit) {
+    self.itemsQuantityField.text = [self.itemsQuantityField.text substringToIndex:limit];
+    return;
+  }
+  CGFloat fixedWidth = self.itemsQuantityField.frame.size.width;
+  CGSize newSize = [self.itemsQuantityField sizeThatFits:CGSizeMake(fixedWidth, MAXFLOAT)];
+  CGRect newFrame = CGRectMake(self.itemsQuantityField.frame.origin.x - fmaxf(newSize.width, fixedWidth) + fixedWidth, self.itemsQuantityField.frame.origin.y, fmaxf(newSize.width, fixedWidth), self.itemsQuantityField.frame.size.height);
+//  newFrame.size = CGSizeMake(fmaxf(newSize.width, fixedWidth), self.itemsQuantity.frame.size.height);
+  self.itemsQuantityField.frame = newFrame;
+}
+
+
+-(void)textField1Active:(UITapGestureRecognizer*)recognizer
+{
+  CGSize contentSize = self.scrollView.contentSize;
+  
+  /**
+   * As image can be downloaded asynchronously after the view appears,
+   * set new content size here.
+   */
+    //  contentSize.height += offset;
+  contentSize.height += 162;//!!!
+  self.scrollView.contentSize = contentSize;
+  
+  CGPoint bottomOffset = CGPointMake(0, self.scrollView.contentSize.height - self.scrollView.bounds.size.height);
+  [self.scrollView setContentOffset:bottomOffset animated:YES];
+    //  [[self view] endEditing:YES];
 }
 
 -(void)placeBuyNowSeparatorView
@@ -843,7 +1175,7 @@
       kSeparatorHeight
     };
     
-    self.buyNowSeparatorView = [[[UIView alloc] initWithFrame:separatorFrame] autorelease];
+    self.buyNowSeparatorView = [[UIView alloc] initWithFrame:separatorFrame];
     self.buyNowSeparatorView.backgroundColor = kSeparatorColor;
     self.buyNowSeparatorView.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin;
     
@@ -858,9 +1190,11 @@
   
   [self repositionView:self.itemImageSeparatorView offset:offset];
   [self repositionView:self.itemNameLabel offset:offset];
+   [self repositionView:self.itemSKULabel offset:offset];
   [self repositionView:self.itemDescriptionWebView offset:offset];
-  [self repositionView:self.priceContainerSeparatorView offset:offset];
   [self repositionView:self.priceContainer offset:offset];
+  [self repositionView:self.cartButtonContainerSeparatorView offset:offset];
+  [self repositionView:self.cartButtonContainer offset:offset];
   [self repositionView:self.buyNowSeparatorView offset:offset];
   [self repositionView:self.socialContainer offset:offset];
   
@@ -871,6 +1205,7 @@
    * set new content size here.
    */
     contentSize.height += offset;
+//  contentSize.height += 300;//!!!
     self.scrollView.contentSize = contentSize;
 }
 
@@ -956,7 +1291,9 @@
 
 -(void)addToCart
 {
-  [self addCatalogueItemToCart:self.catalogueItem];
+  [[self view] endEditing:YES];
+  [self addCatalogueItemToCart:self.catalogueItem withQuantity:self.itemsQuantityField.text.intValue];
+  
 }
 
 
@@ -983,7 +1320,7 @@
 -(void)loadLikesCount
 {
   if(_catalogueItem.imgUrl.length){
-    [aSha loadFacebookLikesCountForURLs:[[[NSSet alloc ] initWithArray:@[_catalogueItem.imgUrl]] autorelease]];
+    [aSha loadFacebookLikesCountForURLs:[[NSSet alloc ] initWithArray:@[_catalogueItem.imgUrl]]];
   }
 }
 
@@ -992,14 +1329,14 @@
 - (void)shareButtonClicked
 {
   
-  UIActionSheet *actionSheet = [[[UIActionSheet alloc] initWithTitle:nil
+  UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil
                                                             delegate:self
                                                    cancelButtonTitle:NSLocalizedString(@"general_sharingCancelButtonTitle", @"Cancel")
                                               destructiveButtonTitle:nil
                                                    otherButtonTitles:NSLocalizedString(@"general_sharingTwitterButtonTitle", @"Twitter"),
                                  NSLocalizedString(@"general_sharingFacebookButtonTitle", @"Facebook"),
                                  NSLocalizedString(@"general_sharingEmailButtonTitle", @"Email"),
-                                 nil] autorelease];
+                                 nil];
   
   actionSheet.actionSheetStyle = UIActionSheetStyleBlackOpaque;
   [actionSheet showFromToolbar:self.navigationController.toolbar];
@@ -1049,17 +1386,17 @@
   
   if (_catalogueParams.showLink)
   {
-    messageText = [[NSString stringWithFormat:NSBundleLocalizedString(@"mCatalogue_shareEMailMessageTemplate_showLink", @"<b>%@</b><br><pre style='font-family:sans-serif;'>%@<br><br><b>%@</b><br><br>"),
+    messageText = [NSString stringWithFormat:NSBundleLocalizedString(@"mCatalogue_shareEMailMessageTemplate_showLink", @"<b>%@</b><br><pre style='font-family:sans-serif;'>%@<br><br><b>%@</b><br><br>"),
                     self.catalogueItem.name,
                     self.catalogueItem.descriptionPlainText,
-                    [self.catalogueItem priceStr]] retain];
+                    [self.catalogueItem priceStr]];
   }
   else
   {
-    messageText = [[NSString stringWithFormat:NSBundleLocalizedString(@"mCatalogue_shareEMailMessageTemplate", @"<b>%@</b><br><pre style='font-family:sans-serif;'>%@<br><br><b>%@</b><br><br>"),
+    messageText = [NSString stringWithFormat:NSBundleLocalizedString(@"mCatalogue_shareEMailMessageTemplate", @"<b>%@</b><br><pre style='font-family:sans-serif;'>%@<br><br><b>%@</b><br><br>"),
                     self.catalogueItem.name,
                     self.catalogueItem.descriptionPlainText,
-                    [self.catalogueItem priceStr]] retain];
+                    [self.catalogueItem priceStr]];
   }
   
   NSData *attachedImage = nil;
@@ -1090,7 +1427,6 @@
                                           cancelButtonTitle:NSLocalizedString(@"general_sendingSMSFailedAlertOkButtonTitle", @"OK") //@"OK"
                                           otherButtonTitles:nil];
     [alert show];
-    [alert release];
   }
   [self dismissViewControllerAnimated:YES completion:nil];
 }
@@ -1107,7 +1443,6 @@
                                           cancelButtonTitle:NSLocalizedString(@"general_sendingEmailFailedAlertOkButtonTitle", @"OK") //@"OK"
                                           otherButtonTitles:nil];
     [alert show];
-    [alert release];
   }
   [self dismissViewControllerAnimated:YES completion:nil];
 }
@@ -1238,19 +1573,19 @@
   
   if (_catalogueParams.showLink)
   {
-    messageText = [[NSString stringWithFormat:NSBundleLocalizedString(@"mCatalogue_shareMessageTemplate_showLink", @"%@\nI just found this in the %@.\nDownload the %@ iPhone/Android app:  http://%@/projects.php?action=info&projectid=%@"),
+    messageText = [NSString stringWithFormat:NSBundleLocalizedString(@"mCatalogue_shareMessageTemplate_showLink", @"%@\nI just found this in the %@.\nDownload the %@ iPhone/Android app:  http://%@/projects.php?action=info&projectid=%@"),
                     
                     self.catalogueItem.descriptionPlainText,
                     _catalogueParams.appName,
                     _catalogueParams.appName,
                     appIBuildAppHostName(),
-                    _catalogueParams.appID] retain];
+                    _catalogueParams.appID];
   }
   else
   {
-    messageText = [[NSString stringWithFormat:NSBundleLocalizedString(@"mCatalogue_shareMessageTemplate", @"%@\nI just found this in the %@"),
+    messageText = [NSString stringWithFormat:NSBundleLocalizedString(@"mCatalogue_shareMessageTemplate", @"%@\nI just found this in the %@"),
                     self.catalogueItem.descriptionPlainText,
-                    _catalogueParams.appName] retain];
+                    _catalogueParams.appName];
   }
   
   NSMutableDictionary *data = [NSMutableDictionary dictionaryWithObjectsAndKeys:
@@ -1281,38 +1616,38 @@
 
 #pragma mark - Alert methods
 -(void)notifyInternetNotReacheable{
-  UIAlertView *msg = [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"general_cellularDataTurnedOff",@"Cellular Data is Turned off")
+  UIAlertView *msg = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"general_cellularDataTurnedOff",@"Cellular Data is Turned off")
                                                  message:NSLocalizedString(@"general_cellularDataTurnOnMessage",@"Turn on cellular data or use Wi-Fi to access data")
                                                 delegate:nil
                                        cancelButtonTitle:NSLocalizedString(@"general_defaultButtonTitleOK",@"OK")
-                                       otherButtonTitles:nil] autorelease];
+                                       otherButtonTitles:nil];
   [msg show];
 }
 
 -(void)notifyNoImageForLike{
-  UIAlertView *msg = [[[UIAlertView alloc] initWithTitle:@""
+  UIAlertView *msg = [[UIAlertView alloc] initWithTitle:@""
                                                  message:NSBundleLocalizedString(@"mCatalogue_NoImageForLike", @"No image for like")
                                                 delegate:nil
                                        cancelButtonTitle:NSLocalizedString(@"general_defaultButtonTitleOK",@"OK")
-                                       otherButtonTitles:nil] autorelease];
+                                       otherButtonTitles:nil];
   [msg show];
 }
 
 -(void)notifyAlreadyLiked{
-  UIAlertView *msg = [[[UIAlertView alloc] initWithTitle:@""
+  UIAlertView *msg = [[UIAlertView alloc] initWithTitle:@""
                                                  message:NSBundleLocalizedString(@"mCatalogue_ImageAlreadyLiked", @"You have already liked this item")
                                                 delegate:nil
                                        cancelButtonTitle:NSLocalizedString(@"general_defaultButtonTitleOK",@"OK")
-                                       otherButtonTitles:nil] autorelease];
+                                       otherButtonTitles:nil];
   [msg show];
 }
 
 -(void)notifyLikeError{
-  UIAlertView *msg = [[[UIAlertView alloc] initWithTitle:@""
+  UIAlertView *msg = [[UIAlertView alloc] initWithTitle:@""
                                                  message:NSBundleLocalizedString(@"mCatalogue_LikeError", @"Could not like this item")
                                                 delegate:nil
                                        cancelButtonTitle:NSLocalizedString(@"general_defaultButtonTitleOK",@"OK")
-                                       otherButtonTitles:nil] autorelease];
+                                       otherButtonTitles:nil];
   [msg show];
 }
 
@@ -1336,7 +1671,7 @@
         //so merge the arrays
       [_catalogueParams.likedItems addObjectsFromArray:likedItems];
     } else {
-      _catalogueParams.likedItems = [[likedItems mutableCopy] autorelease];
+      _catalogueParams.likedItems = [likedItems mutableCopy];
     }
     
     _catalogueParams.likedItemsLoadingState = mCatalogueLikedFacebookItemsLoadingCompletedSuccessfully;
@@ -1377,65 +1712,59 @@
 
 -(void)makeStatusBarLightForSharingDialog
 {
-  if(SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")){
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent animated:NO];
-  }
 }
 
 
-#pragma mark - UIWebView delegate
+#pragma mark - WKWebView delegate
 
-- (void)webViewDidFinishLoad:(UIWebView *)webView
+- (void)webView:(WKWebView *)webView didFinishNavigation:(null_unspecified WKNavigation *)navigation
 {
-  CGRect frame = webView.frame;
-  CGSize size = [webView sizeThatFits:CGSizeZero];
-  frame.size.height = size.height;
-  webView.frame = frame;
-  
-  CGFloat offset = webView.frame.size.height;
-  
-  [self repositionView:self.priceContainerSeparatorView offset:offset];
-  [self repositionView:self.priceContainer offset:offset];
-  [self repositionView:self.buyNowSeparatorView offset:offset];
-  [self repositionView:self.socialContainer offset:offset];
-  
-  CGSize contentSize = self.scrollView.contentSize;
-  
-  contentSize.height += offset;
-  self.scrollView.contentSize = contentSize;
+    CGRect frame = webView.frame;
+    CGSize size = [webView sizeThatFits:CGSizeZero];
+    frame.size.height = size.height;
+    webView.frame = frame;
+    
+    CGFloat offset = webView.frame.size.height;
+    
+    [self repositionView:self.priceContainer offset:offset];
+    [self repositionView:self.cartButtonContainerSeparatorView offset:offset];
+    [self repositionView:self.cartButtonContainer offset:offset];
+    [self repositionView:self.buyNowSeparatorView offset:offset];
+    [self repositionView:self.socialContainer offset:offset];
+    
+    CGSize contentSize = self.scrollView.contentSize;
+    
+    contentSize.height += offset;
+    self.scrollView.contentSize = contentSize;
 }
 
-- (BOOL)           webView:(UIWebView *)webView
-shouldStartLoadWithRequest:(NSURLRequest *)request
-            navigationType:(UIWebViewNavigationType)navigationType
+- (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
 {
-  if(navigationType == UIWebViewNavigationTypeLinkClicked){
-    
-    shouldMakeStatusBarLight = NO;
-    
-    mExternalLinkWebViewController *descriptionLinkWebViewController = [[mExternalLinkWebViewController alloc] init];
-    descriptionLinkWebViewController.modalPresentationStyle = UIModalPresentationFullScreen;
-    descriptionLinkWebViewController.navBarColor = [self.view.backgroundColor blend:kCatalogueNavBarColor];
-    descriptionLinkWebViewController.showTabBar = self.showTabBar;
-    
-    descriptionLinkWebViewController.URL = [request URL].absoluteString;
-    [descriptionLinkWebViewController  hideTBButton];
-    
-    [self.navigationController pushViewController:descriptionLinkWebViewController animated:YES];
-    
-    [descriptionLinkWebViewController release];
-    
-    return NO;
-  }
-  
-  return YES;
+    NSURLRequest *request = navigationAction.request;
+    if(navigationAction == UIWebViewNavigationTypeLinkClicked){
+        
+        if ([request.URL.scheme isEqual:@"tel"]) {
+            [TPhoneCaller callNumberByURL:request.URL];
+        }
+        
+        shouldMakeStatusBarLight = NO;
+        mExternalLinkWebViewController *descriptionLinkWebViewController = [[mExternalLinkWebViewController alloc] init];
+        descriptionLinkWebViewController.modalPresentationStyle = UIModalPresentationFullScreen;
+        descriptionLinkWebViewController.colorSkin = self.colorSkin;
+        descriptionLinkWebViewController.URL = [request URL].absoluteString;
+        [descriptionLinkWebViewController  hideTBButton];
+        [self.navigationController pushViewController:descriptionLinkWebViewController animated:YES];
+    }
 }
+
+
 
 -(void)showThankYouPage:(NSNotification *)notification
 {
   if(!self.thankYouPage){
-    self.thankYouPage = [[[mCatalogueThankYouPageVC alloc] init] autorelease];
-    self.thankYouPage.showTabBar = self.showTabBar;
+    self.thankYouPage = [[mCatalogueThankYouPageVC alloc] init];
+    self.thankYouPage.colorSkin = self.colorSkin;
   }
   
   NSInteger controllerIndexToPopTo = [self previousViewControllerIndex] - 1;

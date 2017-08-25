@@ -28,8 +28,7 @@
   return self;
 }
 
-+(CGSize)sizeForStyle:(mCatalogueEntryViewStyle)style
-      withPlaceholder:(BOOL)shouldShowPlaceholder{
++(CGSize)sizeForStyle:(mCatalogueEntryViewStyle)style {
   return CGSizeZero;
 }
 
@@ -48,8 +47,6 @@
 -(void)dealloc
 {
   self.catalogueParameters = nil;
-  
-  [super dealloc];
 }
 
 @end

@@ -73,20 +73,10 @@ homepageButton = _homepageButton;
 - (void)dealloc
 {
   [_imageView removeFromSuperview];
-  [_imageView release];
-  
   [_titleLabel removeFromSuperview];
-  [_titleLabel release];
-  
   [_subtitleLabel removeFromSuperview];
-  [_subtitleLabel release];
-  
   [_messageLabel removeFromSuperview];
-  [_messageLabel release];
-  
   [_homepageButton removeFromSuperview];
-  [_homepageButton release];
-  [super dealloc];
 }
 
 - (UILabel *)titleLabel
@@ -154,9 +144,14 @@ homepageButton = _homepageButton;
   // place title
   {
     CGSize maximumLabelSize = CGSizeMake( infoFrm.size.width - (kTitleLabelMarginLeft + kTitleLabelMarginRight), 9999 );
-    CGSize expectedLabelSize = [_titleLabel.text sizeWithFont:_titleLabel.font
-                                            constrainedToSize:maximumLabelSize
-                                                lineBreakMode:_titleLabel.lineBreakMode];
+    //CGSize expectedLabelSize = [_titleLabel.text sizeWithFont:_titleLabel.font constrainedToSize:maximumLabelSize lineBreakMode:_titleLabel.lineBreakMode];
+      NSMutableParagraphStyle *paragraph = [[NSMutableParagraphStyle alloc] init];
+      paragraph.lineBreakMode = _titleLabel.lineBreakMode;
+      CGRect rect = [_titleLabel.text boundingRectWithSize:maximumLabelSize
+                                       options:NSStringDrawingUsesLineFragmentOrigin
+                                    attributes:@{ NSFontAttributeName: _titleLabel.font, NSParagraphStyleAttributeName: paragraph }
+                                       context:nil];
+      CGSize expectedLabelSize = CGSizeMake(ceilf(rect.size.width), ceilf(rect.size.height));
     
     CGFloat maxHeight = _titleLabel.font.lineHeight * _titleLabel.numberOfLines;
     
@@ -174,9 +169,14 @@ homepageButton = _homepageButton;
   // place description
   {
     CGSize maximumLabelSize = CGSizeMake( infoFrm.size.width - (kSubtitleLabelMarginLeft + kSubtitleLabelMarginRight), 9999 );
-    CGSize expectedLabelSize = [_subtitleLabel.text sizeWithFont:_subtitleLabel.font
-                                               constrainedToSize:maximumLabelSize
-                                                   lineBreakMode:_subtitleLabel.lineBreakMode];
+    //CGSize expectedLabelSize = [_subtitleLabel.text sizeWithFont:_subtitleLabel.font constrainedToSize:maximumLabelSize lineBreakMode:_subtitleLabel.lineBreakMode];
+      NSMutableParagraphStyle *paragraph = [[NSMutableParagraphStyle alloc] init];
+      paragraph.lineBreakMode = _subtitleLabel.lineBreakMode;
+      CGRect rect = [_subtitleLabel.text boundingRectWithSize:maximumLabelSize
+                                       options:NSStringDrawingUsesLineFragmentOrigin
+                                    attributes:@{ NSFontAttributeName: _subtitleLabel.font, NSParagraphStyleAttributeName: paragraph }
+                                       context:nil];
+      CGSize expectedLabelSize = CGSizeMake(ceilf(rect.size.width), ceilf(rect.size.height));
     
     CGFloat maxHeight = _subtitleLabel.font.lineHeight * _subtitleLabel.numberOfLines;
     
@@ -197,9 +197,14 @@ homepageButton = _homepageButton;
   // place message body
   {
     CGSize maximumLabelSize = CGSizeMake( infoFrm.size.width - (kMessageLabelMarginLeft + kMessageLabelMarginRight), 9999 );
-    CGSize expectedLabelSize = [_messageLabel.text sizeWithFont:_messageLabel.font
-                                              constrainedToSize:maximumLabelSize
-                                                  lineBreakMode:_messageLabel.lineBreakMode];
+    //CGSize expectedLabelSize = [_messageLabel.text sizeWithFont:_messageLabel.font constrainedToSize:maximumLabelSize lineBreakMode:_messageLabel.lineBreakMode];      
+      NSMutableParagraphStyle *paragraph = [[NSMutableParagraphStyle alloc] init];
+      paragraph.lineBreakMode = _messageLabel.lineBreakMode;
+      CGRect rect = [_messageLabel.text boundingRectWithSize:maximumLabelSize
+                                       options:NSStringDrawingUsesLineFragmentOrigin
+                                    attributes:@{ NSFontAttributeName: _messageLabel.font, NSParagraphStyleAttributeName: paragraph }
+                                       context:nil];
+      CGSize expectedLabelSize = CGSizeMake(ceilf(rect.size.width), ceilf(rect.size.height));
     
     CGFloat maxHeight = _messageLabel.font.lineHeight * _messageLabel.numberOfLines;
     
@@ -258,8 +263,7 @@ homepageButton = _homepageButton;
 - (void)dealloc
 {
   [_summaryView removeFromSuperview];
-  [_summaryView release];
-  [super dealloc];
+    _summaryView = nil;
 }
 
 - (mCatalogueOrderSummaryView *)summaryView
@@ -292,6 +296,8 @@ homepageButton = _homepageButton;
   
   self.summaryView.frame = summaryViewFrame;
   [self.summaryView layoutSubviews];
+  
+  self.customNavBar.cartButtonHidden = ![mCatalogueParameters sharedParameters].cartEnabled;
 }
 
 -(void)mCatalogueSearchViewLeftButtonPressed
